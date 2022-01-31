@@ -66,7 +66,6 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
 
 uint64_t fixedpoint_whole_part(Fixedpoint val) {
   return val.whole;
-
 }
 
 uint64_t fixedpoint_frac_part(Fixedpoint val) {
@@ -133,33 +132,43 @@ int fixedpoint_is_neg(Fixedpoint val) {
 }
 
 int fixedpoint_is_overflow_neg(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  if (val.tag == 4) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 int fixedpoint_is_overflow_pos(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  if (val.tag == 3){
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 int fixedpoint_is_underflow_neg(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  if (val.tag == 6) {
+    return 1;
+  } else{
+    return 0;
+  }
 }
 
 int fixedpoint_is_underflow_pos(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  if (val.tag == 5) {
+    return 1;
+  } else{
+    return 0;
+  }
 }
 
 int fixedpoint_is_valid(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  if (val.tag == 0 || val.tag == 1) {
+    return 1;
+  } else{
+    return 0;
+  }
 }
 
 char *fixedpoint_format_as_hex(Fixedpoint val) {
