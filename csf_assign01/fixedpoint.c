@@ -123,9 +123,12 @@ int fixedpoint_is_err(Fixedpoint val) {
 }
 
 int fixedpoint_is_neg(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  uint64_t tag = val.tag;
+  if (tag == 1 || tag == 4 || tag == 6) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 int fixedpoint_is_overflow_neg(Fixedpoint val) {
@@ -169,6 +172,6 @@ char *fixedpoint_format_as_hex(Fixedpoint val) {
 
 int main(){
    char* ptr1 = malloc(1);
-uint64_t temp= strtoul("0.00f2",&ptr1,16);
-printf("answer is: %llu", temp);
+uint64_t fractional= strtoul("0.00f2",&ptr1,16);
+printf("answer is: %llu", fractional);
 }
