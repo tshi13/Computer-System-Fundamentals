@@ -33,8 +33,8 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
       break;
   }
 
-  char* whole_part = malloc(sizeof(char)*(index+1));
-  char* fraction_part = malloc(sizeof(char) * (length - index));
+  char* whole_part = malloc(sizeof(char)*(index+1)); //malloc1
+  char* fraction_part = malloc(sizeof(char) * (length - index)); //malloc2
   uint64_t whole_index = 0;
   uint64_t frac_index = 0;
   for (uint64_t i = 0; i<index; i++) {
@@ -45,11 +45,11 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   }
   uint64_t frac_length = strlen(fraction_part);
   
-  char* ptr1 = malloc(1);
+  char* ptr1 = malloc(1); //malloc3
   temp.whole = strtoul(whole_part,&ptr1,16);
  
 
-  char* padding = malloc(16 - frac_length);
+  char* padding = malloc(16 - frac_length); //malloc4
   for (uint64_t i = 0; i< 16-frac_length; i++){
     padding[i] = '0';
   }
