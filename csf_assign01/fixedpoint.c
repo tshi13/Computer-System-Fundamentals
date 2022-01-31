@@ -32,7 +32,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
     if(hex[index] == '.')
       break;
   }
-  // not sure if this is right
+
   char* whole_part = malloc(sizeof(char)*(index+1));
   char* fraction_part = malloc(sizeof(char) * (length - index));
   uint64_t whole_index = 0;
@@ -41,12 +41,26 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
     whole_part[whole_index++] = hex[i];
   }
   for (uint64_t i = index+1 ; i<length; i++) {
-    whole_part[frac_index++] = hex[i];
+    fraction_part[frac_index++] = hex[i];
   }
+  uint64_t frac_length = strlen(fraction_part);
+  
   char* ptr1 = malloc(1);
-  temp.whole = strtoul(whole_part,ptr1,16);
-  temp.fractional = strtoul(fraction_part,ptr1,16);
+  temp.whole = strtoul(whole_part,&ptr1,16);
+ 
+
+  char* padding = malloc(16 - frac_length);
+  for (uint64_t i = 0; i< 16-frac_length; i++){
+    padding[i] = '0';
+  }
+
+  strcat(fraction_part,padding);
+
+  temp.fractional= strtoul(fraction_part,&ptr1,16);
+
+  //consider different tags?
   temp.tag = 0;
+  return temp;
 
 }
 
@@ -110,9 +124,12 @@ int fixedpoint_is_err(Fixedpoint val) {
 }
 
 int fixedpoint_is_neg(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  uint64_t tag = val.tag;
+  if (tag == 1 || tag == 4 || tag == 6) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 int fixedpoint_is_overflow_neg(Fixedpoint val) {
@@ -148,7 +165,15 @@ int fixedpoint_is_valid(Fixedpoint val) {
 char *fixedpoint_format_as_hex(Fixedpoint val) {
   // TODO: implement
   assert(0);
-  char *s = malloc(20);
-  strcpy(s, "<invalid>");
-  return s;
+  // char *s = malloc(20);
+  // strcpy(s, "<invalid>");
+  // return s;
+  return 0;
 }
+
+// int main(){
+//    char* ptr1 = malloc(1);
+// //uint64_t fractional= strtoul("f200000000000000",&ptr1,16);
+// uint64_t temp = 0b11110010000000000000000000000000000000000000000000000000;
+// printf("answer is: %llx", temp);
+// }
