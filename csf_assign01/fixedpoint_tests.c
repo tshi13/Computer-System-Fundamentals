@@ -32,6 +32,11 @@ void test_is_overflow_pos(TestObjs *objs);
 void test_is_err(TestObjs *objs);
 // TODO: add more test functions
 
+void test_create_all_IntObjs(TestObjs *objs);
+void test_create2_all_FracObjs(TestObjs *objs);
+void test_is_zero(TestObjs *objs);
+void test_is_zero_uninitialized();
+
 int main(int argc, char **argv) {
   // if a testname was specified on the command line, only that
   // test function will be executed
@@ -50,6 +55,10 @@ int main(int argc, char **argv) {
   TEST(test_sub);
   TEST(test_is_overflow_pos);
   TEST(test_is_err);
+  TEST(test_create_all_IntObjs);
+  TEST(test_create2_all_FracObjs);
+  TEST(test_is_zero);
+  TEST(test_is_zero_uninitialized);
 
   // IMPORTANT: if you add additional test functions (which you should!),
   // make sure they are included here.  E.g., if you add a test function
@@ -255,3 +264,47 @@ void test_is_err(TestObjs *objs) {
 }
 
 // TODO: implement more test functions
+
+//Assume whole_part and frac_part have been tested
+void test_create_all_IntObjs(TestObjs *objs) {
+    ASSERT(fixedpoint_whole_part(objs->zero) == 0UL);
+    ASSERT(fixedpoint_frac_part(objs->zero) == 0UL);
+    ASSERT(objs->zero.tag == 0);
+
+    ASSERT(fixedpoint_whole_part(objs->one) == 1UL);
+    ASSERT(fixedpoint_frac_part(objs->one) == 0UL);
+    ASSERT(objs->one.tag == 0);
+}
+
+void test_create2_all_FracObjs(TestObjs *objs) {
+    ASSERT(fixedpoint_whole_part(objs->one_half) == 0UL);
+    ASSERT(fixedpoint_frac_part(objs->one_half) == 0x8000000000000000UL);
+    ASSERT(objs->one_half.tag == 0);
+
+    ASSERT(fixedpoint_whole_part(objs->one_fourth) == 0UL);
+    ASSERT(fixedpoint_frac_part(objs->one_fourth) == 0x4000000000000000UL);
+    ASSERT(objs->one_fourth.tag == 0);
+
+    ASSERT(fixedpoint_whole_part(objs->large1) == 0x4b19efceaUL);
+    ASSERT(fixedpoint_frac_part(objs->large1) == 0xec9a1e2418UL);
+    ASSERT(objs->large1.tag == 0);
+
+    ASSERT(fixedpoint_whole_part(objs->large2) == 0xfcbf3d5UL);
+    ASSERT(fixedpoint_frac_part(objs->large2) == 0x4d1a23c24fafUL);
+    ASSERT(objs->large2.tag == 0);
+}
+
+void test_is_zero(TestObjs *objs) {
+    ASSERT(fixedpoint_is_zero(objs->zero) == 1);
+    ASSERT(fixedpoint_is_zero(objs->one) == 0);
+    ASSERT(fixedpoint_is_zero(objs->one_half) == 0);
+    ASSERT(fixedpoint_is_zero(objs->one_fourth) == 0);
+    ASSERT(fixedpoint_is_zero(objs->large1) == 0);
+    ASSERT(fixedpoint_is_zero(objs->large2) == 0);
+}
+
+void test_is_zero_uninitialized() {
+    Fixedpoint uninitialized;
+    ASSERT(fixedpoint_is_zero(uninitialized) == 0);
+}
+
