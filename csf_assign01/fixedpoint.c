@@ -32,32 +32,33 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
     if(hex[index] == '.')
       break;
   }
-  // not sure if this is right
+
   char* whole_part = malloc(sizeof(char)*(index+1));
   char* fraction_part = malloc(sizeof(char) * (length - index));
-  printf("length: %llu \n",length);
   uint64_t whole_index = 0;
   uint64_t frac_index = 0;
   for (uint64_t i = 0; i<index; i++) {
-    //printf("%c",hex[i]);
     whole_part[whole_index++] = hex[i];
   }
-  //printf("%s",whole_part);
-
-  printf("\n");
   for (uint64_t i = index+1 ; i<length; i++) {
-    //printf("%c",hex[i]);
     fraction_part[frac_index++] = hex[i];
   }
-  //printf("%s",fraction_part);
-
-  // printf("this is the fraction part string: %s",fraction_part);
+  uint64_t frac_length = strlen(fraction_part);
+  
   char* ptr1 = malloc(1);
   temp.whole = strtoul(whole_part,&ptr1,16);
-  printf("whole part is: %x\n",temp.whole);
-  temp.fractional = strtoul(fraction_part,&ptr1,16);
-  printf("fractional part is: %x",temp.fractional);
+ 
 
+  char* padding = malloc(16 - frac_length);
+  for (uint64_t i = 0; i< 16-frac_length; i++){
+    padding[i] = '0';
+  }
+
+  strcat(fraction_part,padding);
+
+  temp.fractional= strtoul(fraction_part,&ptr1,16);
+
+  //consider different tags?
   temp.tag = 0;
   return temp;
 
@@ -170,8 +171,9 @@ char *fixedpoint_format_as_hex(Fixedpoint val) {
   return 0;
 }
 
-int main(){
-   char* ptr1 = malloc(1);
-uint64_t fractional= strtoul("0.00f2",&ptr1,16);
-printf("answer is: %llu", fractional);
-}
+// int main(){
+//    char* ptr1 = malloc(1);
+// //uint64_t fractional= strtoul("f200000000000000",&ptr1,16);
+// uint64_t temp = 0b11110010000000000000000000000000000000000000000000000000;
+// printf("answer is: %llx", temp);
+// }
