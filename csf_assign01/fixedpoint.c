@@ -12,7 +12,7 @@ Fixedpoint fixedpoint_create(uint64_t whole) {
   Fixedpoint temp;
   temp.whole = whole;
   temp.fractional = 0;
-  temp.tag = 0;
+  temp.tag = 0; //giving valid/non-negative tag
   return temp;
 }
 
@@ -20,7 +20,7 @@ Fixedpoint fixedpoint_create2(uint64_t whole, uint64_t frac) {
   Fixedpoint temp;
   temp.whole = whole;
   temp.fractional = frac;
-  temp.tag = 0;
+  temp.tag = 0; //valid/non-negative
   return temp;
 }
 
@@ -115,9 +115,10 @@ int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
   return 0;
 }
 
+//Return 1 is fixedpoint is zero, 0 otherwise
 int fixedpoint_is_zero(Fixedpoint val) {
   if(val.whole == 0 && val.fractional == 0) {
-    return 1;
+    return 1; 
   } else {
     return 0;
   }
