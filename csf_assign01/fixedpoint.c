@@ -28,6 +28,15 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   Fixedpoint temp;
   uint64_t length = strlen(hex);
   uint64_t index = 0;
+  uint64_t start_index = 0;
+  if (hex[0] == '-') {
+    index = 1;
+    temp.tag == 1;
+    start_index = 1;
+  } else {
+    temp.tag = 0;
+  }
+  
   for (; index<length; index++) {
     if(hex[index] == '.')
       break;
@@ -37,7 +46,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   char fraction_part[length - index]; //malloc2
   uint64_t whole_index = 0;
   uint64_t frac_index = 0;
-  for (uint64_t i = 0; i<index; i++) {
+  for (uint64_t i = start_index; i<index; i++) {
     whole_part[whole_index++] = hex[i];
   }
   for (uint64_t i = index+1 ; i<length; i++) {
@@ -58,8 +67,6 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
 
   temp.fractional= strtoul(fraction_part,&ptr1,16);
 
-  //consider different tags?
-  temp.tag = 0;
   return temp;
 
 }
