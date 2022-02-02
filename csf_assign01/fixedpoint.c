@@ -80,9 +80,22 @@ uint64_t fixedpoint_frac_part(Fixedpoint val) {
 }
 
 Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
-  // TODO: implement
-  assert(0);
-  return DUMMY;
+ Fixedpoint result;
+ //if frac_part overflow, add to whole part
+
+  //Case of positive overflow
+  if (left.tag = 0 && right.tag == 0 && (UINT64_MAX -  fixedpoint_whole_part(left) < fixedpoint_whole_part(right))) {
+      result.whole = fixedpoint_whole_part(left) +fixedpoint_whole_part(right);
+      result.fractional = fixedpoint_frac_part(left) +fixedpoint_frac_part(right);
+      fixedpoint_is_overflow_pos(result);
+  }
+  //Case of negative overflow
+  else if (left.tag = 1 && right.tag == 1 && (UINT64_MAX -  fixedpoint_whole_part(left) < fixedpoint_whole_part(right))) {
+      result.whole = fixedpoint_whole_part(left) +fixedpoint_whole_part(right);
+      result.fractional = fixedpoint_frac_part(left) +fixedpoint_frac_part(right);
+      fixedpoint_is_overflow_neg(result);
+  }
+  return result;
 }
 
 Fixedpoint fixedpoint_sub(Fixedpoint left, Fixedpoint right) {
