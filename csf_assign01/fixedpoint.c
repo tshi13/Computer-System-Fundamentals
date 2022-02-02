@@ -31,7 +31,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
 //check invalid string
 for (uint64_t i = 0; i<length; i++) {
     char c = hex[i];
-    if((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-'){
+    if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
       temp.tag = 2;
       temp.whole = 0;
       temp.fractional = 0;
