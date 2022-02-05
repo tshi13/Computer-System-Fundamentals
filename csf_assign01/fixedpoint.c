@@ -174,9 +174,11 @@ int fixedpoint_is_zero(Fixedpoint val) {
 }
 
 int fixedpoint_is_err(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return 0;
+  if(val.tag == 2){
+    return 1;
+  } else{
+    return 0;
+  }
 }
 
 int fixedpoint_is_neg(Fixedpoint val) {
