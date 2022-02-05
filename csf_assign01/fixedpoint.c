@@ -60,12 +60,12 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   Fixedpoint temp;
   uint64_t length = strlen(hex);
 
-  if(hexstring_is_valid(hex) == 0){
-    temp.tag = 2;
-    temp.whole = 0;
-    temp.fractional = 0;
-    return temp;
-  }
+  // if(hexstring_is_valid(hex) == 0){
+  //   temp.tag = 2;
+  //   temp.whole = 0;
+  //   temp.fractional = 0;
+  //   return temp;
+  // }
   
 
   uint64_t index = 0;
