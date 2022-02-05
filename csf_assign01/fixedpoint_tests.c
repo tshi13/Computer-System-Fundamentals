@@ -46,19 +46,19 @@ int main(int argc, char **argv) {
 
   TEST_INIT();
 
-  TEST(test_whole_part);
-  TEST(test_frac_part);
+  // TEST(test_whole_part);
+  // TEST(test_frac_part);
   TEST(test_create_from_hex);
-  TEST(test_format_as_hex);
-  TEST(test_negate);
-  TEST(test_add);
-  TEST(test_sub);
-  TEST(test_is_overflow_pos);
-  TEST(test_is_err);
-  TEST(test_create_all_IntObjs);
-  TEST(test_create2_all_FracObjs);
-  TEST(test_is_zero);
-  TEST(test_is_zero_uninitialized);
+  // TEST(test_format_as_hex);
+  // TEST(test_negate);
+  // TEST(test_add);
+  // TEST(test_sub);
+  // TEST(test_is_overflow_pos);
+  // TEST(test_is_err);
+  // TEST(test_create_all_IntObjs);
+  // TEST(test_create2_all_FracObjs);
+  // TEST(test_is_zero);
+  // TEST(test_is_zero_uninitialized);
 
   // IMPORTANT: if you add additional test functions (which you should!),
   // make sure they are included here.  E.g., if you add a test function
@@ -111,12 +111,24 @@ void test_create_from_hex(TestObjs *objs) {
   (void) objs;
 
   Fixedpoint val1 = fixedpoint_create_from_hex("f6a5865.00f2");
-
   ASSERT(fixedpoint_is_valid(val1));
-
   ASSERT(0xf6a5865UL == fixedpoint_whole_part(val1));
-
   ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val1));
+
+  Fixedpoint val2 = fixedpoint_create_from_hex("-f6a5865.00f2");
+  ASSERT(fixedpoint_is_valid(val2));
+  ASSERT(0xf6a5865UL == fixedpoint_whole_part(val2));
+  ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val2));
+  ASSERT(fixedpoint_is_neg(val2));
+
+  Fixedpoint val3 = fixedpoint_create_from_hex("f6a5865");
+  ASSERT(fixedpoint_is_valid(val3));
+  ASSERT(!fixedpoint_is_neg(val3));
+  ASSERT(0xf6a5865UL == fixedpoint_whole_part(val3));
+  printf("frac part is: %lu",fixedpoint_frac_part(val3));
+  ASSERT(0x000000000000UL == fixedpoint_frac_part(val3));
+
+
 }
 
 void test_format_as_hex(TestObjs *objs) {
