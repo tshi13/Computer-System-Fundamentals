@@ -83,7 +83,13 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
       break;
   }
 
-  char whole_part[index+1];
+  if (index - start_index > 16 || length - index - 1 > 16){
+    temp.tag = 2;
+    temp.whole = 0;
+    temp.fractional = 0;
+    return temp;
+  }
+  char whole_part[index - start_index +1];
   char fraction_part[length - index];
   uint64_t whole_index = 0;
   uint64_t frac_index = 0;
@@ -147,9 +153,12 @@ Fixedpoint fixedpoint_sub(Fixedpoint left, Fixedpoint right) {
 }
 
 Fixedpoint fixedpoint_negate(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return DUMMY;
+  if (fixedpoint_is_zero(val)) return val;
+
+  if (val.tag == 1) val.tag = 0;
+  else val.tag = 1;
+
+  return val;
 }
 
 Fixedpoint fixedpoint_halve(Fixedpoint val) {
@@ -212,7 +221,7 @@ int fixedpoint_is_err(Fixedpoint val) {
 
 int fixedpoint_is_neg(Fixedpoint val) {
   uint64_t tag = val.tag;
-  printf("tag is : %lu",tag);
+  //printf("tag is : %lu",tag);
   if (tag == 1 || tag == 4 || tag == 6) {
     return 1;
   } else {

@@ -48,17 +48,17 @@ int main(int argc, char **argv) {
 
   // TEST(test_whole_part);
   // TEST(test_frac_part);
-  TEST(test_create_from_hex);
+  //TEST(test_create_from_hex);
   // TEST(test_format_as_hex);
-  // TEST(test_negate);
+  TEST(test_negate);
   // TEST(test_add);
   // TEST(test_sub);
   // TEST(test_is_overflow_pos);
-  // TEST(test_is_err);
+  //TEST(test_is_err);
   // TEST(test_create_all_IntObjs);
   // TEST(test_create2_all_FracObjs);
   // TEST(test_is_zero);
-  // TEST(test_is_zero_uninitialized);
+  TEST(test_is_zero_uninitialized);
 
   // IMPORTANT: if you add additional test functions (which you should!),
   // make sure they are included here.  E.g., if you add a test function
