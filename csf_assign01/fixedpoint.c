@@ -55,6 +55,9 @@ for (uint64_t i = 0; i<length; i++) {
   }
 
 
+  printf("length is: %lu\n",length);
+  printf("index is: %lu\n",index);
+
 
   char whole_part[index+1];
   char fraction_part[length - index];
@@ -69,16 +72,19 @@ for (uint64_t i = 0; i<length; i++) {
     return temp;
   }
 
-  for (uint64_t i = index+1 ; i<length; i++) {
+  for (uint64_t i = index+1 ; i<=length; i++) {
     fraction_part[frac_index++] = hex[i];
   }
   uint64_t frac_length = strlen(fraction_part);
   
-  
+  printf("\n frac length is: %lu \n",frac_length);
   char padding [16-frac_length];
   for (uint64_t i = 0; i< 16-frac_length; i++){
     padding[i] = '0';
   }
+
+  printf("padding is: %s \n",padding);
+  printf("fraction part is: %s \n",fraction_part);
 
   strcat(fraction_part,padding);
 
@@ -216,7 +222,6 @@ int fixedpoint_is_underflow_pos(Fixedpoint val) {
 }
 
 int fixedpoint_is_valid(Fixedpoint val) {
-  printf("\n  tag is: %lu",val.tag);
   if (val.tag == 0 || val.tag == 1) {
     return 1;
   } else{
