@@ -181,10 +181,10 @@ int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
     return -1;
   } 
   
-  
+  // now left and right have the same sign
   if(left.whole > right.whole){
     if (left.tag == 0) return 1;
-    else return 0;
+    else return -1;
   } 
   
   
@@ -202,6 +202,8 @@ int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
    
   return 0;
 }
+
+
 
 //Return 1 is fixedpoint is zero, 0 otherwise
 int fixedpoint_is_zero(Fixedpoint val) {
