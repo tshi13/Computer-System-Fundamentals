@@ -303,6 +303,7 @@ void test_is_zero(TestObjs *objs) {
     ASSERT(fixedpoint_is_zero(objs->large2) == 0);
 }
 
+//Uninitialized value should not be zero
 void test_is_zero_uninitialized() {
     Fixedpoint uninitialized;
     ASSERT(fixedpoint_is_zero(uninitialized) == 0);
