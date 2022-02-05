@@ -143,6 +143,18 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(fixedpoint_is_err(val5));
   
 
+  Fixedpoint val6 = fixedpoint_create_from_hex("-f6a5865.");
+  ASSERT(fixedpoint_is_valid(val6));
+  ASSERT(!fixedpoint_is_err(val6));
+  ASSERT(0xf6a5865UL == fixedpoint_whole_part(val6));
+  ASSERT(0x00000000000000UL == fixedpoint_frac_part(val6));
+  ASSERT(fixedpoint_is_neg(val6));
+
+  Fixedpoint val7 = fixedpoint_create_from_hex(".");
+  ASSERT(fixedpoint_is_valid(val7));
+  ASSERT(!fixedpoint_is_err(val7));
+  
+
 
 }
 

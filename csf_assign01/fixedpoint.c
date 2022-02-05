@@ -39,15 +39,15 @@ uint64_t hexstring_is_valid(char *hex){
       char c = hex[i];
       if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
         valid = 0;  
-        printf("character outof bounds error");
+        // printf("character outof bounds error");
       }
       if (c == '-') minus_position = i;
       if (c == '.') dot_count++;
   }
 
   if(dot_count > 1 || (minus_position > 0)){
-    printf("dot count: %lu \n",dot_count);
-    printf("minus position: %lu",minus_position);
+    // printf("dot count: %lu \n",dot_count);
+    // printf("minus position: %lu",minus_position);
     valid = 0;
   }
 
@@ -167,20 +167,30 @@ Fixedpoint fixedpoint_double(Fixedpoint val) {
 int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
   if(left.tag == 0 && right.tag == 1){
     return 1;
-  } else if(left.tag == 1 && right.tag == 0){
+  } 
+  if(left.tag == 1 && right.tag == 0){
     return -1;
-  } else if(left.whole > right.whole){
+  } 
+  
+  
+  if(left.whole > right.whole && left.tag == 0){
     return 1;
-  } else if(left.whole < right.whole){
+  } else return -1;
+  
+  
+  if(left.whole < right.whole && left.tag == 0){
     return -1;
-  } else if(left.fractional > right.fractional){
-    return 1;
-  } else if(left.fractional < right.fractional){
-    return -1;
-  } else{
-    return 0;
-  }
+  } else return 1;
 
+  if(left.fractional > right.fractional && left.tag == 0){
+    return 1;
+  } else return -1;
+
+  if(left.fractional < right.fractional && left.tag == 0){
+    return -1;
+  } else return 1;
+   
+  return 0;
 }
 
 //Return 1 is fixedpoint is zero, 0 otherwise
@@ -243,7 +253,7 @@ int fixedpoint_is_underflow_pos(Fixedpoint val) {
 }
 
 int fixedpoint_is_valid(Fixedpoint val) {
-  printf("invalid tag is: %lu",val.tag);
+  printf("invalid tag is: %lu \n",val.tag);
   if (val.tag == 0 || val.tag == 1) {
     return 1;
   } else{
