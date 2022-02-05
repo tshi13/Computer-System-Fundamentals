@@ -29,7 +29,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   uint64_t length = strlen(hex);
 
 //check invalid string
-uint64_t minus_count = 0;
+uint64_t minus_position = -1;
 uint64_t dot_count = 0;
 
 for (uint64_t i = 0; i<length; i++) {
@@ -40,11 +40,11 @@ for (uint64_t i = 0; i<length; i++) {
       temp.fractional = 0;
       return temp;
     }
-    if (c == '-') minus_count++;
+    if (c == '-') minus_position = i;
     if (c == '.') dot_count++;
   }
 
-  if (minus_count > 1 || dot_count > 1){
+  if (dot_count > 1 || (minus_position!= -1 && minus_position != 0)){
     temp.tag = 2;
     temp.whole = 0;
     temp.fractional = 0;

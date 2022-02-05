@@ -133,7 +133,7 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(!fixedpoint_is_valid(val4));
   ASSERT(fixedpoint_is_err(val4));
 
-  Fixedpoint val5 = fixedpoint_create_from_hex("x.xx.");
+  Fixedpoint val5 = fixedpoint_create_from_hex("x-xx");
   ASSERT(!fixedpoint_is_valid(val5));
   ASSERT(fixedpoint_is_err(val5));
   
