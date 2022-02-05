@@ -182,21 +182,22 @@ int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
   } 
   
   
-  if(left.whole > right.whole && left.tag == 0){
-    return 1;
-  } else return -1;
+  if(left.whole > right.whole){
+    if (left.tag == 0) return 1;
+    else return 0;
+  } 
   
   
-  if(left.whole < right.whole && left.tag == 0){
-    return -1;
+  if(left.whole < right.whole){
+    if (left.tag == 0)return -1;
   } else return 1;
 
-  if(left.fractional > right.fractional && left.tag == 0){
-    return 1;
+  if(left.fractional > right.fractional){
+    if (left.tag == 0) return 1;
   } else return -1;
 
-  if(left.fractional < right.fractional && left.tag == 0){
-    return -1;
+  if(left.fractional < right.fractional){
+    if (left.tag == 0) return -1;
   } else return 1;
    
   return 0;
