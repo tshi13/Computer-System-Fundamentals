@@ -93,9 +93,15 @@ uint64_t fixedpoint_frac_part(Fixedpoint val) {
 }
 
 Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
-  // TODO: implement
-  assert(0);
-  return DUMMY;
+  Fixedpoint result;
+
+  if(left.tag == right.tag) {
+      result.whole = left.whole + right.whole;
+      result.fractional = right.fractional + left.fractional;
+      result.tag = left.tag;
+  }
+
+  return result;
 }
 
 Fixedpoint fixedpoint_sub(Fixedpoint left, Fixedpoint right) {
