@@ -170,7 +170,7 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
 Fixedpoint fixedpoint_double(Fixedpoint val) {
   uint64_t whole_copy = val.whole;
   uint64_t frac_copy = val.fractional;
-  whole_copy << 2;
+  whole_copy << 1;
   uint64_t carry_bit = frac_copy & (1<<(64-1));
   frac_copy << 1;
   whole_copy += carry_bit;
