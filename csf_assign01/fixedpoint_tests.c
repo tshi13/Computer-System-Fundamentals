@@ -13,6 +13,10 @@ typedef struct {
   Fixedpoint large2;
   Fixedpoint max;
 
+  Fixedpoint neg_one;
+  Fixedpoint neg_one_half;
+  Fixedpoint neg_one_fourth;
+
   // TODO: add more objects to the test fixture
 } TestObjs;
 
@@ -36,6 +40,8 @@ void test_create_all_IntObjs(TestObjs *objs);
 void test_create2_all_FracObjs(TestObjs *objs);
 void test_is_zero(TestObjs *objs);
 void test_is_zero_uninitialized();
+void addition_two_normal_positive(TestObjs *objs);
+void addition_two_normal_negative(TestObjs *objs);
 
 int main(int argc, char **argv) {
   // if a testname was specified on the command line, only that
@@ -46,19 +52,23 @@ int main(int argc, char **argv) {
 
   TEST_INIT();
 
-  // TEST(test_whole_part);
-  // TEST(test_frac_part);
-  //TEST(test_create_from_hex);
-  // TEST(test_format_as_hex);
+  TEST(test_whole_part);
+  TEST(test_frac_part);
+  /*
+  TEST(test_create_from_hex);
+  TEST(test_format_as_hex);
   TEST(test_negate);
-  // TEST(test_add);
-  // TEST(test_sub);
-  // TEST(test_is_overflow_pos);
-  //TEST(test_is_err);
-  // TEST(test_create_all_IntObjs);
-  // TEST(test_create2_all_FracObjs);
-  // TEST(test_is_zero);
+  TEST(test_add);
+  TEST(test_sub);
+  TEST(test_is_overflow_pos);
+  TEST(test_is_err);
+  TEST(test_create_all_IntObjs);
+  TEST(test_create2_all_FracObjs);
+  TEST(test_is_zero);
   TEST(test_is_zero_uninitialized);
+   */
+  TEST(addition_two_normal_positive);
+  TEST(addition_two_normal_negative);
 
   // IMPORTANT: if you add additional test functions (which you should!),
   // make sure they are included here.  E.g., if you add a test function
@@ -141,7 +151,7 @@ void test_create_from_hex(TestObjs *objs) {
   Fixedpoint val5 = fixedpoint_create_from_hex("x-xx");
   ASSERT(!fixedpoint_is_valid(val5));
   ASSERT(fixedpoint_is_err(val5));
-  
+
 
   Fixedpoint val6 = fixedpoint_create_from_hex("-f6a5865.");
   ASSERT(fixedpoint_is_valid(val6));
@@ -153,7 +163,7 @@ void test_create_from_hex(TestObjs *objs) {
   Fixedpoint val7 = fixedpoint_create_from_hex(".");
   ASSERT(fixedpoint_is_valid(val7));
   ASSERT(!fixedpoint_is_err(val7));
-  
+
 
 
 }
@@ -346,5 +356,36 @@ void test_is_zero(TestObjs *objs) {
 void test_is_zero_uninitialized() {
     Fixedpoint uninitialized;
     ASSERT(fixedpoint_is_zero(uninitialized) == 0);
+}
+
+//Tests for add
+void addition_two_normal_positive(TestObjs *objs) {
+    //1.0 + 0.0 = 1.0
+    Fixedpoint result = fixedpoint_add(objs->zero, objs->one);
+    ASSERT(fixedpoint_whole_part(result) == 1UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 0);
+
+    //0.5 + 0.25 = 0.75
+    result = fixedpoint_add(objs->one_half, objs->one_fourth);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == (0x8000000000000000UL + 0x4000000000000000UL));
+    ASSERT(result.tag == 0);
+
+}
+
+void addition_two_normal_negative(TestObjs *objs) {
+    //-1.0 + 0.0 = -1.0
+    Fixedpoint result = fixedpoint_add(objs->zero, objs->neg_one);
+    ASSERT(fixedpoint_whole_part(result) == 1UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 1);
+
+    //-0.5 + -0.25 = -0.75
+    result = fixedpoint_add(objs->neg_one_half, objs->neg_one_fourth);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == (0x8000000000000000UL + 0x4000000000000000UL));
+    ASSERT(result.tag == 1);
+
 }
 

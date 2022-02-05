@@ -38,7 +38,7 @@ uint64_t hexstring_is_valid(char *hex){
   for (uint64_t i = 0; i<length; i++) {
       char c = hex[i];
       if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
-        valid = 0;  
+        valid = 0;
         // printf("character outof bounds error");
       }
       if (c == '-') minus_position = i;
@@ -66,7 +66,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
     temp.fractional = 0;
     return temp;
   }
-  
+
 
   uint64_t index = 0;
   uint64_t start_index = 0;
@@ -128,21 +128,14 @@ uint64_t fixedpoint_frac_part(Fixedpoint val) {
 }
 
 Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
- Fixedpoint result;
- //if frac_part overflow, add to whole part
+  Fixedpoint result;
 
-  //Case of positive overflow
-  if (left.tag == 0 && right.tag == 0 && (UINT64_MAX -  fixedpoint_whole_part(left) < fixedpoint_whole_part(right))) {
-      result.whole = fixedpoint_whole_part(left) +fixedpoint_whole_part(right);
-      result.fractional = fixedpoint_frac_part(left) +fixedpoint_frac_part(right);
-      fixedpoint_is_overflow_pos(result);
+  if(left.tag == right.tag) {
+      result.whole = left.whole + right.whole;
+      result.fractional = right.fractional + left.fractional;
+      result.tag = left.tag;
   }
-  //Case of negative overflow
-  else if (left.tag == 1 && right.tag == 1 && (UINT64_MAX -  fixedpoint_whole_part(left) < fixedpoint_whole_part(right))) {
-      result.whole = fixedpoint_whole_part(left) +fixedpoint_whole_part(right);
-      result.fractional = fixedpoint_frac_part(left) +fixedpoint_frac_part(right);
-      fixedpoint_is_overflow_neg(result);
-  }
+
   return result;
 }
 
@@ -188,33 +181,33 @@ Fixedpoint fixedpoint_double(Fixedpoint val) {
 int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
   if(left.tag == 0 && right.tag == 1){
     return 1;
-  } 
+  }
   if(left.tag == 1 && right.tag == 0){
     return -1;
-  } 
-  
+  }
+
   // now left and right have the same sign
   if(left.whole > right.whole){
     if (left.tag == 0) return 1;
     else return -1;
-  } 
-  
-  
+  }
+
+
   if(left.whole < right.whole){
     if (left.tag == 0)return -1;
     else return 1;
-  } 
+  }
 
   if(left.fractional > right.fractional){
     if (left.tag == 0) return 1;
     else return -1;
-  } 
+  }
 
   if(left.fractional < right.fractional){
     if (left.tag == 0) return -1;
     else return 1;
-  } 
-   
+  }
+
   return 0;
 }
 
