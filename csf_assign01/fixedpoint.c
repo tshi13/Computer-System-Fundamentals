@@ -29,6 +29,9 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   uint64_t length = strlen(hex);
 
 //check invalid string
+uint64_t minus_count = 0;
+uint64_t dot_count = 0;
+
 for (uint64_t i = 0; i<length; i++) {
     char c = hex[i];
     if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
@@ -37,7 +40,18 @@ for (uint64_t i = 0; i<length; i++) {
       temp.fractional = 0;
       return temp;
     }
+    if (c == '-') minus_count++;
+    if (c == '.') dot_count++;
   }
+
+  if (minus_count > 1 || dot_count > 1){
+    temp.tag = 2;
+    temp.whole = 0;
+    temp.fractional = 0;
+    return temp;
+  }
+
+  
 
   uint64_t index = 0;
   uint64_t start_index = 0;
