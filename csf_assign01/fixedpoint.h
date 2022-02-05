@@ -56,6 +56,18 @@ Fixedpoint fixedpoint_create2(uint64_t whole, uint64_t frac);
 //   fixedpoint_is_err returns true
 Fixedpoint fixedpoint_create_from_hex(const char *hex);
 
+//Checks if hexstring is valid input for conversion to Fixedpoint
+
+//Parameters:
+//  hex: hexstring to be checked
+
+//Returns:
+//  1 if hexstring is valid
+//  0 if hextring is invalid
+uint64_t hexstring_is_valid(char *hex);
+
+
+
 // Get the whole part of the given Fixedpoint value.
 //
 // Parameters:

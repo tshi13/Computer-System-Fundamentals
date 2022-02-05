@@ -92,10 +92,6 @@ TestObjs *setup(void) {
   objs->large2 = fixedpoint_create2(0xfcbf3d5UL, 0x4d1a23c24fafUL);
   objs->max = fixedpoint_create2(0xFFFFFFFFFFFFFFFFUL, 0xFFFFFFFFFFFFFFFFUL);
 
-  objs->neg_one = fixedpoint_negate(objs->one);
-  objs->neg_one_half = fixedpoint_negate(objs->one_half);
-  objs->neg_one_fourth = fixedpoint_negate(objs->one_fourth);
-
   return objs;
 }
 
@@ -125,12 +121,51 @@ void test_create_from_hex(TestObjs *objs) {
   (void) objs;
 
   Fixedpoint val1 = fixedpoint_create_from_hex("f6a5865.00f2");
-
   ASSERT(fixedpoint_is_valid(val1));
-
   ASSERT(0xf6a5865UL == fixedpoint_whole_part(val1));
-
+  //printf("this is my frac part: %lx",fixedpoint_frac_part(val1));
   ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val1));
+  ASSERT(!fixedpoint_is_err(val1));
+
+
+  Fixedpoint val2 = fixedpoint_create_from_hex("-f6a5865.00f2");
+  ASSERT(fixedpoint_is_valid(val2));
+  ASSERT(!fixedpoint_is_err(val2));
+
+  ASSERT(0xf6a5865UL == fixedpoint_whole_part(val2));
+  ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val2));
+  ASSERT(fixedpoint_is_neg(val2));
+
+  Fixedpoint val3 = fixedpoint_create_from_hex(".00f2");
+  ASSERT(fixedpoint_is_valid(val3));
+  ASSERT(!fixedpoint_is_err(val3));
+  ASSERT(!fixedpoint_is_neg(val3));
+  ASSERT(0x000UL == fixedpoint_whole_part(val3));
+  printf("frac part is: %lu",fixedpoint_frac_part(val3));
+  ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val3));
+
+  Fixedpoint val4 = fixedpoint_create_from_hex("xxx");
+  ASSERT(!fixedpoint_is_valid(val4));
+  ASSERT(fixedpoint_is_err(val4));
+
+  Fixedpoint val5 = fixedpoint_create_from_hex("x-xx");
+  ASSERT(!fixedpoint_is_valid(val5));
+  ASSERT(fixedpoint_is_err(val5));
+
+
+  Fixedpoint val6 = fixedpoint_create_from_hex("-f6a5865.");
+  ASSERT(fixedpoint_is_valid(val6));
+  ASSERT(!fixedpoint_is_err(val6));
+  ASSERT(0xf6a5865UL == fixedpoint_whole_part(val6));
+  ASSERT(0x00000000000000UL == fixedpoint_frac_part(val6));
+  ASSERT(fixedpoint_is_neg(val6));
+
+  Fixedpoint val7 = fixedpoint_create_from_hex(".");
+  ASSERT(fixedpoint_is_valid(val7));
+  ASSERT(!fixedpoint_is_err(val7));
+
+
+
 }
 
 void test_format_as_hex(TestObjs *objs) {
