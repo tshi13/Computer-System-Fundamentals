@@ -168,9 +168,19 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
 }
 
 Fixedpoint fixedpoint_double(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return DUMMY;
+  uint64_t whole_copy = val.whole;
+  uint64_t frac_copy = val.fractional;
+  whole_copy *= 2;
+  frac_copy *= 2;
+  if (whole_copy < val.whole || frac_copy < val.fractional){
+    if (val.tag == 0) val.tag = 3;
+    if (val.tag == 1) val.tag = 4;
+    return val;
+  }
+  val.whole = whole_copy;
+  val.fractional = frac_copy;
+  return val;
+
 }
 
 int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
