@@ -115,19 +115,24 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(0xf6a5865UL == fixedpoint_whole_part(val1));
   //printf("this is my frac part: %lx",fixedpoint_frac_part(val1));
   ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val1));
+  ASSERT(!fixedpoint_is_err(val1));
+
 
   Fixedpoint val2 = fixedpoint_create_from_hex("-f6a5865.00f2");
   ASSERT(fixedpoint_is_valid(val2));
+  ASSERT(!fixedpoint_is_err(val2));
+
   ASSERT(0xf6a5865UL == fixedpoint_whole_part(val2));
   ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val2));
   ASSERT(fixedpoint_is_neg(val2));
 
-  Fixedpoint val3 = fixedpoint_create_from_hex("f6a5865");
+  Fixedpoint val3 = fixedpoint_create_from_hex(".00f2");
   ASSERT(fixedpoint_is_valid(val3));
+  ASSERT(!fixedpoint_is_err(val3));
   ASSERT(!fixedpoint_is_neg(val3));
-  ASSERT(0xf6a5865UL == fixedpoint_whole_part(val3));
+  ASSERT(0x000UL == fixedpoint_whole_part(val3));
   printf("frac part is: %lu",fixedpoint_frac_part(val3));
-  ASSERT(0x000000000000UL == fixedpoint_frac_part(val3));
+  ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val3));
 
   Fixedpoint val4 = fixedpoint_create_from_hex("xxx");
   ASSERT(!fixedpoint_is_valid(val4));

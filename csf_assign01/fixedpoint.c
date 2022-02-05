@@ -24,33 +24,48 @@ Fixedpoint fixedpoint_create2(uint64_t whole, uint64_t frac) {
   return temp;
 }
 
+uint64_t hexstring_is_valid(char *hex){
+  uint64_t length = strlen(hex);
+  uint64_t valid = 1;
+
+  if(length == 0){
+    valid = 0;
+  }
+
+  uint64_t minus_position = 0;
+  uint64_t dot_count = 0;
+
+  for (uint64_t i = 0; i<length; i++) {
+      char c = hex[i];
+      if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
+        valid = 0;  
+        printf("character outof bounds error");
+      }
+      if (c == '-') minus_position = i;
+      if (c == '.') dot_count++;
+  }
+
+  if(dot_count > 1 || (minus_position > 0)){
+    printf("dot count: %lu \n",dot_count);
+    printf("minus position: %lu",minus_position);
+    valid = 0;
+  }
+
+  return valid;
+}
+
+
+
 Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   Fixedpoint temp;
   uint64_t length = strlen(hex);
 
-//check invalid string
-uint64_t minus_position = -1;
-uint64_t dot_count = 0;
-
-// for (uint64_t i = 0; i<length; i++) {
-//     char c = hex[i];
-//     if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
-//       temp.tag = 2;
-//       temp.whole = 0;
-//       temp.fractional = 0;
-//       return temp;
-//     }
-//     if (c == '-') minus_position = i;
-//     if (c == '.') dot_count++;
-//   }
-
-//   if (dot_count > 1 || (minus_position!= -1 && minus_position != 0)){
-//     temp.tag = 2;
-//     temp.whole = 0;
-//     temp.fractional = 0;
-//     return temp;
-//   }
-
+  if(hexstring_is_valid(hex) == 0){
+    temp.tag = 2;
+    temp.whole = 0;
+    temp.fractional = 0;
+    return temp;
+  }
   
 
   uint64_t index = 0;
@@ -67,11 +82,6 @@ uint64_t dot_count = 0;
     if(hex[index] == '.')
       break;
   }
-
-
-  printf("length is: %lu\n",length);
-  printf("index is: %lu\n",index);
-
 
   char whole_part[index+1];
   char fraction_part[length - index];
@@ -91,15 +101,10 @@ uint64_t dot_count = 0;
   }
   uint64_t frac_length = strlen(fraction_part);
   
-  printf("\n frac length is: %lu \n",frac_length);
   char padding [16-frac_length];
   for (uint64_t i = 0; i< 16-frac_length; i++){
     padding[i] = '0';
   }
-
-  printf("padding is: %s \n",padding);
-  printf("fraction part is: %s \n",fraction_part);
-
   strcat(fraction_part,padding);
 
   temp.fractional= strtoul(fraction_part,NULL,16);
@@ -238,6 +243,7 @@ int fixedpoint_is_underflow_pos(Fixedpoint val) {
 }
 
 int fixedpoint_is_valid(Fixedpoint val) {
+  printf("invalid tag is: %lu",val.tag);
   if (val.tag == 0 || val.tag == 1) {
     return 1;
   } else{
