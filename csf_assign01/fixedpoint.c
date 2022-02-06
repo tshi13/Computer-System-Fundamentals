@@ -211,24 +211,53 @@ Fixedpoint fixedpoint_negate(Fixedpoint val) {
 }
 
 Fixedpoint fixedpoint_halve(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  return DUMMY;
+  uint64_t whole_copy = val.whole;
+  uint64_t frac_copy = val.fractional;
+  // check if frac will underflow after division
+  if (frac_copy & 1 == 1){
+    if (val.tag == 0) {val.tag = 5;} //positive underflow
+    if (val.tag == 1) {val.tag = 6;} //negative underflow
+    return val;
+  }
+  frac_copy >>= 1;
+  //check if whole will lose a bit after division
+  if (whole_copy & 1 == 1){
+      frac_copy += 0x8000000000000000;
+  }
+  whole_copy >>= 1;
+  val.fractional = frac_copy;
+  val.whole = whole_copy;
+  return val;
 }
 
 Fixedpoint fixedpoint_double(Fixedpoint val) {
   uint64_t whole_copy = val.whole;
   uint64_t frac_copy = val.fractional;
-  whole_copy *= 2;
-  frac_copy *= 2;
-  if (whole_copy < val.whole || frac_copy < val.fractional){
+
+  // check if whole will overflow
+  if ((whole_copy & (1<<(64-1))) == 1) {
     if (val.tag == 0) val.tag = 3;
     if (val.tag == 1) val.tag = 4;
     return val;
   }
+
+  whole_copy <<= 1;
+  if (frac_copy & (1<<(64-1))==1){
+    whole_copy += 1;
+  }
+  frac_copy <<= 1;
+  
+  
+  
+  if (whole_copy < val.whole){
+    if (val.tag == 0) val.tag = 3;
+    if (val.tag == 1) val.tag = 4;
+    return val;
+  }
+
   val.whole = whole_copy;
   val.fractional = frac_copy;
-  return val;
+  return val; 
 
 }
 
