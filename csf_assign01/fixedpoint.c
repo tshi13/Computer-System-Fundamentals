@@ -127,13 +127,69 @@ uint64_t fixedpoint_frac_part(Fixedpoint val) {
   return val.fractional;
 }
 
+Fixedpoint diff_sign_addition(Fixedpoint left, Fixedpoint right) {
+    Fixedpoint bigger;
+    Fixedpoint smaller;
+    Fixedpoint result;
+    //Determine the bigger fixedpoint value
+    if (fixedpoint_whole_part(left) > fixedpoint_whole_part(right)){
+        bigger = left;
+        smaller = right;
+    } else if(fixedpoint_whole_part(left) < fixedpoint_whole_part(right)) {
+        bigger = right;
+        smaller = left;
+    } else {
+        if (fixedpoint_frac_part(left) > fixedpoint_frac_part(right)){
+            bigger = left;
+            smaller = right;
+        }
+        else{
+            bigger = right;
+            smaller = left;
+        }
+    }
+    result.whole = bigger.whole - smaller.whole;
+    result.tag = bigger.tag;
+    result.fractional = bigger.fractional - smaller.fractional;
+    if(result.fractional >= bigger.fractional){ //We need to borrow 1 from whole
+        result.whole--;
+    }
+    return result;
+}
+
 Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
   Fixedpoint result;
 
-  if(left.tag == right.tag) {
+  if(fixedpoint_is_zero(left) || fixedpoint_is_zero(right)) {
+      result.fractional = right.fractional + left.fractional;
+      if (fixedpoint_is_zero(left)){
+          result.tag = right.tag;
+          result.whole = right.whole;
+      }
+      else{
+          result.tag = left.tag;
+          result.whole = left.whole;
+      }
+
+  }
+  // Only changing magnitude for addition with same signs or adding zeroi
+  else if(left.tag == right.tag) {
       result.whole = left.whole + right.whole;
       result.fractional = right.fractional + left.fractional;
       result.tag = left.tag;
+      //Check for whole_part overflow before frac overflow
+      if(result.whole < left.whole && result.whole < right.whole) {
+          if(result.tag == 0) {
+              result.tag = 3; //positive overflow occured
+          } else {
+              result.tag = 4; //negative overflow occured
+          }
+      }
+      //Check for frac_part overflow
+      if(result.fractional < left.fractional && result.fractional < right.fractional) result.whole += 1;
+
+  } else {//Addition with different signs
+      result = diff_sign_addition(left,right);
   }
 
   return result;
