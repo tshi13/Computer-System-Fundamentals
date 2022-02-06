@@ -163,7 +163,7 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
     if (val.tag == 1) {val.tag = 6;} //negative underflow
     return val;
   }
-  frac_copy >> 1;
+  frac_copy >>= 1;
   //check if whole will lose a bit after division
   if (whole_copy & 1 == 1){
     if (frac_copy & (1<<(64-1)) == 1){ //there will be overflow for frac
@@ -174,11 +174,10 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
       frac_copy += 0x8000000000000000;
     }
   }
-  whole_copy >> 1;
+  whole_copy >>= 1;
   val.fractional = frac_copy;
   val.whole = whole_copy;
   return val;
-
 }
 
 Fixedpoint fixedpoint_double(Fixedpoint val) {
