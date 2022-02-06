@@ -55,7 +55,7 @@ uint64_t hexstring_is_valid(char *hex){
 
 
 Fixedpoint fixedpoint_create_from_hex(const char *hex) {
-  Fixedpoint temp;
+  Fixedpoint temp = fixedpoint_create2(0,0);
   uint64_t length = strlen(hex);
 
   //check if string is valid
@@ -92,14 +92,15 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   }
 
   //initialize 2 strings
-  char whole_part[index - start_index +1];
-  char fraction_part[length - index];
+  char whole_part[index - start_index + 2];
+  char fraction_part[length - index + 1];
   uint64_t whole_index = 0;
   uint64_t frac_index = 0;
 
   for (uint64_t i = start_index; i<index; i++) { //initialize whole part string
     whole_part[whole_index++] = hex[i];
   }
+  whole_part[whole_index] = '\0';
   temp.whole = strtoul(whole_part,NULL,16);//convert whole string to uint64_t
   
   if (index == length -1){ //when there is no fractional part
@@ -110,12 +111,15 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   for (uint64_t i = index+1 ; i<=length; i++) { //initialize frac part string
     fraction_part[frac_index++] = hex[i];
   }
+  fraction_part[frac_index] = '\0';
 
   uint64_t frac_length = strlen(fraction_part); //add corresponding padding zeros at the end of frac string
-  char padding [16-frac_length];
-  for (uint64_t i = 0; i< 16-frac_length; i++){
+  char padding [16-frac_length + 1];
+  uint64_t i = 0;
+  for (; i< 16-frac_length; i++){
     padding[i] = '0';
   }
+  padding[i] = '\0';
   strcat(fraction_part,padding);
 
   temp.fractional= strtoul(fraction_part,NULL,16);//convert frac string to uint64_t
