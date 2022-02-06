@@ -24,33 +24,31 @@ Fixedpoint fixedpoint_create2(uint64_t whole, uint64_t frac) {
   return temp;
 }
 
+
 uint64_t hexstring_is_valid(char *hex){
   uint64_t length = strlen(hex);
   uint64_t valid = 1;
 
+  //null string 
   if(length == 0){
     valid = 0;
   }
 
-  uint64_t minus_position = 0;
-  uint64_t dot_count = 0;
+  uint64_t minus_position = 0; //negative sign position
+  uint64_t dot_count = 0; // count how many dots are in the string
 
   for (uint64_t i = 0; i<length; i++) {
       char c = hex[i];
-      if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
+      if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){ //check all characters in string
         valid = 0;
-        // printf("character outof bounds error");
       }
       if (c == '-') minus_position = i;
       if (c == '.') dot_count++;
   }
 
-  if(dot_count > 1 || (minus_position > 0)){
-    // printf("dot count: %lu \n",dot_count);
-    // printf("minus position: %lu",minus_position);
+  if(dot_count > 1 || (minus_position > 0)){ //when there are multiple dots/negative sign is not at the start
     valid = 0;
   }
-
   return valid;
 }
 
@@ -60,6 +58,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   Fixedpoint temp;
   uint64_t length = strlen(hex);
 
+  //check if string is valid
   if(hexstring_is_valid(hex) == 0){
     temp.tag = 2;
     temp.whole = 0;
@@ -68,52 +67,58 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   }
 
 
-  uint64_t index = 0;
-  uint64_t start_index = 0;
-  if (hex[0] == '-') {
+  uint64_t index = 0;//index of dot
+  uint64_t start_index = 0;//start index where we begin loops later
+
+
+  if (hex[0] == '-') { //when we have a negative fixedpoint
     index = 1;
     temp.tag = 1;
-    start_index = 1;
+    start_index = 1;//when we want to start from index = 1, because of negative sign
   } else {
     temp.tag = 0;
   }
   
-  for (; index<length; index++) {
+  for (; index<length; index++) { //find index of the dot
     if(hex[index] == '.')
       break;
   }
 
-  if (index - start_index > 16 || length - index - 1 > 16){
+  if (index - start_index > 16 || length - index - 1 > 16){ //checks whether if whole part/frac part string is too long
     temp.tag = 2;
     temp.whole = 0;
     temp.fractional = 0;
     return temp;
   }
+
+  //initialize 2 strings
   char whole_part[index - start_index +1];
   char fraction_part[length - index];
   uint64_t whole_index = 0;
   uint64_t frac_index = 0;
-  for (uint64_t i = start_index; i<index; i++) {
+
+  for (uint64_t i = start_index; i<index; i++) { //initialize whole part string
     whole_part[whole_index++] = hex[i];
   }
-  temp.whole = strtoul(whole_part,NULL,16);
-  if (index == length){
+  temp.whole = strtoul(whole_part,NULL,16);//convert whole string to uint64_t
+  
+  if (index == length -1){ //when there is no fractional part
     temp.fractional = 0;
     return temp;
   }
 
-  for (uint64_t i = index+1 ; i<=length; i++) {
+  for (uint64_t i = index+1 ; i<=length; i++) { //initialize frac part string
     fraction_part[frac_index++] = hex[i];
   }
-  uint64_t frac_length = strlen(fraction_part);
-  
+
+  uint64_t frac_length = strlen(fraction_part); //add corresponding padding zeros at the end of frac string
   char padding [16-frac_length];
   for (uint64_t i = 0; i< 16-frac_length; i++){
     padding[i] = '0';
   }
   strcat(fraction_part,padding);
 
-  temp.fractional= strtoul(fraction_part,NULL,16);
+  temp.fractional= strtoul(fraction_part,NULL,16);//convert frac string to uint64_t
 
   return temp;
 
@@ -357,7 +362,7 @@ int fixedpoint_is_underflow_pos(Fixedpoint val) {
 }
 
 int fixedpoint_is_valid(Fixedpoint val) {
-  printf("invalid tag is: %lu \n",val.tag);
+  // printf("invalid tag is: %lu \n",val.tag);
   if (val.tag == 0 || val.tag == 1) {
     return 1;
   } else{
