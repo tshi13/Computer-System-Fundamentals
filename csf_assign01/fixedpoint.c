@@ -179,23 +179,25 @@ Fixedpoint fixedpoint_double(Fixedpoint val) {
   uint64_t frac_copy = val.fractional;
 
   // check if whole will overflow
-  if (whole_copy & (1<<(64-1)) == 1) {
-     if (val.tag == 0) val.tag = 3;
+  if ((whole_copy & (1<<(64-1))) == 1) {
+    if (val.tag == 0) val.tag = 3;
     if (val.tag == 1) val.tag = 4;
     return val;
   }
 
   whole_copy <<= 1;
-  uint64_t carry_bit = frac_copy & (1<<(64-1));
-  frac_copy <<= 1;
-  whole_copy += carry_bit;
-  
-  
-  if (whole_copy < val.whole){
-    if (val.tag == 0) val.tag = 3;
-    if (val.tag == 1) val.tag = 4;
-    return val;
+  if (frac_copy & (1<<(64-1))==1){
+    whole_copy += 1;
   }
+  frac_copy <<= 1;
+  
+  
+  
+  // if (whole_copy < val.whole){
+  //   if (val.tag == 0) val.tag = 3;
+  //   if (val.tag == 1) val.tag = 4;
+  //   return val;
+  // }
 
   val.whole = whole_copy;
   val.fractional = frac_copy;
