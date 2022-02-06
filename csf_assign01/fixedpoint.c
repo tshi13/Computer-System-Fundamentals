@@ -193,11 +193,11 @@ Fixedpoint fixedpoint_double(Fixedpoint val) {
   
   
   
-  // if (whole_copy < val.whole){
-  //   if (val.tag == 0) val.tag = 3;
-  //   if (val.tag == 1) val.tag = 4;
-  //   return val;
-  // }
+  if (whole_copy < val.whole){
+    if (val.tag == 0) val.tag = 3;
+    if (val.tag == 1) val.tag = 4;
+    return val;
+  }
 
   val.whole = whole_copy;
   val.fractional = frac_copy;
