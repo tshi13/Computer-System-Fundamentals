@@ -166,13 +166,7 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
   frac_copy >>= 1;
   //check if whole will lose a bit after division
   if (whole_copy & 1 == 1){
-    if (frac_copy & (1<<(64-1)) == 1){ //there will be overflow for frac
-      if (val.tag == 0) {val.tag = 3;} //positive overflow
-      if (val.tag == 1) {val.tag = 4;} //negative overflow
-      return val;
-    } else { //we add to frac part
       frac_copy += 0x8000000000000000;
-    }
   }
   whole_copy >>= 1;
   val.fractional = frac_copy;
@@ -183,16 +177,19 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
 Fixedpoint fixedpoint_double(Fixedpoint val) {
   uint64_t whole_copy = val.whole;
   uint64_t frac_copy = val.fractional;
-  // whole_copy << 1;
-  // uint64_t carry_bit = frac_copy & (1<<(64-1));
-  // frac_copy << 1;
-  // whole_copy += carry_bit;
-  frac_copy *= 2;
-  whole_copy *= 2;
-  if (frac_copy < val.fractional){
-    val.fractional = frac_copy;
-    whole_copy += 1;
+
+  // check if whole will overflow
+  if (whole_copy & (1<<(64-1)) == 1) {
+     if (val.tag == 0) val.tag = 3;
+    if (val.tag == 1) val.tag = 4;
+    return val;
   }
+
+  whole_copy <<= 1;
+  uint64_t carry_bit = frac_copy & (1<<(64-1));
+  frac_copy <<= 1;
+  whole_copy += carry_bit;
+  
   
   if (whole_copy < val.whole){
     if (val.tag == 0) val.tag = 3;
