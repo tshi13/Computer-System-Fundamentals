@@ -31,7 +31,7 @@ uint64_t hexstring_is_valid(char *hex){
 
   //null string 
   if(length == 0){
-    valid = 0;
+    return 0;
   }
 
   uint64_t minus_position = 0; //negative sign position
@@ -40,16 +40,16 @@ uint64_t hexstring_is_valid(char *hex){
   for (uint64_t i = 0; i<length; i++) {
       char c = hex[i];
       if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){ //check all characters in string
-        valid = 0;
+        return 0;
       }
       if (c == '-') minus_position = i;
       if (c == '.') dot_count++;
   }
 
   if(dot_count > 1 || (minus_position > 0)){ //when there are multiple dots/negative sign is not at the start
-    valid = 0;
+    return 0;
   }
-  return valid;
+  return 1;
 }
 
 
@@ -209,11 +209,12 @@ Fixedpoint fixedpoint_sub(Fixedpoint left, Fixedpoint right) {
 Fixedpoint fixedpoint_negate(Fixedpoint val) {
   if (fixedpoint_is_zero(val)) return val;
 
-  if (val.tag == 1) val.tag = 0;
+  if (val.tag == 1) {val.tag = 0;}
   else val.tag = 1;
 
   return val;
 }
+
 
 Fixedpoint fixedpoint_halve(Fixedpoint val) {
   uint64_t whole_copy = val.whole;
@@ -371,17 +372,6 @@ int fixedpoint_is_valid(Fixedpoint val) {
 }
 
 char *fixedpoint_format_as_hex(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  // char *s = malloc(20);
-  // strcpy(s, "<invalid>");
-  // return s;
-  return 0;
+
 }
 
-// int main(){
-//    char* ptr1 = malloc(1);
-// //uint64_t fractional= strtoul("f200000000000000",&ptr1,16);
-// uint64_t temp = 0b11110010000000000000000000000000000000000000000000000000;
-// printf("answer is: %llx", temp);
-// }
