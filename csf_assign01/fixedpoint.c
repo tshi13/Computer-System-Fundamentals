@@ -198,6 +198,7 @@ Fixedpoint fixedpoint_double(Fixedpoint val) {
   }
 
   val.whole = whole_copy;
+  val.fractional = frac_copy;
   return val; 
 
 }
