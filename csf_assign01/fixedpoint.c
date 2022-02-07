@@ -400,6 +400,7 @@ int fixedpoint_is_valid(Fixedpoint val) {
 char *fixedpoint_format_as_hex(Fixedpoint val) {
   uint64_t whole = val.whole;
   uint64_t frac = val.fractional;
+  uint64_t tag = val.tag;
 
   
   char whole_buffer [17];
@@ -442,8 +443,12 @@ char *fixedpoint_format_as_hex(Fixedpoint val) {
 
 
   printf("\nlength: %lu\n",length);
-  char* result = malloc(sizeof(char)*(length + 1 - count));
+  char* result = malloc(sizeof(char)*(length + 1 - count + tag));
   char* copy = result;
+  if (tag == 1){
+    *result = '-';
+    result ++;
+  }
   for(uint64_t i = 0; i<length - count; i++){
     *result = whole_buffer[i];
     result++;
