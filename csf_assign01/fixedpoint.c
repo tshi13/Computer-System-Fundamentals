@@ -414,7 +414,7 @@ char *fixedpoint_format_as_hex(Fixedpoint val) {
     char* s = malloc((strlen(whole_buffer)+1+tag)*sizeof(char));
     if(tag == 1){
       char temp [2] = {'-','\0'};
-      (temp,whole_buffer);
+      strcat(temp,whole_buffer);
       strcpy(s,temp);
       return s;
     }
