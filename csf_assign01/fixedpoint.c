@@ -55,7 +55,7 @@ uint64_t hexstring_is_valid(char *hex){
 
 
 Fixedpoint fixedpoint_create_from_hex(const char *hex) {
-  Fixedpoint temp = fixedpoint_create2(0,0);
+  Fixedpoint temp;
   uint64_t length = strlen(hex);
 
   //check if string is valid
