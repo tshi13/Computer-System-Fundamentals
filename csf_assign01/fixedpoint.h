@@ -1,4 +1,4 @@
-#ifndef FIXEDPREC_H
+ #ifndef FIXEDPREC_H
 #define FIXEDPREC_H
 
 #include <stdint.h>
@@ -64,7 +64,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex);
 //Returns:
 //  1 if hexstring is valid
 //  0 if hextring is invalid
-uint64_t hexstring_is_valid(char *hex);
+uint64_t hexstring_is_valid(const char *hex);
 
 
 

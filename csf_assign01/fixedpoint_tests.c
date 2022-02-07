@@ -89,6 +89,7 @@ int main(int argc, char **argv) {
   TEST(test_whole_part);
   TEST(test_frac_part);
   TEST(test_create_from_hex);
+  TEST(test_format_as_hex);
   /*
   TEST(test_create_from_hex);
   TEST(test_format_as_hex);
@@ -237,8 +238,13 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(0xf6a5865UL == fixedpoint_whole_part(val8));
   ASSERT(0x00000000000000UL == fixedpoint_frac_part(val8));
   ASSERT(!fixedpoint_is_neg(val8));
-  
 
+  Fixedpoint val = fixedpoint_create_from_hex("-1111");
+  printf("tag is: %lu",val.tag);
+  ASSERT(fixedpoint_is_valid(val));
+  ASSERT(fixedpoint_is_neg(val));
+  ASSERT(0x1111UL == fixedpoint_whole_part(val));
+  ASSERT(0UL == fixedpoint_frac_part(val));
 
 
 }

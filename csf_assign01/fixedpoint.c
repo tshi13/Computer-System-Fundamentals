@@ -5,8 +5,6 @@
 #include <assert.h>
 #include "fixedpoint.h"
 
-// You can remove this once all of the functions are fully implemented
-static Fixedpoint DUMMY;
 
 Fixedpoint fixedpoint_create(uint64_t whole) {
   Fixedpoint temp;
@@ -25,9 +23,8 @@ Fixedpoint fixedpoint_create2(uint64_t whole, uint64_t frac) {
 }
 
 
-uint64_t hexstring_is_valid(char *hex){
+uint64_t hexstring_is_valid(const char *hex){
   uint64_t length = strlen(hex);
-  uint64_t valid = 1;
 
   //null string 
   if(length == 0){
@@ -63,6 +60,7 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
     temp.tag = 2;
     temp.whole = 0;
     temp.fractional = 0;
+    printf("pos1\n");
     return temp;
   }
 
@@ -82,10 +80,16 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
       break;
   }
 
-  if (index - start_index > 16 || length - index - 1 > 16){ //checks whether if whole part/frac part string is too long
+  printf("\nindex:%lu\n",index);
+  printf("\nstartindex:%lu\n",start_index);
+  printf("\nlength:%lu\n",length);
+
+
+  if (index - start_index > 16 || (length - index > 0 && length - index - 1 > 16)){ //checks whether if whole part/frac part string is too long
     temp.tag = 2;
     temp.whole = 0;
     temp.fractional = 0;
+    printf("pos2\n");
     return temp;
   }
 
@@ -246,14 +250,14 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
   uint64_t whole_copy = val.whole;
   uint64_t frac_copy = val.fractional;
   // check if frac will underflow after division
-  if (frac_copy & 1 == 1){
+  if ((frac_copy & 1) == 1){
     if (val.tag == 0) {val.tag = 5;} //positive underflow
     if (val.tag == 1) {val.tag = 6;} //negative underflow
     return val;
   }
   frac_copy >>= 1;
   //check if whole will lose a bit after division
-  if (whole_copy & 1 == 1){
+  if ((whole_copy & 1) == 1){
       frac_copy += 0x8000000000000000;
   }
   whole_copy >>= 1;
