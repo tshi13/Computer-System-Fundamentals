@@ -79,6 +79,7 @@ int main(int argc, char **argv) {
 
   TEST(test_whole_part);
   TEST(test_frac_part);
+  TEST(test_create_from_hex);
   /*
   TEST(test_create_from_hex);
   TEST(test_format_as_hex);
@@ -181,7 +182,6 @@ void test_create_from_hex(TestObjs *objs) {
   Fixedpoint val2 = fixedpoint_create_from_hex("-f6a5865.00f2");
   ASSERT(fixedpoint_is_valid(val2));
   ASSERT(!fixedpoint_is_err(val2));
-
   ASSERT(0xf6a5865UL == fixedpoint_whole_part(val2));
   ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val2));
   ASSERT(fixedpoint_is_neg(val2));
@@ -191,7 +191,6 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(!fixedpoint_is_err(val3));
   ASSERT(!fixedpoint_is_neg(val3));
   ASSERT(0x000UL == fixedpoint_whole_part(val3));
-  printf("frac part is: %lu",fixedpoint_frac_part(val3));
   ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val3));
 
   Fixedpoint val4 = fixedpoint_create_from_hex("xxx");
@@ -213,6 +212,14 @@ void test_create_from_hex(TestObjs *objs) {
   Fixedpoint val7 = fixedpoint_create_from_hex(".");
   ASSERT(fixedpoint_is_valid(val7));
   ASSERT(!fixedpoint_is_err(val7));
+
+  Fixedpoint val8 = fixedpoint_create_from_hex("f6a5865.");
+  ASSERT(fixedpoint_is_valid(val8));
+  ASSERT(!fixedpoint_is_err(val8));
+  ASSERT(0xf6a5865UL == fixedpoint_whole_part(val8));
+  ASSERT(0x00000000000000UL == fixedpoint_frac_part(val8));
+  ASSERT(!fixedpoint_is_neg(val8));
+  
 
 
 

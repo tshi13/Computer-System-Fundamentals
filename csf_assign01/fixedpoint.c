@@ -24,42 +24,41 @@ Fixedpoint fixedpoint_create2(uint64_t whole, uint64_t frac) {
   return temp;
 }
 
+
 uint64_t hexstring_is_valid(char *hex){
   uint64_t length = strlen(hex);
   uint64_t valid = 1;
 
+  //null string 
   if(length == 0){
-    valid = 0;
+    return 0;
   }
 
-  uint64_t minus_position = 0;
-  uint64_t dot_count = 0;
+  uint64_t minus_position = 0; //negative sign position
+  uint64_t dot_count = 0; // count how many dots are in the string
 
   for (uint64_t i = 0; i<length; i++) {
       char c = hex[i];
-      if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){
-        valid = 0;
-        // printf("character outof bounds error");
+      if(!((c >= 'a' && c<='f')||(c>='A' && c<='F')||(c>='0' && c<='9') || c=='.' || c=='-')){ //check all characters in string
+        return 0;
       }
       if (c == '-') minus_position = i;
       if (c == '.') dot_count++;
   }
 
-  if(dot_count > 1 || (minus_position > 0)){
-    // printf("dot count: %lu \n",dot_count);
-    // printf("minus position: %lu",minus_position);
-    valid = 0;
+  if(dot_count > 1 || (minus_position > 0)){ //when there are multiple dots/negative sign is not at the start
+    return 0;
   }
-
-  return valid;
+  return 1;
 }
 
 
 
 Fixedpoint fixedpoint_create_from_hex(const char *hex) {
-  Fixedpoint temp;
+  Fixedpoint temp = fixedpoint_create2(0,0);
   uint64_t length = strlen(hex);
 
+  //check if string is valid
   if(hexstring_is_valid(hex) == 0){
     temp.tag = 2;
     temp.whole = 0;
@@ -68,52 +67,62 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   }
 
 
-  uint64_t index = 0;
-  uint64_t start_index = 0;
-  if (hex[0] == '-') {
+  uint64_t index = 0;//index of dot
+  uint64_t start_index = 0;//start index where we begin loops later
+
+
+  if (hex[0] == '-') { //when we have a negative fixedpoint
     index = 1;
     temp.tag = 1;
-    start_index = 1;
+    start_index = 1;//when we want to start from index = 1, because of negative sign
   } else {
     temp.tag = 0;
   }
   
-  for (; index<length; index++) {
+  for (; index<length; index++) { //find index of the dot
     if(hex[index] == '.')
       break;
   }
 
-  if (index - start_index > 16 || length - index - 1 > 16){
+  if (index - start_index > 16 || length - index - 1 > 16){ //checks whether if whole part/frac part string is too long
     temp.tag = 2;
     temp.whole = 0;
     temp.fractional = 0;
     return temp;
   }
-  char whole_part[index - start_index +1];
-  char fraction_part[length - index];
+
+  //initialize 2 strings
+  char whole_part[index - start_index + 2];
+  char fraction_part[length - index + 1];
   uint64_t whole_index = 0;
   uint64_t frac_index = 0;
-  for (uint64_t i = start_index; i<index; i++) {
+
+  for (uint64_t i = start_index; i<index; i++) { //initialize whole part string
     whole_part[whole_index++] = hex[i];
   }
-  temp.whole = strtoul(whole_part,NULL,16);
-  if (index == length){
+  whole_part[whole_index] = '\0';
+  temp.whole = strtoul(whole_part,NULL,16);//convert whole string to uint64_t
+  
+  if (index == length -1){ //when there is no fractional part
     temp.fractional = 0;
     return temp;
   }
 
-  for (uint64_t i = index+1 ; i<=length; i++) {
+  for (uint64_t i = index+1 ; i<=length; i++) { //initialize frac part string
     fraction_part[frac_index++] = hex[i];
   }
-  uint64_t frac_length = strlen(fraction_part);
-  
-  char padding [16-frac_length];
-  for (uint64_t i = 0; i< 16-frac_length; i++){
+  fraction_part[frac_index] = '\0';
+
+  uint64_t frac_length = strlen(fraction_part); //add corresponding padding zeros at the end of frac string
+  char padding [16-frac_length + 1];
+  uint64_t i = 0;
+  for (; i< 16-frac_length; i++){
     padding[i] = '0';
   }
+  padding[i] = '\0';
   strcat(fraction_part,padding);
 
-  temp.fractional= strtoul(fraction_part,NULL,16);
+  temp.fractional= strtoul(fraction_part,NULL,16);//convert frac string to uint64_t
 
   return temp;
 
@@ -202,11 +211,12 @@ Fixedpoint fixedpoint_sub(Fixedpoint left, Fixedpoint right) {
 Fixedpoint fixedpoint_negate(Fixedpoint val) {
   if (fixedpoint_is_zero(val)) return val;
 
-  if (val.tag == 1) val.tag = 0;
+  if (val.tag == 1) {val.tag = 0;}
   else val.tag = 1;
 
   return val;
 }
+
 
 Fixedpoint fixedpoint_halve(Fixedpoint val) {
   uint64_t whole_copy = val.whole;
@@ -229,33 +239,34 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
 }
 
 Fixedpoint fixedpoint_double(Fixedpoint val) {
-  uint64_t whole_copy = val.whole;
-  uint64_t frac_copy = val.fractional;
+  return fixedpoint_add(val,val);
+  // uint64_t whole_copy = val.whole;
+  // uint64_t frac_copy = val.fractional;
 
-  // check if whole will overflow
-  if ((whole_copy & (1<<(64-1))) == 1) {
-    if (val.tag == 0) val.tag = 3;
-    if (val.tag == 1) val.tag = 4;
-    return val;
-  }
+  // // check if whole will overflow
+  // if ((whole_copy & (1<<(64-1))) == 1) {
+  //   if (val.tag == 0) val.tag = 3;
+  //   if (val.tag == 1) val.tag = 4;
+  //   return val;
+  // }
 
-  whole_copy <<= 1;
-  if (frac_copy & (1<<(64-1))==1){
-    whole_copy += 1;
-  }
-  frac_copy <<= 1;
+  // whole_copy <<= 1;
+  // if (frac_copy & (1<<(64-1))==1){
+  //   whole_copy += 1;
+  // }
+  // frac_copy <<= 1;
   
   
   
-  if (whole_copy < val.whole){
-    if (val.tag == 0) val.tag = 3;
-    if (val.tag == 1) val.tag = 4;
-    return val;
-  }
+  // if (whole_copy < val.whole){
+  //   if (val.tag == 0) val.tag = 3;
+  //   if (val.tag == 1) val.tag = 4;
+  //   return val;
+  // }
 
-  val.whole = whole_copy;
-  val.fractional = frac_copy;
-  return val; 
+  // val.whole = whole_copy;
+  // val.fractional = frac_copy;
+  // return val; 
 
 }
 
@@ -354,7 +365,7 @@ int fixedpoint_is_underflow_pos(Fixedpoint val) {
 }
 
 int fixedpoint_is_valid(Fixedpoint val) {
-  printf("invalid tag is: %lu \n",val.tag);
+  // printf("invalid tag is: %lu \n",val.tag);
   if (val.tag == 0 || val.tag == 1) {
     return 1;
   } else{
@@ -363,17 +374,6 @@ int fixedpoint_is_valid(Fixedpoint val) {
 }
 
 char *fixedpoint_format_as_hex(Fixedpoint val) {
-  // TODO: implement
-  assert(0);
-  // char *s = malloc(20);
-  // strcpy(s, "<invalid>");
-  // return s;
-  return 0;
+
 }
 
-// int main(){
-//    char* ptr1 = malloc(1);
-// //uint64_t fractional= strtoul("f200000000000000",&ptr1,16);
-// uint64_t temp = 0b11110010000000000000000000000000000000000000000000000000;
-// printf("answer is: %llx", temp);
-// }
