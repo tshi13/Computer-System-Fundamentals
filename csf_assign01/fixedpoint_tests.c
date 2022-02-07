@@ -29,6 +29,7 @@ typedef struct {
 
   Fixedpoint max_empty_frac;
   Fixedpoint neg_max_empty_frac;
+  Fixedpoint neg_zero;
 
   // TODO: add more objects to the test fixture
 } TestObjs;
@@ -53,6 +54,7 @@ void test_create_all_IntObjs(TestObjs *objs);
 void test_create2_all_FracObjs(TestObjs *objs);
 void test_is_zero(TestObjs *objs);
 void test_is_zero_uninitialized();
+//addition
 void addition_two_normal_positive(TestObjs *objs);
 void addition_two_normal_negative(TestObjs *objs);
 void addition_normal_pos_add_neg(TestObjs *objs);
@@ -66,6 +68,13 @@ void pos_add_pos_whole_overflow_pos(TestObjs *objs);
 void neg_add_neg_whole_overflow_pos(TestObjs *objs);
 void pos_add_pos_whole_and_frac_overflow(TestObjs *objs);
 void neg_add_neg_whole_and_frac_overflow(TestObjs *objs);
+void pos_add_pos_frac_overflow_lead_to_whole_overflow(TestObjs *objs);
+void neg_add_neg_frac_overflow_lead_to_whole_overflow(TestObjs *objs);
+void add_large(TestObjs *objs);
+void add_same_mag_diff_sign(TestObjs *objs);
+void add_result_is_zero(TestObjs *objs);
+
+//Subtraction
 
 
 int main(int argc, char **argv) {
@@ -84,11 +93,14 @@ int main(int argc, char **argv) {
   TEST(test_create_from_hex);
   TEST(test_format_as_hex);
   TEST(test_negate);
-  TEST(test_add);
-  TEST(test_sub);
-  TEST(test_is_overflow_pos);
-  TEST(test_is_err);
    */
+
+  TEST(test_add);
+    /*
+    TEST(test_sub);
+    TEST(test_is_overflow_pos);
+    TEST(test_is_err);
+     */
   TEST(test_create_all_IntObjs);
   TEST(test_create2_all_FracObjs);
   TEST(test_is_zero);
@@ -106,6 +118,11 @@ int main(int argc, char **argv) {
   TEST(neg_add_neg_whole_overflow_pos);
   TEST(pos_add_pos_whole_and_frac_overflow);
   TEST(neg_add_neg_whole_and_frac_overflow);
+  TEST(pos_add_pos_frac_overflow_lead_to_whole_overflow);
+  TEST(neg_add_neg_frac_overflow_lead_to_whole_overflow);
+  TEST(add_large);
+  TEST(add_same_mag_diff_sign);
+  TEST(add_result_is_zero);
 
   // IMPORTANT: if you add additional test functions (which you should!),
   // make sure they are included here.  E.g., if you add a test function
@@ -142,6 +159,7 @@ TestObjs *setup(void) {
   objs->neg_three_fourth = fixedpoint_negate(objs->three_fourth);
   objs->max_empty_frac = fixedpoint_create2(0xFFFFFFFFFFFFFFFFUL, 0UL);
   objs->neg_max_empty_frac = fixedpoint_negate(objs->max_empty_frac);
+  objs->neg_zero = fixedpoint_negate(objs->zero);
 
   return objs;
 }
@@ -550,7 +568,46 @@ void neg_add_neg_whole_and_frac_overflow(TestObjs *objs) {
     ASSERT(result.tag == 4);
 }
 
+void pos_add_pos_frac_overflow_lead_to_whole_overflow(TestObjs *objs) {
+    Fixedpoint max_and_three_fourth = fixedpoint_add(objs->max_empty_frac, objs->three_fourth);
+    Fixedpoint result;
+    result = fixedpoint_add(max_and_three_fourth, objs->one_half);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x4000000000000000UL);
+    ASSERT(result.tag == 3);
+}
 
+void neg_add_neg_frac_overflow_lead_to_whole_overflow(TestObjs *objs) {
+    Fixedpoint max_and_three_fourth = fixedpoint_add(objs->max_empty_frac, objs->three_fourth);
+    Fixedpoint neg_max_and_three_fourth = fixedpoint_negate(max_and_three_fourth);
+    Fixedpoint result;
+    result = fixedpoint_add(neg_max_and_three_fourth, objs->neg_one_half);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x4000000000000000UL);
+    ASSERT(result.tag == 4);
+}
+
+void add_large(TestObjs *objs) {
+    Fixedpoint result;
+    result = fixedpoint_add(objs->large1, objs->large2);
+    ASSERT(fixedpoint_whole_part(result) == 0x4C16AF0BFUL);
+    ASSERT(fixedpoint_frac_part(result) == 0x4E06BDE073C7UL);
+    ASSERT(result.tag == 0);
+}
+
+void add_same_mag_diff_sign(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_add(objs->neg_one, objs->one);
+    ASSERT(fixedpoint_whole_part(result) == 0);
+    ASSERT(fixedpoint_frac_part(result) == 0);
+    ASSERT(result.tag == 0);
+}
+
+void add_result_is_zero(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_add(objs->zero, objs->neg_zero);
+    ASSERT(fixedpoint_whole_part(result) == 0);
+    ASSERT(fixedpoint_frac_part(result) == 0);
+    ASSERT(result.tag == 0);
+}
 //pos + pos = max + frac overflow lead to whole over flow
 
 //neg + neg = max + frac lead to neg overflow

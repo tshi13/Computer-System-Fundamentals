@@ -141,6 +141,23 @@ Fixedpoint diff_sign_addition(Fixedpoint left, Fixedpoint right) {
     Fixedpoint smaller;
     Fixedpoint result;
     //Determine the bigger fixedpoint value
+
+    if(left.whole == right.whole && left.fractional == right.fractional) {
+        result.whole = 0;
+        result.fractional = 0;
+        result.tag = 0;
+        return result;
+    }
+    /*
+    if(fixedpoint_compare(left, right) == 1) {
+        bigger = left;
+        smaller = right;
+    } else if(fixedpoint_compare(left, right) == -1) {
+        bigger = right;
+        smaller = left;
+    }*/
+
+    //Make the number with bigger absolute number bigger
     if (fixedpoint_whole_part(left) > fixedpoint_whole_part(right)){
         bigger = left;
         smaller = right;
@@ -160,9 +177,10 @@ Fixedpoint diff_sign_addition(Fixedpoint left, Fixedpoint right) {
     result.whole = bigger.whole - smaller.whole;
     result.tag = bigger.tag;
     result.fractional = bigger.fractional - smaller.fractional;
-    if(result.fractional >= bigger.fractional){ //We need to borrow 1 from whole
+    if(result.fractional > bigger.fractional){ //We need to borrow 1 from whole
         result.whole--;
     }
+
     return result;
 }
 
@@ -179,9 +197,12 @@ Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
           result.tag = left.tag;
           result.whole = left.whole;
       }
-
+      if (fixedpoint_is_zero(left) && fixedpoint_is_zero(right)) {
+          result.tag = 0;
+      }
+      return result;
   }
-  // Only changing magnitude for addition with same signs or adding zeroi
+  // Only changing magnitude for addition with same signs or adding zero
   else if(left.tag == right.tag) {
       result.whole = left.whole + right.whole;
       result.fractional = right.fractional + left.fractional;
@@ -195,8 +216,14 @@ Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
           }
       }
       //Check for frac_part overflow
-      if(result.fractional < left.fractional && result.fractional < right.fractional) result.whole += 1;
-
+      if(result.fractional < left.fractional && result.fractional < right.fractional) {
+          if(UINT64_MAX == result.whole && result.tag == 0) {
+              result.tag = 3;
+          } else if(UINT64_MAX == result.whole && result.tag == 1) {
+              result.tag = 4;
+          }
+          result.whole += 1;
+      }
   } else {//Addition with different signs
       result = diff_sign_addition(left,right);
   }
