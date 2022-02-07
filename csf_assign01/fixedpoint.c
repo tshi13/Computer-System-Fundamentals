@@ -202,9 +202,7 @@ Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
 }
 
 Fixedpoint fixedpoint_sub(Fixedpoint left, Fixedpoint right) {
-  // TODO: implement
-  assert(0);
-  return DUMMY;
+  return fixedpoint_add(left, fixedpoint_negate(right));
 }
 
 Fixedpoint fixedpoint_negate(Fixedpoint val) {
