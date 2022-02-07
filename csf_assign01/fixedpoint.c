@@ -398,6 +398,64 @@ int fixedpoint_is_valid(Fixedpoint val) {
 }
 
 char *fixedpoint_format_as_hex(Fixedpoint val) {
+  uint64_t whole = val.whole;
+  uint64_t frac = val.fractional;
 
+  
+  char whole_buffer [17];
+  char frac_buffer [17];
+
+  sprintf(whole_buffer,"%lx",whole);
+  sprintf(frac_buffer,"%016lx",frac);
+
+  printf("\n%s\n",whole_buffer);
+  if(frac == 0){
+    char* s = malloc((strlen(whole_buffer)+1)*sizeof(char));
+    strcpy(s,whole_buffer);
+    return s;
+  }
+
+  printf("%s",frac_buffer);
+  strcat(whole_buffer,".");
+  printf("\n%s\n",whole_buffer);
+
+  
+
+  strcat(whole_buffer,frac_buffer);
+  printf("\n%s\n",whole_buffer);
+
+  uint64_t length = strlen(whole_buffer);
+
+  char* ptr = whole_buffer;
+  uint64_t count = 0;
+  while(*ptr!='\0'){
+    ptr++;
+  }
+  ptr--;
+  while(*ptr == '0'){
+    ptr--;
+    count++;
+  }
+  
+  
+
+
+
+  printf("\nlength: %lu\n",length);
+  char* result = malloc(sizeof(char)*(length + 1 - count));
+  char* copy = result;
+  for(uint64_t i = 0; i<length - count; i++){
+    *result = whole_buffer[i];
+    result++;
+  } 
+  *result = '\0';
+  printf("\n%s\n",copy);
+  
+  return copy;
+  
 }
+// int main(){
+//   Fixedpoint a = fixedpoint_create2(0x4b19efceaUL, 0xec9a1e2418UL);
+//   fixedpoint_format_as_hex(a);
+// }
 
