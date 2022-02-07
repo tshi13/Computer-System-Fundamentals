@@ -66,10 +66,8 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
     return temp;
   }
 
-
   uint64_t index = 0;//index of dot
   uint64_t start_index = 0;//start index where we begin loops later
-
 
   if (hex[0] == '-') { //when we have a negative fixedpoint
     index = 1;
@@ -125,7 +123,6 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   temp.fractional= strtoul(fraction_part,NULL,16);//convert frac string to uint64_t
 
   return temp;
-
 }
 
 uint64_t fixedpoint_whole_part(Fixedpoint val) {
