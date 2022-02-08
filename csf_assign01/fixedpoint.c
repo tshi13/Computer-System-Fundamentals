@@ -393,8 +393,8 @@ char *fixedpoint_format_as_hex(Fixedpoint val) {
   uint64_t frac = val.fractional;
   uint64_t tag = val.tag;  
 
-  char whole_buffer [17];
-  char frac_buffer [17];
+  char whole_buffer [35];
+  char frac_buffer [35];
   sprintf(whole_buffer,"%lx",whole); //convert whole and frac parts to string
   sprintf(frac_buffer,"%016lx",frac);
   if(frac == 0){

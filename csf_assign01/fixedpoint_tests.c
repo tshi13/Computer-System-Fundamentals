@@ -13,23 +13,20 @@ typedef struct {
   Fixedpoint large2;
   Fixedpoint max;
   Fixedpoint neg_max;
-
   Fixedpoint neg_one;
   Fixedpoint neg_one_half;
   Fixedpoint neg_one_fourth;
-
   Fixedpoint one_and_three_fourth; //1.75
   Fixedpoint neg_one_and_three_fourth;
-
   Fixedpoint one_and_one_fourth; //1.25
   Fixedpoint neg_one_and_one_fourth;
-
   Fixedpoint three_fourth;
   Fixedpoint neg_three_fourth;
-
   Fixedpoint max_empty_frac;
   Fixedpoint neg_max_empty_frac;
   Fixedpoint neg_zero;
+  Fixedpoint two;
+  Fixedpoint neg_two;
 
   // TODO: add more objects to the test fixture
 } TestObjs;
@@ -62,7 +59,6 @@ void pos_add_pos_frac_overflow(TestObjs *objs);
 void neg_add_neg_frac_overflow(TestObjs *objs);
 void positive_add_zero(TestObjs *objs);
 void negative_add_zero(TestObjs *objs);
-void neg_add_neg_frac_overflow(TestObjs *objs);
 void pos_add_neg_frac_overflow(TestObjs *objs);
 void pos_add_pos_whole_overflow_pos(TestObjs *objs);
 void neg_add_neg_whole_overflow_pos(TestObjs *objs);
@@ -73,8 +69,53 @@ void neg_add_neg_frac_overflow_lead_to_whole_overflow(TestObjs *objs);
 void add_large(TestObjs *objs);
 void add_same_mag_diff_sign(TestObjs *objs);
 void add_result_is_zero(TestObjs *objs);
-
 //Subtraction
+void pos_sub_pos_get_pos(TestObjs *objs);
+void pos_sub_pos_get_neg(TestObjs *objs);
+void neg_sub_neg_get_neg(TestObjs *objs);
+void neg_sub_neg_get_pos(TestObjs *objs);
+void frac_borrow_from_whole(TestObjs *objs);
+void frac_increment_whole(TestObjs *objs);
+void pos_sub_neg_pos_overflow(TestObjs *objs);
+void neg_sub_pos_neg_overflow(TestObjs *objs);
+//Negate
+void negate_pos_to_neg(TestObjs *objs);
+void negate_neg_to_pos(TestObjs *objs);
+//Halve
+void even_pos_integer_halve(TestObjs *objs);
+void even_neg_integer_halve(TestObjs *objs);
+void odd_pos_integer_halve(TestObjs *objs);
+void odd_neg_integer_halve(TestObjs *objs);
+void halve_frac_pos_underflow(TestObjs *objs);
+void halve_frac_neg_underflow(TestObjs *objs);
+//Double
+void pos_double(TestObjs *objs);
+void negative_double(TestObjs *objs);
+void double_pos_overflow(TestObjs *objs);
+void double_neg_overflow(TestObjs *objs);
+void double_zero(TestObjs *objs);
+//Compare
+void compare_whole_and_whole(TestObjs *objs);
+void compare_same_whole_diff_frac(TestObjs *objs);
+void compare_pos_neg(TestObjs *objs);
+void compare_same(TestObjs *objs);
+void compare_zero_zero(TestObjs *objs);
+//is_zero
+void zero_is_zero(TestObjs *objs);
+void non_zero_is_not_zero(TestObjs *objs);
+//is_err
+void err_is_err(TestObjs *objs);
+void not_err_is_not_err(TestObjs *objs);
+//overflow
+void pos_overflow_is_overflow(TestObjs *objs);
+void non_pos_overflow_is_not_overflow(TestObjs *objs);
+void neg_overflow_is_neg_overflow(TestObjs *objs);
+void non_neg_overflow_is_not_neg_overflow(TestObjs *objs);
+//underflow
+void pos_underflow_is_underflow(TestObjs *objs);
+void not_pos_underflow_is_not_underflow(TestObjs *objs);
+void neg_underflow_is_neg_underflow(TestObjs *objs);
+void non_neg_underflow_is_not_neg_underflow(TestObjs *objs);
 
 
 int main(int argc, char **argv) {
@@ -90,18 +131,13 @@ int main(int argc, char **argv) {
   TEST(test_frac_part);
   TEST(test_create_from_hex);
   TEST(test_format_as_hex);
-  /*
   TEST(test_create_from_hex);
   TEST(test_format_as_hex);
   TEST(test_negate);
-   */
-
   TEST(test_add);
-    /*
-    TEST(test_sub);
-    TEST(test_is_overflow_pos);
-    TEST(test_is_err);
-     */
+  TEST(test_sub);
+  TEST(test_is_overflow_pos);
+  TEST(test_is_err);
   TEST(test_create_all_IntObjs);
   TEST(test_create2_all_FracObjs);
   TEST(test_is_zero);
@@ -124,7 +160,44 @@ int main(int argc, char **argv) {
   TEST(add_large);
   TEST(add_same_mag_diff_sign);
   TEST(add_result_is_zero);
-
+  TEST(pos_sub_pos_get_pos);
+  TEST(pos_sub_pos_get_neg);
+  TEST(neg_sub_neg_get_neg);
+  TEST(neg_sub_neg_get_pos);
+  TEST(frac_borrow_from_whole);
+  TEST(frac_increment_whole);
+  TEST(pos_sub_neg_pos_overflow);
+  TEST(neg_sub_pos_neg_overflow);
+  TEST(negate_pos_to_neg);
+  TEST(negate_neg_to_pos);
+  TEST(even_pos_integer_halve);
+  TEST(even_neg_integer_halve);
+  TEST(odd_pos_integer_halve);
+  TEST(odd_neg_integer_halve);
+  TEST(halve_frac_pos_underflow);
+  TEST(halve_frac_neg_underflow);
+  TEST(pos_double);
+  TEST(negative_double);
+  TEST(double_pos_overflow);
+  TEST(double_neg_overflow);
+  TEST(double_zero);
+  TEST(compare_whole_and_whole);
+  TEST(compare_same_whole_diff_frac);
+  TEST(compare_pos_neg);
+  TEST(compare_same);
+  TEST(compare_zero_zero);
+  TEST(zero_is_zero);
+  TEST(non_zero_is_not_zero);
+  TEST(err_is_err);
+  TEST(not_err_is_not_err);
+  TEST(pos_overflow_is_overflow);
+  TEST(non_pos_overflow_is_not_overflow);
+  TEST(neg_overflow_is_neg_overflow);
+  TEST(non_neg_overflow_is_not_neg_overflow);
+  TEST(pos_underflow_is_underflow);
+  TEST(not_pos_underflow_is_not_underflow);
+  TEST(neg_underflow_is_neg_underflow);
+  TEST(non_neg_underflow_is_not_neg_underflow);
   // IMPORTANT: if you add additional test functions (which you should!),
   // make sure they are included here.  E.g., if you add a test function
   // "my_awesome_tests", you should add
@@ -161,6 +234,8 @@ TestObjs *setup(void) {
   objs->max_empty_frac = fixedpoint_create2(0xFFFFFFFFFFFFFFFFUL, 0UL);
   objs->neg_max_empty_frac = fixedpoint_negate(objs->max_empty_frac);
   objs->neg_zero = fixedpoint_negate(objs->zero);
+  objs->two = fixedpoint_create(2UL);
+  objs->neg_two = fixedpoint_negate(objs->two);
 
   return objs;
 }
@@ -610,17 +685,261 @@ void add_large(TestObjs *objs) {
 
 void add_same_mag_diff_sign(TestObjs *objs) {
     Fixedpoint result = fixedpoint_add(objs->neg_one, objs->one);
-    ASSERT(fixedpoint_whole_part(result) == 0);
-    ASSERT(fixedpoint_frac_part(result) == 0);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
     ASSERT(result.tag == 0);
 }
 
 void add_result_is_zero(TestObjs *objs) {
     Fixedpoint result = fixedpoint_add(objs->zero, objs->neg_zero);
-    ASSERT(fixedpoint_whole_part(result) == 0);
-    ASSERT(fixedpoint_frac_part(result) == 0);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
     ASSERT(result.tag == 0);
 }
-//pos + pos = max + frac overflow lead to whole over flow
 
-//neg + neg = max + frac lead to neg overflow
+void pos_sub_pos_get_pos(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->one_half, objs->zero);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x8000000000000000UL);
+    ASSERT(result.tag == 0);
+}
+void pos_sub_pos_get_neg(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->one_half, objs->one);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x8000000000000000UL);
+    ASSERT(result.tag == 1);
+}
+void neg_sub_neg_get_neg(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->neg_one_and_one_fourth, objs->neg_one_half);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x8000000000000000UL + 0x4000000000000000UL);
+    ASSERT(result.tag == 1);
+}
+void neg_sub_neg_get_pos(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->neg_one_half, objs->neg_one);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x8000000000000000UL);
+    ASSERT(result.tag == 0);
+}
+void frac_borrow_from_whole(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->one_and_one_fourth, objs->one_half);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x8000000000000000UL + 0x4000000000000000UL);
+    ASSERT(result.tag == 0);
+}
+void frac_increment_whole(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->one_and_three_fourth, objs->neg_one_half);
+    ASSERT(fixedpoint_whole_part(result) == 2UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x4000000000000000UL);
+    ASSERT(result.tag == 0);
+}
+void pos_sub_neg_pos_overflow(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->max_empty_frac, objs->neg_one);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 3);
+}
+void neg_sub_pos_neg_overflow(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_sub(objs->neg_max_empty_frac, objs->one);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 4);
+}
+
+void negate_pos_to_neg(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_negate(objs->one);
+    ASSERT(fixedpoint_whole_part(result) == 1UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 1);
+}
+void negate_neg_to_pos(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_negate(objs->neg_one);
+    ASSERT(fixedpoint_whole_part(result) == 1UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 0);
+}
+
+//Halve
+void even_pos_integer_halve(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_halve(objs->two);
+    ASSERT(fixedpoint_whole_part(result) == 1UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 0);
+}
+void even_neg_integer_halve(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_halve(objs->neg_two);
+    ASSERT(fixedpoint_whole_part(result) == 1UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 1);
+}
+void odd_pos_integer_halve(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_halve(objs->one);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x8000000000000000UL);
+    ASSERT(result.tag == 0);
+}
+void odd_neg_integer_halve(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_halve(objs->neg_one);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0x8000000000000000UL);
+    ASSERT(result.tag == 1);
+}
+void halve_frac_pos_underflow(TestObjs *objs) {
+    Fixedpoint to_underflow;
+    to_underflow.tag = 0;
+    to_underflow.fractional = 0x8000000000000001UL;
+    to_underflow = fixedpoint_halve(to_underflow);
+    ASSERT(to_underflow.tag == 5);
+
+}
+void halve_frac_neg_underflow(TestObjs *objs) {
+    Fixedpoint to_underflow;
+    to_underflow.tag = 1;
+    to_underflow.fractional = 0x8000000000000001UL;
+    to_underflow = fixedpoint_halve(to_underflow);
+    ASSERT(to_underflow.tag == 6);
+}
+//Double
+void pos_double(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_double(objs->one);
+    ASSERT(fixedpoint_whole_part(result) == 2UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 0);
+}
+void negative_double(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_double(objs->neg_one);
+    ASSERT(fixedpoint_whole_part(result) == 2UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 1);
+}
+void double_pos_overflow(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_double(objs->max_empty_frac);
+    ASSERT(fixedpoint_whole_part(result) == 0xFFFFFFFFFFFFFFFEUL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 3);
+}
+void double_neg_overflow(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_double(objs->neg_max_empty_frac);
+    ASSERT(fixedpoint_whole_part(result) == 0xFFFFFFFFFFFFFFFEUL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 4);
+}
+void double_zero(TestObjs *objs) {
+    Fixedpoint result = fixedpoint_double(objs->zero);
+    ASSERT(fixedpoint_whole_part(result) == 0UL);
+    ASSERT(fixedpoint_frac_part(result) == 0UL);
+    ASSERT(result.tag == 0);
+}
+//Compare
+void compare_whole_and_whole(TestObjs *objs) {
+    ASSERT(fixedpoint_compare(objs->one, objs->two) == -1);
+    ASSERT(fixedpoint_compare(objs->two, objs->one) == 1);
+    ASSERT(fixedpoint_compare(objs->neg_two, objs->neg_one) == -1);
+    ASSERT(fixedpoint_compare(objs->neg_one, objs->neg_two) == 1);
+}
+void compare_same_whole_diff_frac(TestObjs *objs) {
+    ASSERT(fixedpoint_compare(objs->one_fourth, objs->one_half) == -1);
+    ASSERT(fixedpoint_compare(objs->one_half, objs->one_fourth) == 1);
+    ASSERT(fixedpoint_compare(objs->neg_one_fourth, objs->neg_one_half) == 1);
+    ASSERT(fixedpoint_compare(objs->neg_one_half, objs->neg_one_fourth) == -1);
+}
+void compare_pos_neg(TestObjs *objs) {
+    ASSERT(fixedpoint_compare(objs->neg_one, objs->two) == -1);
+    ASSERT(fixedpoint_compare(objs->two, objs->neg_two) == 1);
+}
+void compare_same(TestObjs *objs) {
+    ASSERT(fixedpoint_compare(objs->neg_one, objs->neg_one) == 0);
+    ASSERT(fixedpoint_compare(objs->two, objs->two) == 0);
+}
+void compare_zero_zero(TestObjs *objs) {
+    ASSERT(fixedpoint_compare(objs->zero, objs->zero) == 0);
+}
+//is_zero
+void zero_is_zero(TestObjs *objs) {
+    ASSERT(fixedpoint_is_zero(objs->zero) == 1);
+}
+void non_zero_is_not_zero(TestObjs *objs) {
+    ASSERT(fixedpoint_is_zero(objs->one) == 0);
+    ASSERT(fixedpoint_is_zero(objs->neg_one) == 0);
+}
+//is_err
+void err_is_err(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 2;
+    ASSERT(fixedpoint_is_err(result) == 1);
+}
+void not_err_is_not_err(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 1;
+    ASSERT(fixedpoint_is_err(result) == 0);
+    result.tag = 3;
+    ASSERT(fixedpoint_is_err(result) == 0);
+    result.tag = 0;
+    ASSERT(fixedpoint_is_err(result) == 0);
+}
+//overflow
+void pos_overflow_is_overflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 3;
+    ASSERT(fixedpoint_is_overflow_pos(result) == 1);
+}
+void non_pos_overflow_is_not_overflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 0;
+    ASSERT(fixedpoint_is_overflow_pos(result) == 0);
+    result.tag = 1;
+    ASSERT(fixedpoint_is_overflow_pos(result) == 0);
+    result.tag = 2;
+    ASSERT(fixedpoint_is_overflow_pos(result) == 0);
+    result.tag = 4;
+    ASSERT(fixedpoint_is_overflow_pos(result) == 0);
+}
+void neg_overflow_is_neg_overflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 4;
+    ASSERT(fixedpoint_is_overflow_neg(result) == 1);
+}
+void non_neg_overflow_is_not_neg_overflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 0;
+    ASSERT(fixedpoint_is_overflow_neg(result) == 0);
+    result.tag = 1;
+    ASSERT(fixedpoint_is_overflow_neg(result) == 0);
+    result.tag = 2;
+    ASSERT(fixedpoint_is_overflow_neg(result) == 0);
+    result.tag = 3;
+    ASSERT(fixedpoint_is_overflow_neg(result) == 0);
+}
+//underflow
+void pos_underflow_is_underflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 5;
+    ASSERT(fixedpoint_is_underflow_pos(result) == 1);
+}
+void not_pos_underflow_is_not_underflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 0;
+    ASSERT(fixedpoint_is_underflow_pos(result) == 0);
+    result.tag = 1;
+    ASSERT(fixedpoint_is_underflow_pos(result) == 0);
+    result.tag = 2;
+    ASSERT(fixedpoint_is_underflow_pos(result) == 0);
+    result.tag = 3;
+    ASSERT(fixedpoint_is_underflow_pos(result) == 0);
+}
+void neg_underflow_is_neg_underflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 6;
+    ASSERT(fixedpoint_is_underflow_neg(result) == 1);
+}
+void non_neg_underflow_is_not_neg_underflow(TestObjs *objs) {
+    Fixedpoint result;
+    result.tag = 0;
+    ASSERT(fixedpoint_is_underflow_neg(result) == 0);
+    result.tag = 1;
+    ASSERT(fixedpoint_is_underflow_neg(result) == 0);
+    result.tag = 2;
+    ASSERT(fixedpoint_is_underflow_neg(result) == 0);
+    result.tag = 3;
+    ASSERT(fixedpoint_is_underflow_neg(result) == 0);
+}
