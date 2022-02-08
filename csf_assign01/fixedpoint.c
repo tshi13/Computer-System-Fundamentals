@@ -373,8 +373,8 @@ char *fixedpoint_format_as_hex(Fixedpoint val) {
 
   char whole_buffer [35]; //allocate enough space, to prevent issues when doing multiple strcat
   char frac_buffer [17];
-  sprintf(whole_buffer,"%llx",whole); //convert whole and frac parts to string
-  sprintf(frac_buffer,"%016llx",frac);
+  sprintf(whole_buffer,"%lx",whole); //convert whole and frac parts to string
+  sprintf(frac_buffer,"%016lx",frac);
   if(frac == 0){
     return format_as_hex_without_frac(whole_buffer,tag); //when there isn't a frac part to consider
   }
