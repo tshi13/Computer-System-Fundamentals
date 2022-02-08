@@ -3,11 +3,13 @@ Taiming Shi: tshi13
 Ian Zheng: yzheng67
 
 Taiming:
+MS1
 fixedpoint_create
 fixedpoint_create2
 fixedpoint_whole_part
 fixedpoint_frac_part
 fixedpoint_is_zero
+MS2
 fixedpoint_create_from_hex
 fixedpoint_negate
 fixedpoint_halve
@@ -24,10 +26,69 @@ fixedpoint_format_as_hex
 
 
 Ian:
+MS1
 TEST(test_create_all_IntObjs);
 TEST(test_create2_all_FracObjs);
 TEST(test_is_zero);
 TEST(test_is_zero_uninitialized);
+MS2
 fixedpoint_add
+diff_sign_addition
 fixedpoint_sub
-all unit tests
+& Unit tests:
+TEST(addition_two_normal_positive);
+  TEST(addition_two_normal_negative);
+  TEST(addition_normal_pos_add_neg);
+  TEST(pos_add_pos_frac_overflow);
+  TEST(neg_add_neg_frac_overflow);
+  TEST(positive_add_zero);
+  TEST(negative_add_zero);
+  TEST(neg_add_neg_frac_overflow);
+  TEST(pos_add_neg_frac_overflow);
+  TEST(pos_add_pos_whole_overflow_pos);
+  TEST(neg_add_neg_whole_overflow_pos);
+  TEST(pos_add_pos_whole_and_frac_overflow);
+  TEST(neg_add_neg_whole_and_frac_overflow);
+  TEST(pos_add_pos_frac_overflow_lead_to_whole_overflow);
+  TEST(neg_add_neg_frac_overflow_lead_to_whole_overflow);
+  TEST(add_large);
+  TEST(add_same_mag_diff_sign);
+  TEST(add_result_is_zero);
+  TEST(pos_sub_pos_get_pos);
+  TEST(pos_sub_pos_get_neg);
+  TEST(neg_sub_neg_get_neg);
+  TEST(neg_sub_neg_get_pos);
+  TEST(frac_borrow_from_whole);
+  TEST(frac_increment_whole);
+  TEST(pos_sub_neg_pos_overflow);
+  TEST(neg_sub_pos_neg_overflow);
+  TEST(negate_pos_to_neg);
+  TEST(negate_neg_to_pos);
+  TEST(even_pos_integer_halve);
+  TEST(even_neg_integer_halve);
+  TEST(odd_pos_integer_halve);
+  TEST(odd_neg_integer_halve);
+  TEST(halve_frac_pos_underflow);
+  TEST(halve_frac_neg_underflow);
+  TEST(pos_double);
+  TEST(negative_double);
+  TEST(double_pos_overflow);
+  TEST(double_neg_overflow);
+  TEST(double_zero);
+  TEST(compare_whole_and_whole);
+  TEST(compare_same_whole_diff_frac);
+  TEST(compare_pos_neg);
+  TEST(compare_same);
+  TEST(compare_zero_zero);
+  TEST(zero_is_zero);
+  TEST(non_zero_is_not_zero);
+  TEST(err_is_err);
+  TEST(not_err_is_not_err);
+  TEST(pos_overflow_is_overflow);
+  TEST(non_pos_overflow_is_not_overflow);
+  TEST(neg_overflow_is_neg_overflow);
+  TEST(non_neg_overflow_is_not_neg_overflow);
+  TEST(pos_underflow_is_underflow);
+  TEST(not_pos_underflow_is_not_underflow);
+  TEST(neg_underflow_is_neg_underflow);
+  TEST(non_neg_underflow_is_not_neg_underflow);
