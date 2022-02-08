@@ -8,9 +8,26 @@ fixedpoint_create2
 fixedpoint_whole_part
 fixedpoint_frac_part
 fixedpoint_is_zero
+fixedpoint_create_from_hex
+fixedpoint_negate
+fixedpoint_halve
+fixedpoint_double
+fixedpoint_compare
+fixedpoint_is_err
+fixedpoint_is_neg
+fixedpoint_is_overflow_neg
+fixedpoint_is_overflow_pos
+fixedpoint_is_underflow_neg
+fixedpoint_is_underflow_pos
+fixedpoint_is_valid
+fixedpoint_format_as_hex
+
 
 Ian:
 TEST(test_create_all_IntObjs);
 TEST(test_create2_all_FracObjs);
 TEST(test_is_zero);
 TEST(test_is_zero_uninitialized);
+fixedpoint_add
+fixedpoint_sub
+all unit tests
