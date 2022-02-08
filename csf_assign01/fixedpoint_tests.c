@@ -131,8 +131,6 @@ int main(int argc, char **argv) {
   TEST(test_frac_part);
   TEST(test_create_from_hex);
   TEST(test_format_as_hex);
-  TEST(test_create_from_hex);
-  TEST(test_format_as_hex);
   TEST(test_negate);
   TEST(test_add);
   TEST(test_sub);
