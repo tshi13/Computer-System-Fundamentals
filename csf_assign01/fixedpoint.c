@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <assert.h>
 #include "fixedpoint.h"
-
 
 Fixedpoint fixedpoint_create(uint64_t whole) {
   Fixedpoint temp;
@@ -21,7 +19,6 @@ Fixedpoint fixedpoint_create2(uint64_t whole, uint64_t frac) {
   temp.tag = 0; //valid/non-negative
   return temp;
 }
-
 
 uint64_t hexstring_is_valid(const char *hex){
   uint64_t length = strlen(hex);
@@ -43,8 +40,6 @@ uint64_t hexstring_is_valid(const char *hex){
   }
   return 1;
 }
-
-
 
 Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   Fixedpoint temp;
@@ -90,8 +85,6 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex) {
   return temp;
 }
 
-
-
 uint64_t create_frac_with_padding(char* fraction_part, const char* hex, uint64_t index){
   uint64_t frac_index = 0;
   uint64_t length = strlen(hex);
@@ -122,24 +115,15 @@ Fixedpoint diff_sign_addition(Fixedpoint left, Fixedpoint right) {
     Fixedpoint bigger;
     Fixedpoint smaller;
     Fixedpoint result;
-    //Determine the bigger fixedpoint value
-
+    //If two fixedpoints have the same magnitude
     if(left.whole == right.whole && left.fractional == right.fractional) {
         result.whole = 0;
         result.fractional = 0;
         result.tag = 0;
         return result;
     }
-    /*
-    if(fixedpoint_compare(left, right) == 1) {
-        bigger = left;
-        smaller = right;
-    } else if(fixedpoint_compare(left, right) == -1) {
-        bigger = right;
-        smaller = left;
-    }*/
 
-    //Make the number with bigger absolute number bigger
+    //Assign the fixedpoint with larger magnitude "bigger"
     if (fixedpoint_whole_part(left) > fixedpoint_whole_part(right)){
         bigger = left;
         smaller = right;
@@ -168,7 +152,7 @@ Fixedpoint diff_sign_addition(Fixedpoint left, Fixedpoint right) {
 
 Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
   Fixedpoint result;
-
+  //Addition if at least one fixedpoint is zero
   if(fixedpoint_is_zero(left) || fixedpoint_is_zero(right)) {
       result.fractional = right.fractional + left.fractional;
       if (fixedpoint_is_zero(left)){
@@ -180,11 +164,11 @@ Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
           result.whole = left.whole;
       }
       if (fixedpoint_is_zero(left) && fixedpoint_is_zero(right)) {
-          result.tag = 0;
+          result.tag = 0; //Zero results have only positive sign
       }
       return result;
   }
-  // Only changing magnitude for addition with same signs or adding zero
+  // Only changing magnitude for addition with same signs
   else if(left.tag == right.tag) {
       result.whole = left.whole + right.whole;
       result.fractional = right.fractional + left.fractional;
@@ -192,9 +176,9 @@ Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
       //Check for whole_part overflow before frac overflow
       if(result.whole < left.whole && result.whole < right.whole) {
           if(result.tag == 0) {
-              result.tag = 3; //positive overflow occured
+              result.tag = 3; //positive overflow occurred
           } else {
-              result.tag = 4; //negative overflow occured
+              result.tag = 4; //negative overflow occurred
           }
       }
       //Check for frac_part overflow
@@ -206,10 +190,9 @@ Fixedpoint fixedpoint_add(Fixedpoint left, Fixedpoint right) {
           }
           result.whole += 1;
       }
-  } else {//Addition with different signs
-      result = diff_sign_addition(left,right);
+  } else {
+      result = diff_sign_addition(left,right);//Addition with different signs
   }
-
   return result;
 }
 
@@ -219,13 +202,11 @@ Fixedpoint fixedpoint_sub(Fixedpoint left, Fixedpoint right) {
 
 Fixedpoint fixedpoint_negate(Fixedpoint val) {
   if (fixedpoint_is_zero(val)) return val;
-
   if (val.tag == 1) {val.tag = 0;}
   else val.tag = 1;
 
   return val;
 }
-
 
 Fixedpoint fixedpoint_halve(Fixedpoint val) {
   uint64_t whole_copy = val.whole;
@@ -260,7 +241,8 @@ int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
     return -1;
   }
 
-  // now left and right have the same sign, consider 4 possible situations
+  //left and right have the same sign, compare whole. If whole is the same,
+  //compare frac part
   if(left.whole > right.whole){
     if (left.tag == 0) return 1;
     else return -1;
@@ -279,8 +261,6 @@ int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
   }
   return 0; //they are the same
 }
-
-
 
 //Return 1 is fixedpoint is zero, 0 otherwise
 int fixedpoint_is_zero(Fixedpoint val) {
@@ -341,13 +321,13 @@ int fixedpoint_is_underflow_pos(Fixedpoint val) {
 }
 
 int fixedpoint_is_valid(Fixedpoint val) {
-  // printf("invalid tag is: %lu \n",val.tag);
   if (val.tag == 0 || val.tag == 1) {
     return 1;
   } else{
     return 0;
   }
 }
+
 char* format_as_hex_without_frac(char* whole_buffer,uint64_t tag){
   char* s = malloc((strlen(whole_buffer)+1+tag)*sizeof(char));//allocate enough memory
     if(tag == 1){ //when we need to add minus sign infront

@@ -60,25 +60,22 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex);
 
 //Parameters:
 //  hex: hexstring to be checked
-
+//
 //Returns:
 //  1 if hexstring is valid
 //  0 if hextring is invalid
 uint64_t hexstring_is_valid(const char *hex);
 
-// helper fuunction to create properly formated frac part with padding for create_from_hex
-
+// helper function to create properly format frac part with padding for create_from_hex
+//
 //Parameters:
 //fraction_part: fraction part of hex
 //hex: input string
 //index: index position of dot
-
+//
 //Returns:
 //formatted uint64_t fracpart to be used
 uint64_t create_frac_with_padding(char* fraction_part, const char* hex, uint64_t index);
-
-char* format_as_hex_helper(char* whole_buffer, uint64_t tag);
-
 
 // Get the whole part of the given Fixedpoint value.
 //
@@ -97,6 +94,16 @@ uint64_t fixedpoint_whole_part(Fixedpoint val);
 // Returns:
 //   a uint64_t value which is the fractional part of the Fixedpoint value
 uint64_t fixedpoint_frac_part(Fixedpoint val);
+
+//Compute  the sum of two Fixedpoint values with different signs
+//
+// Parameters:
+//   left - the left Fixedpoint value
+//   right - the right Fixedpoint value
+//
+// Returns:
+//  The Fixedpoint result of the addition, with correct tag
+ Fixedpoint diff_sign_addition(Fixedpoint left, Fixedpoint right);
 
 // Compute the sum of two valid Fixedpoint values.
 //
@@ -268,6 +275,10 @@ int fixedpoint_is_underflow_pos(Fixedpoint val);
 //   1 if val represents a valid negative or non-negative number;
 //   0 otherwise
 int fixedpoint_is_valid(Fixedpoint val);
+
+ char* format_as_hex_without_frac(char* whole_buffer,uint64_t tag);
+
+ char* format_as_hex_helper(char* whole_buffer, uint64_t tag);
 
 // Return a dynamically allocated C character string with the representation of
 // the given valid Fixedpoint value.  The string should start with "-" if the
