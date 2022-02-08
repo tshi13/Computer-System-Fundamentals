@@ -77,6 +77,9 @@ uint64_t hexstring_is_valid(const char *hex);
 //formatted uint64_t fracpart to be used
 uint64_t create_frac_with_padding(char* fraction_part, const char* hex, uint64_t index);
 
+char* format_as_hex_helper(char* whole_buffer, uint64_t tag);
+
+
 // Get the whole part of the given Fixedpoint value.
 //
 // Parameters:
