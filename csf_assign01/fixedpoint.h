@@ -276,9 +276,24 @@ int fixedpoint_is_underflow_pos(Fixedpoint val);
 //   0 otherwise
 int fixedpoint_is_valid(Fixedpoint val);
 
- char* format_as_hex_without_frac(char* whole_buffer,uint64_t tag);
+//Helper function for format_as_hex
 
- char* format_as_hex_helper(char* whole_buffer, uint64_t tag);
+//Parameters:
+//  whole_buffer: whole part string that will be expanded
+//  tag: tag that we have from hex
+
+//Returns:
+//  final char* containing properly formated hexstring
+char* format_as_hex_helper(char* whole_buffer, uint64_t tag);
+
+//Helper function that returns hexstring when there isn't a frac part to consider
+
+//Parameters:
+//  whole_buffer: whole part string that will be expanded
+//  tag: tag that we have from hex
+
+//Returns: final char* containing hexstring
+char* format_as_hex_without_frac(char* whole_buffer,uint64_t tag);
 
 // Return a dynamically allocated C character string with the representation of
 // the given valid Fixedpoint value.  The string should start with "-" if the
