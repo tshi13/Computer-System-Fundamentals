@@ -50,7 +50,7 @@ void test_is_err(TestObjs *objs);
 void test_create_all_IntObjs(TestObjs *objs);
 void test_create2_all_FracObjs(TestObjs *objs);
 void test_is_zero(TestObjs *objs);
-void test_is_zero_uninitialized();
+
 //addition
 void addition_two_normal_positive(TestObjs *objs);
 void addition_two_normal_negative(TestObjs *objs);
@@ -141,7 +141,6 @@ int main(int argc, char **argv) {
   TEST(test_create_all_IntObjs);
   TEST(test_create2_all_FracObjs);
   TEST(test_is_zero);
-  TEST(test_is_zero_uninitialized);
   TEST(addition_two_normal_positive);
   TEST(addition_two_normal_negative);
   TEST(addition_normal_pos_add_neg);
@@ -515,11 +514,6 @@ void test_is_zero(TestObjs *objs) {
     ASSERT(fixedpoint_is_zero(objs->large2) == 0);
 }
 
-//Uninitialized value should not be zero
-void test_is_zero_uninitialized() {
-    Fixedpoint uninitialized;
-    ASSERT(fixedpoint_is_zero(uninitialized) == 0);
-}
 
 //Tests for add
 void addition_two_normal_positive(TestObjs *objs) {
