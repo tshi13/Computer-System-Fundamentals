@@ -66,7 +66,16 @@ Fixedpoint fixedpoint_create_from_hex(const char *hex);
 //  0 if hextring is invalid
 uint64_t hexstring_is_valid(const char *hex);
 
+// helper fuunction to create properly formated frac part with padding for create_from_hex
 
+//Parameters:
+//fraction_part: fraction part of hex
+//hex: input string
+//index: index position of dot
+
+//Returns:
+//formatted uint64_t fracpart to be used
+uint64_t create_frac_with_padding(char* fraction_part, const char* hex, uint64_t index);
 
 // Get the whole part of the given Fixedpoint value.
 //

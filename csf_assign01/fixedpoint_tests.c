@@ -240,7 +240,6 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(!fixedpoint_is_neg(val8));
 
   Fixedpoint val = fixedpoint_create_from_hex("-1111");
-  printf("tag is: %lu",val.tag);
   ASSERT(fixedpoint_is_valid(val));
   ASSERT(fixedpoint_is_neg(val));
   ASSERT(0x1111UL == fixedpoint_whole_part(val));
@@ -275,6 +274,14 @@ void test_format_as_hex(TestObjs *objs) {
   s = fixedpoint_format_as_hex(objs->large2);
   ASSERT(0 == strcmp(s, "fcbf3d5.00004d1a23c24faf"));
   free(s);
+
+  Fixedpoint temp = fixedpoint_negate(objs->large2);
+  s = fixedpoint_format_as_hex(temp);
+  printf("\n tag??: %lu\n",temp.tag);
+  printf("%s\n",s);
+  ASSERT(0 == strcmp(s, "-fcbf3d5.00004d1a23c24faf"));
+  free(s);
+  
 }
 
 void test_negate(TestObjs *objs) {
