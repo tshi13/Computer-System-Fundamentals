@@ -77,7 +77,6 @@ uint64_t hexstring_is_valid(const char *hex);
 //formatted uint64_t fracpart to be used
 uint64_t create_frac_with_padding(char* fraction_part, const char* hex, uint64_t index);
 
-char* format_as_hex_helper(char* whole_buffer, uint64_t tag);
 
 
 // Get the whole part of the given Fixedpoint value.
@@ -283,5 +282,25 @@ int fixedpoint_is_valid(Fixedpoint val);
 //   dynamically allocated character string containing the representation
 //   of the Fixedpoint value
 char *fixedpoint_format_as_hex(Fixedpoint val);
+
+
+//Helper function for format_as_hex
+
+//Parameters:
+//  whole_buffer: whole part string that will be expanded
+//  tag: tag that we have from hex
+
+//Returns:
+//  final char* containing properly formated hexstring
+char* format_as_hex_helper(char* whole_buffer, uint64_t tag);
+
+//Helper function that returns hexstring when there isn't a frac part to consider
+
+//Parameters:
+//  whole_buffer: whole part string that will be expanded
+//  tag: tag that we have from hex
+
+//Returns: final char* containing hexstring
+char* format_as_hex_without_frac(char* whole_buffer,uint64_t tag);
 
 #endif // FIXEDPREC_H

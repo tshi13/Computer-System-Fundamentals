@@ -53,7 +53,6 @@ void test_is_err(TestObjs *objs);
 void test_create_all_IntObjs(TestObjs *objs);
 void test_create2_all_FracObjs(TestObjs *objs);
 void test_is_zero(TestObjs *objs);
-void test_is_zero_uninitialized();
 //addition
 void addition_two_normal_positive(TestObjs *objs);
 void addition_two_normal_negative(TestObjs *objs);
@@ -90,22 +89,14 @@ int main(int argc, char **argv) {
   TEST(test_frac_part);
   TEST(test_create_from_hex);
   TEST(test_format_as_hex);
-  /*
-  TEST(test_create_from_hex);
-  TEST(test_format_as_hex);
   TEST(test_negate);
-   */
-
   TEST(test_add);
-    /*
-    TEST(test_sub);
-    TEST(test_is_overflow_pos);
-    TEST(test_is_err);
-     */
+  TEST(test_sub);
+  TEST(test_is_overflow_pos);
+  TEST(test_is_err);
   TEST(test_create_all_IntObjs);
   TEST(test_create2_all_FracObjs);
   TEST(test_is_zero);
-  TEST(test_is_zero_uninitialized);
   TEST(addition_two_normal_positive);
   TEST(addition_two_normal_negative);
   TEST(addition_normal_pos_add_neg);
@@ -212,11 +203,11 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(0x000UL == fixedpoint_whole_part(val3));
   ASSERT(0x00f2000000000000UL == fixedpoint_frac_part(val3));
 
-  Fixedpoint val4 = fixedpoint_create_from_hex("xxx");
+  Fixedpoint val4 = fixedpoint_create_from_hex("-a-a");
   ASSERT(!fixedpoint_is_valid(val4));
   ASSERT(fixedpoint_is_err(val4));
 
-  Fixedpoint val5 = fixedpoint_create_from_hex("x-xx");
+  Fixedpoint val5 = fixedpoint_create_from_hex("1.2.3");
   ASSERT(!fixedpoint_is_valid(val5));
   ASSERT(fixedpoint_is_err(val5));
 
@@ -239,13 +230,11 @@ void test_create_from_hex(TestObjs *objs) {
   ASSERT(0x00000000000000UL == fixedpoint_frac_part(val8));
   ASSERT(!fixedpoint_is_neg(val8));
 
-  Fixedpoint val = fixedpoint_create_from_hex("-1111");
-  ASSERT(fixedpoint_is_valid(val));
-  ASSERT(fixedpoint_is_neg(val));
-  ASSERT(0x1111UL == fixedpoint_whole_part(val));
-  ASSERT(0UL == fixedpoint_frac_part(val));
-
-
+  Fixedpoint val9 = fixedpoint_create_from_hex("-1111");
+  ASSERT(fixedpoint_is_valid(val9));
+  ASSERT(fixedpoint_is_neg(val9));
+  ASSERT(0x1111UL == fixedpoint_whole_part(val9));
+  ASSERT(0UL == fixedpoint_frac_part(val9));
 }
 
 void test_format_as_hex(TestObjs *objs) {
@@ -275,12 +264,21 @@ void test_format_as_hex(TestObjs *objs) {
   ASSERT(0 == strcmp(s, "fcbf3d5.00004d1a23c24faf"));
   free(s);
 
-  Fixedpoint temp = fixedpoint_negate(objs->large2);
-  s = fixedpoint_format_as_hex(temp);
-  printf("\n tag??: %lu\n",temp.tag);
-  printf("%s\n",s);
+  Fixedpoint temp1 = fixedpoint_create_from_hex("-fcbf3d5.00004d1a23c24faf");
+  s = fixedpoint_format_as_hex(temp1);
   ASSERT(0 == strcmp(s, "-fcbf3d5.00004d1a23c24faf"));
   free(s);
+
+  Fixedpoint temp2 = fixedpoint_create_from_hex("-.00004d1a23c24faf");
+  s = fixedpoint_format_as_hex(temp2);
+  ASSERT(0 == strcmp(s, "-0.00004d1a23c24faf"));
+  free(s);
+
+  Fixedpoint temp3 = fixedpoint_create_from_hex("-fcbf3d5");
+  s = fixedpoint_format_as_hex(temp3);
+  ASSERT(0 == strcmp(s, "-fcbf3d5"));
+  free(s);
+  
   
 }
 
@@ -440,11 +438,6 @@ void test_is_zero(TestObjs *objs) {
     ASSERT(fixedpoint_is_zero(objs->large2) == 0);
 }
 
-//Uninitialized value should not be zero
-void test_is_zero_uninitialized() {
-    Fixedpoint uninitialized;
-    ASSERT(fixedpoint_is_zero(uninitialized) == 0);
-}
 
 //Tests for add
 void addition_two_normal_positive(TestObjs *objs) {
