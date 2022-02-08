@@ -236,12 +236,12 @@ Fixedpoint fixedpoint_halve(Fixedpoint val) {
     if (val.tag == 1) {val.tag = 6;} //negative underflow
     return val;
   }
-  frac_copy >>= 1;
+  frac_copy >>= 1; //shift frac_copy
   //check if whole will lose a bit after division
   if ((whole_copy & 1) == 1){
       frac_copy += 0x8000000000000000;
   }
-  whole_copy >>= 1;
+  whole_copy >>= 1; //shift whole_copy
   val.fractional = frac_copy;
   val.whole = whole_copy;
   return val;
@@ -252,13 +252,15 @@ Fixedpoint fixedpoint_double(Fixedpoint val) {
 }
 
 int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
+  //compare signs
   if(left.tag == 0 && right.tag == 1){
     return 1;
   }
   if(left.tag == 1 && right.tag == 0){
     return -1;
   }
-  // now left and right have the same sign
+
+  // now left and right have the same sign, consider 4 possible situations
   if(left.whole > right.whole){
     if (left.tag == 0) return 1;
     else return -1;
@@ -275,7 +277,7 @@ int fixedpoint_compare(Fixedpoint left, Fixedpoint right) {
     if (left.tag == 0) return -1;
     else return 1;
   }
-  return 0;
+  return 0; //they are the same
 }
 
 
@@ -299,7 +301,6 @@ int fixedpoint_is_err(Fixedpoint val) {
 
 int fixedpoint_is_neg(Fixedpoint val) {
   uint64_t tag = val.tag;
-  //printf("tag is : %lu",tag);
   if (tag == 1 || tag == 4 || tag == 6) {
     return 1;
   } else {
@@ -348,63 +349,58 @@ int fixedpoint_is_valid(Fixedpoint val) {
   }
 }
 char* format_as_hex_without_frac(char* whole_buffer,uint64_t tag){
-  char* s = malloc((strlen(whole_buffer)+1+tag)*sizeof(char));
-    if(tag == 1){
-      char temp [2] = {'-','\0'};
-      strcat(temp,whole_buffer);
+  char* s = malloc((strlen(whole_buffer)+1+tag)*sizeof(char));//allocate enough memory
+    if(tag == 1){ //when we need to add minus sign infront
+      char temp [18] = {'-','\0'};//leave anough room to avoid errors when doing strcat
+      strcat(temp,whole_buffer);//concatenate minus sign
       strcpy(s,temp);
       return s;
     }
-    strcpy(s,whole_buffer);
+    strcpy(s,whole_buffer); //copy whole buffer string
     return s;
 }
 
 char* format_as_hex_helper(char* whole_buffer, uint64_t tag){
-  printf("tag2 is: %lu",tag);
-
   uint64_t length = strlen(whole_buffer);
   char* ptr = whole_buffer;
-  uint64_t count = 0;
-  while(*ptr!='\0'){
+  uint64_t count = 0;//count number of useless zeros at the end of whole_buffer
+  while(*ptr!='\0'){ //let ptr go to end
     ptr++;
   }
   ptr--;
-  while(*ptr == '0'){
+  while(*ptr == '0'){ //while there are still useless trailing zeros
     ptr--;
-    count++;
+    count++; //count trailing zeros
   }
-  char* result = malloc(sizeof(char)*(length + 1 - count + tag));
-  char* copy = result;
-  if (tag == 1){
-    printf("successful entrance");
+  char* result = malloc(sizeof(char)*(length + 1 - count + tag)); //allocate enough memory
+  char* copy = result; //keep track of the head pointer
+  if (tag == 1){ //when we need to add minus sign
     *result = '-';
     result ++;
   }
-  for(uint64_t i = 0; i<length - count; i++){
+  for(uint64_t i = 0; i<length - count; i++){ //add string to result, ignoring trailing zeros
     *result = whole_buffer[i];
-    result++;
+    result++; //update result pointer
   } 
   *result = '\0';
   return copy;
 }
 
 char *fixedpoint_format_as_hex(Fixedpoint val) {
-  uint64_t whole = val.whole;
+  uint64_t whole = val.whole; //initialize variables
   uint64_t frac = val.fractional;
   uint64_t tag = val.tag;  
 
-  char whole_buffer [35];
-  char frac_buffer [35];
+  char whole_buffer [35]; //allocate enough space, to prevent issues when doing multiple strcat
+  char frac_buffer [17];
   sprintf(whole_buffer,"%lx",whole); //convert whole and frac parts to string
   sprintf(frac_buffer,"%016lx",frac);
   if(frac == 0){
-    return format_as_hex_without_frac(whole_buffer,tag);
+    return format_as_hex_without_frac(whole_buffer,tag); //when there isn't a frac part to consider
   }
-  strcat(whole_buffer,".");
-  printf("tag0 is: %lu",tag);
-  strcat(whole_buffer,frac_buffer);
-  printf("tag1 is: %lu",tag);
-  return format_as_hex_helper(whole_buffer,tag);
+  strcat(whole_buffer,"."); //add decimal point
+  strcat(whole_buffer,frac_buffer); //add frac part to whole part
+  return format_as_hex_helper(whole_buffer,tag); //return correctly formatted hexstring
 }
 
 
