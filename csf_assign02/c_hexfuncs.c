@@ -5,7 +5,6 @@
 
 unsigned hex_read(char data_buf[]) {
     ssize_t read_result = read(0, data_buf, 16);
-
     //Return number of bytes read if there is input
     if(read_result > 0) return read_result;
     return 0; //Return 0 if there is not input or there is error
@@ -22,5 +21,22 @@ void hex_write_string(const char s[]) {
     write (1, s, count);
 }
 
+void hex_format_offset(unsigned offset, char sbuf[]) {
+
+}
+
+void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
+
+}
+
+char hex_to_printable(unsigned char byteval) {
+    char result;
+    if(byteval > 31) {
+        result = byteval;
+    } else {
+        result = 46;
+    }
+    return result;
+}
 
 
