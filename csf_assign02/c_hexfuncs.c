@@ -22,5 +22,26 @@ void hex_write_string(const char s[]) {
     write (1, s, count);
 }
 
+void hex_format_offset(unsigned offset, char sbuf[]){
+    int index = 7;
+    while(offset != 0){
+        if (offset % 16 > 9) {
+            sbuf[index--] = 'a' + (offset % 16) - 10;
+        } else {
+            sbuf[index --] = '0' + (offset % 16);
+        }
+        offset /= 16;
+    }
+}
+
+void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]){
+
+}
+
+char hex_to_printable(unsigned char byteval){
+
+}
+
+
 
 
