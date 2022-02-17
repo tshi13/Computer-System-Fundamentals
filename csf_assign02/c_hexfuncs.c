@@ -22,6 +22,10 @@ void hex_write_string(const char s[]) {
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
+    for (int i=0;i<8; i++){
+        sbuf[i] = '0';
+    }
+    sbuf[8] = '\0';
     int index = 7;
     while(offset != 0){
         if (offset % 16 > 9) {
@@ -34,6 +38,9 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
 }
 
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
+    sbuf[0] = '0';
+    sbuf[1] = '0';
+    sbuf[2] = '\0';
     int index = 1;
     while(byteval != 0){
         if (byteval % 16 > 9) {
