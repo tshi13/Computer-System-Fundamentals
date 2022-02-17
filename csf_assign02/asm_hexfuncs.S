@@ -10,23 +10,23 @@
 	
 	.globl hex_read
 hex_read:
-		return
+		ret
 	
 	.globl hex_write_string
 hex_write_string:
-	return
+	ret
 
 	.globl hex_format_offset
 hex_format_offset:
-	return
+	ret
 
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
-	return
+	ret
 
 	.globl hex_to_printable
 hex_to_printable:
-	return
+	ret
 	
 /* vim:ft=gas:
  */
