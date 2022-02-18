@@ -65,62 +65,60 @@ void testFormatOffset(TestObjs *objs) {
 
   //unsigned medium
   hex_format_offset(716L, buf);
-  ASSERT(0 == strcmp(buf, "000002CC"));
+  ASSERT(0 == strcmp(buf, "000002cc"));
 
   hex_format_offset(43981L, buf);
-  ASSERT(0 == strcmp(buf, "0000ABCD"));
+  ASSERT(0 == strcmp(buf, "0000abcd"));
 
   hex_format_offset(16436428L, buf);
-  ASSERT(0 == strcmp(buf, "00FACCCC"));
+  ASSERT(0 == strcmp(buf, "00facccc"));
 
   //unsigned large
   hex_format_offset(3910912371L, buf);
-  ASSERT(0 == strcmp(buf, "E91BC973"));
+  ASSERT(0 == strcmp(buf, "e91bc973"));
 
   //unsigned max
   hex_format_offset(4294967295L, buf);
-  ASSERT(0 == strcmp(buf, "FFFFFFFF"));
+  ASSERT(0 == strcmp(buf, "ffffffff"));
 }
 
 void testFormatByteAsHex(TestObjs *objs) {
   char buf[16];
   //Test each in test_data_1
-  hex_format_byte_as_hex(objs->test_data_1[0], buf);
+  hex_format_byte_as_hex(objs->test_data_1[0], buf); //H
   ASSERT(0 == strcmp(buf, "48"));
 
-  hex_format_byte_as_hex(objs->test_data_1[1], buf); //H
-  ASSERT(0 == strcmp(buf, "48"));
-
-  hex_format_byte_as_hex(objs->test_data_1[2], buf); //e
+  hex_format_byte_as_hex(objs->test_data_1[1], buf); //e
   ASSERT(0 == strcmp(buf, "65"));
 
-  hex_format_byte_as_hex(objs->test_data_1[4], buf); //l
-  ASSERT(0 == strcmp(buf, "6C"));
+  hex_format_byte_as_hex(objs->test_data_1[3], buf); //l
+  ASSERT(0 == strcmp(buf, "6c"));
 
-  hex_format_byte_as_hex(objs->test_data_1[5], buf); //o
-  ASSERT(0 == strcmp(buf, "6F"));
+  hex_format_byte_as_hex(objs->test_data_1[4], buf); //o
+  ASSERT(0 == strcmp(buf, "6f"));
 
-  hex_format_byte_as_hex(objs->test_data_1[6], buf); //,
-  ASSERT(0 == strcmp(buf, "2C"));
+  hex_format_byte_as_hex(objs->test_data_1[5], buf); //,
+  ASSERT(0 == strcmp(buf, "2c"));
 
-  hex_format_byte_as_hex(objs->test_data_1[7], buf); //(space)
+  hex_format_byte_as_hex(objs->test_data_1[6], buf); //(space)
   ASSERT(0 == strcmp(buf, "20"));
 
-  hex_format_byte_as_hex(objs->test_data_1[9], buf); //w
+  hex_format_byte_as_hex(objs->test_data_1[7], buf); //w
   ASSERT(0 == strcmp(buf, "77"));
+
 
   hex_format_byte_as_hex(objs->test_data_1[9], buf); //r
   ASSERT(0 == strcmp(buf, "72"));
 
-  hex_format_byte_as_hex(objs->test_data_1[9], buf); //d
+  hex_format_byte_as_hex(objs->test_data_1[11], buf); //d
   ASSERT(0 == strcmp(buf, "64"));
 
-  hex_format_byte_as_hex(objs->test_data_1[10], buf); //\n
-  ASSERT(0 == strcmp(buf, "0A"));
+  hex_format_byte_as_hex(objs->test_data_1[13], buf); //\n
+  ASSERT(0 == strcmp(buf, "0a"));
 
   //Test each in test_data_symbol ~!$^*(+}'>?
   hex_format_byte_as_hex(objs->test_data_symbol[0], buf); //~
-  ASSERT(0 == strcmp(buf, "7E"));
+  ASSERT(0 == strcmp(buf, "7e"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[1], buf); //!
   ASSERT(0 == strcmp(buf, "21"));
@@ -129,28 +127,28 @@ void testFormatByteAsHex(TestObjs *objs) {
   ASSERT(0 == strcmp(buf, "24"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[3], buf); //^
-  ASSERT(0 == strcmp(buf, "5E"));
+  ASSERT(0 == strcmp(buf, "5e"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[4], buf); //*
-  ASSERT(0 == strcmp(buf, "2A"));
+  ASSERT(0 == strcmp(buf, "2a"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[5], buf); //(
   ASSERT(0 == strcmp(buf, "28"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[6], buf); //+
-  ASSERT(0 == strcmp(buf, "2B"));
+  ASSERT(0 == strcmp(buf, "2b"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[7], buf); //}
-  ASSERT(0 == strcmp(buf, "7D"));
+  ASSERT(0 == strcmp(buf, "7d"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[8], buf); //'
   ASSERT(0 == strcmp(buf, "27"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[9], buf); //>
-  ASSERT(0 == strcmp(buf, "3E"));
+  ASSERT(0 == strcmp(buf, "3e"));
 
   hex_format_byte_as_hex(objs->test_data_symbol[10], buf); //?
-  ASSERT(0 == strcmp(buf, "3F"));
+  ASSERT(0 == strcmp(buf, "3f"));
 
   //Test test_data_nothing
   hex_format_byte_as_hex(objs->test_data_nothing[0], buf); //NULL
@@ -167,10 +165,10 @@ void testFormatByteAsHex(TestObjs *objs) {
   ASSERT(0 == strcmp(buf, "68"));
 
   hex_format_byte_as_hex(objs->test_data_letters[3], buf); //m
-  ASSERT(0 == strcmp(buf, "6D"));
+  ASSERT(0 == strcmp(buf, "6d"));
 
   hex_format_byte_as_hex(objs->test_data_letters[4], buf); //z
-  ASSERT(0 == strcmp(buf, "7A"));
+  ASSERT(0 == strcmp(buf, "7a"));
 
   hex_format_byte_as_hex(objs->test_data_letters[5], buf); //A
   ASSERT(0 == strcmp(buf, "41"));
@@ -182,10 +180,10 @@ void testFormatByteAsHex(TestObjs *objs) {
   ASSERT(0 == strcmp(buf, "48"));
 
   hex_format_byte_as_hex(objs->test_data_letters[8], buf); //M
-  ASSERT(0 == strcmp(buf, "4D"));
+  ASSERT(0 == strcmp(buf, "4d"));
 
   hex_format_byte_as_hex(objs->test_data_letters[9], buf); //Z
-  ASSERT(0 == strcmp(buf, "5A"));
+  ASSERT(0 == strcmp(buf, "5a"));
 }
 
 void testHexToPrintable(TestObjs *objs) {
