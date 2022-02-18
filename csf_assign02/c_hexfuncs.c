@@ -9,7 +9,14 @@ unsigned hex_read(char data_buf[]) {
 }
 
 void hex_write_string(const char s[]) {
-    write (1, s, 16);
+    unsigned length = 16;
+    for (int i = 0; i < 16; i++) {
+        if(s[i] == '\0') {
+            length = i;
+            break;
+        }
+    }
+    write (1, s, length);
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
