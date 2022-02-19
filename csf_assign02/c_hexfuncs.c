@@ -16,7 +16,7 @@ void hex_write_string(const char s[]) {
             break;
         }
     }
-    write (1, s, length);
+    write (1, s, length + 1);
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
@@ -42,19 +42,6 @@ void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
     byteval >>= 4;
     sbuf[0] = map[byteval & 0xf];
 
-
-    // sbuf[0] = '0';
-    // sbuf[1] = '0';
-    // sbuf[2] = '\0';
-    // int index = 1;
-    // while(byteval != 0){
-    //     if (byteval % 16 > 9) {
-    //         sbuf[index--] = 'a' + (byteval % 16) - 10;
-    //     } else {
-    //         sbuf[index --] = '0' + (byteval % 16);
-    //     }
-    //     byteval /= 16;
-    // }
 }
 
 char hex_to_printable(unsigned char byteval) {
