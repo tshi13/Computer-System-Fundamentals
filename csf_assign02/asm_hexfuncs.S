@@ -24,19 +24,22 @@ hex_format_offset:
 
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex: 
-	// byteval in %rdi, sbuf[] in %rsi, sMap in %rdx, hexchar in %rcx
+	// byteval in %rdi, sbuf[] in %rsi, sMap in %rdx, hexchar in %rcx, copy of byteval in %r8
 	subq $8,%rsp //adjust stack pointer
 
 	movq $sMap,%rdx //store string map in %rdx
 	movq $0, 2(%rsi) //store null terminator in sbuf[2]
 
-	andq $0xf,%rdi //and operation
-	movq (%rdx, %rdi, 1), %rcx //store correct hexchar in %rcx
-	movq %rcx, 1(%rsi) //put hex in sbuf[1]
+	movq %rdi,%r8 //copy byteval into %r8
+	andq $0xf,%r8 //and operation
+	movq (%rdx, %r8, 1), %rcx //store correct hexchar in %rcx
+	movb %cl, 1(%rsi) //put hex in sbuf[1]
 
 	shrq $4,%rdi //shift byteval 4 places to the right
 	andq $0xf,%rdi //and operation
-	movq (%rdx, %rdi, 1),%rsi //put hex in sbuf[0]
+
+	movq (%rdx, %rdi, 1), %rcx //store correct hexchar in %rcx
+	movb %cl,(%rsi) //put hex in sbuf[0]
 
 	addq $8,%rsp //adjust stack pointer
 
