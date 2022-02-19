@@ -3,6 +3,7 @@
 	.section .rodata
 
 	/* TODO: add read-only data such as strings here */
+	sMap: .string "0123456789abcdef"
 
 	.section .text
 
@@ -20,12 +21,28 @@ hex_write_string:
 hex_format_offset:
 	ret
 
+
 	.globl hex_format_byte_as_hex
-hex_format_byte_as_hex:
-	ret
+hex_format_byte_as_hex: 
+	// byteval in %rdi, sbuf[] in %rsi, sMap in %rdx, hexchar in %rcx
+	subq $8,%rsp //adjust stack pointer
+
+	movq $sMap,%rdx //store string map in %rdx
+	movq $0, 2(%rsi) //store null terminator in sbuf[2]
+
+	andq $0xf,%rdi //and operation
+	movq (%rdx, %rdi, 1), %rcx //store correct hexchar in %rcx
+	movq %rcx, 1(%rsi) //put hex in sbuf[1]
+
+	shrq $4,%rdi //shift byteval 4 places to the right
+	andq $0xf,%rdi //and operation
+	movq (%rdx, %rdi, 1),%rsi //put hex in sbuf[0]
+
+	addq $8,%rsp //adjust stack pointer
 
 
 
+ 
 
 
 
