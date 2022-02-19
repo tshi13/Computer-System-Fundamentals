@@ -28,7 +28,11 @@ int main(int argc, char*argv[]) {
           hex_write_string(cur);
           hex_write_string(" \0");
       }
-      sentence[num_elements] = '\0';
+      if (num_elements != 16) {
+          sentence[num_elements] = ".";
+          sentence[num_elements + 1] = "\0";
+      }
+      
       for(int i = num_elements; i < 16; i++) {
           hex_write_string("   \0");
       }
@@ -36,9 +40,7 @@ int main(int argc, char*argv[]) {
       hex_write_string("  \0");
 
       hex_write_string(sentence);
-      if (num_elements != 16) {
-          hex_write_string(".\0");
-      }
+
 
       for(int i = num_elements + 1; i < 16; i++) {
           hex_write_string(" \0");
