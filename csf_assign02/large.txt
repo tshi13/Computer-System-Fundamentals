@@ -1,0 +1,46 @@
+In this assignment you will implement a hex dump program using both C and assembly language. The submission of this assignment will be broken up to two milestones as listed below.
+
+Note that your assembly-code must strictly adhere to all requirements of the x86-64 Linux register use and procedure calling conventions. You will receive a deduction for violations of the register use and procedure calling conventions, even if your code passes the automated tests.
+
+Acknowledgment: The idea for this assignment comes from the Fall 2018 HW5 developed by Peter Froehlich.
+
+Milestone 1 requirements
+For this submission, all C language function implementations must be working with unit tests written. In addition, at least the Assembly language functions of hex_to_printable and hex_format_byte_as_hex must be working with unit tests written.
+
+To summarize this milestone, the c_hexdump program should be 100% functional, and c_hextests should pass all of the implemented unit tests. (You will need to write your own unit tests so that each of the functions declared in hexfuncs.h is thoroughly tested.)
+
+Milestone 2 requirements
+The rest of the Assembly language functions must be written with thorough unit tests. Uploads for this submission should include the C implementation and unit tests submitted for part 1 as well.
+
+For this milestone, the asm_hexdump program should be 100% functional, and asm_hextests should pass all of the implemented unit tests. (You should not need to add any additional unit tests, although you may if you wish.)
+
+Late Days
+If you will be using more than 2 late days on this assignment (for either milestone), please make a private post (to instructors) on Piazza letting us know.
+
+Grading breakdown
+Milestone 1 (30 points)
+
+C implementation - 10%
+
+Assembly implementation - 20%
+
+Milestone 2 (70 points)
+
+Assembly implementation - 35%
+
+Unit tests - 20%
+
+Packaging, style, and design - 15%
+
+Getting started
+Download csf_assign02.zip, which contains the skeleton code for the assignment.
+
+You can download this file from a Linux command prompt using the curl command:
+
+curl -O https://jhucsf.github.io/spring2022/assign/csf_assign02.zip
+Note that in the -O option, it is the letter “O”, not the numeral “0”.
+
+Hex dump
+Start by reading up on what hexdumps are. For this assignment, you will write a program in C and x86-64 assembly that produces a hexdump on standard output for data read from standard input.
+
+Let’s start with an example:

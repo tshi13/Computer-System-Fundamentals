@@ -11,41 +11,33 @@ int main(int argc, char*argv[]) {
 
   while(num_elements == 16) {
       num_elements = hex_read(userinput);
+      if(num_elements == 0) break;
       //The output string
-      char output[9];
+      char position[9];
 
       //Write the position to output
-      hex_format_offset(count, output);
-      hex_write_string(output);
+      hex_format_offset(count, position);
+      hex_write_string(position);
       hex_write_string(": \0");
 
-      char sentence[16];
       //Write the hex number of each char to output
       for(int i = 0; i < num_elements; i++) {
           char cur[3];
           hex_format_byte_as_hex(userinput[i], cur);
-          sentence[i] = userinput[i];
           hex_write_string(cur);
           hex_write_string(" \0");
       }
-      if (num_elements != 16) {
-          sentence[num_elements] = ".";
-          sentence[num_elements + 1] = "\0";
-      }
-      
       for(int i = num_elements; i < 16; i++) {
           hex_write_string("   \0");
       }
 
-      hex_write_string("  \0");
-
-      hex_write_string(sentence);
-
-
-      for(int i = num_elements + 1; i < 16; i++) {
-          hex_write_string(" \0");
+      hex_write_string(" \0");
+      char sentence[num_elements + 1];
+      for(int i = 0; i < num_elements; i++) {
+        sentence[i] = hex_to_printable(userinput[i]);
       }
-
+      sentence[num_elements + 1] = '\0';
+      hex_write_string(sentence);
       hex_write_string("\n\0");
       count += 16;
   }
