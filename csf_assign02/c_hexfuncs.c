@@ -16,7 +16,7 @@ void hex_write_string(const char s[]) {
             break;
         }
     }
-    write (1, s, length + 1);
+    write (1, s, length);
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
@@ -46,7 +46,7 @@ void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
 
 char hex_to_printable(unsigned char byteval) {
     char result;
-    if(byteval > 31) {
+    if(byteval > 31 && byteval < 127) {
         result = byteval;
     } else {
         result = 46;
