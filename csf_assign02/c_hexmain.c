@@ -12,10 +12,9 @@ int main(int argc, char*argv[]) {
   while(num_elements == 16) {
       num_elements = hex_read(userinput);
       if(num_elements == 0 || num_elements == -1) break;
-      //The output string
-      char position[9];
 
       //Write the position to output
+      char position[9];
       hex_format_offset(count, position);
       hex_write_string(position);
       hex_write_string(": ");
@@ -31,6 +30,7 @@ int main(int argc, char*argv[]) {
           hex_write_string("   ");
       }
 
+      //write each char of the sentence to output
       hex_write_string(" ");
       char sentence[num_elements + 1];
       for(int i = 0; i < num_elements; i++) {
@@ -39,6 +39,7 @@ int main(int argc, char*argv[]) {
       sentence[num_elements] = '\0';
       hex_write_string(sentence);
       hex_write_string("\n");
-      count += 16;
+
+      count += 16;//update the position 
   }
 }

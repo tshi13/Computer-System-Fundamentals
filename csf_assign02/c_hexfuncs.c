@@ -10,6 +10,7 @@ unsigned hex_read(char data_buf[]) {
 
 void hex_write_string(const char s[]) {
     unsigned length = 16;
+    //write till null terminator
     for (int i = 0; i < 16; i++) {
         if(s[i] == '\0') {
             length = i;
@@ -49,7 +50,7 @@ char hex_to_printable(unsigned char byteval) {
     if(byteval > 31 && byteval < 127) {
         result = byteval;
     } else {
-        result = 46;
+        result = 46; //unprintable is .
     }
     return result;
 }

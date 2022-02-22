@@ -3,4 +3,4 @@ Ian Zheng yzheng67
 
 We split c functions 50-50
 Taiming: finished 2 asm functions
-Ian: finished c_hexmain.c
+Ian: finished c_hexmain.c and hextests.c
