@@ -53,17 +53,39 @@ hex_format_byte_as_hex:
 hex_to_printable:
 	subq $8,%rsp //adjust stack pointer
 	cmpq $31,%rdi //%rdi stores byteval
-	jg .Lvalid //when byteval is printable
+	jg .Lvalid1 //when byteval is printable
 	movq $46,%rax 
 	addq $8,%rsp //adjust stack pointer
 	ret
 
-.Lvalid:  //when byteval is printable
-	movq %rdi,%rax //move byteval to %rax
+.Lvalid1:  //when byteval is printable
+	cmpq $127,%rdi
+  jl .Lvalid2
+  movq $46,%rax 
 	addq $8,%rsp //adjust stack pointer
 	ret
 
-	
+.Lvalid2:
+  movq %rdi,%rax //move byteval to %rax
+	addq $8,%rsp //adjust stack pointer
+	ret
+
+
+// 	.globl hex_to_printable
+// hex_to_printable:
+// 	subq $8,%rsp //adjust stack pointer
+// 	cmpq $31,%rdi //%rdi stores byteval
+// 	jg .Lvalid //when byteval is printable
+// 	movq $46,%rax 
+// 	addq $8,%rsp //adjust stack pointer
+// 	ret
+
+// .Lvalid:  //when byteval is printable
+// 	movq %rdi,%rax //move byteval to %rax
+// 	addq $8,%rsp //adjust stack pointer
+// 	ret
+
+
 	
 /* vim:ft=gas:
  */

@@ -21,12 +21,12 @@ void hex_write_string(const char s[]) {
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
-    for (int i=0;i<8; i++){
+    for (int i=0;i<8; i++){ //initialze with zeros
         sbuf[i] = '0';
     }
-    sbuf[8] = '\0';
+    sbuf[8] = '\0'; //add null terminator
     int index = 7;
-    while(offset != 0){
+    while(offset != 0){ //go from back to front, mod then divide
         if (offset % 16 > 9) {
             sbuf[index--] = 'a' + (offset % 16) - 10;
         } else {
@@ -37,17 +37,17 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
 }
 
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
-    char map[] = {"0123456789abcdef"};
+    char map[] = {"0123456789abcdef"};//mapping to hex characters
     sbuf[2] = '\0';
-    sbuf[1] = map[byteval & 0xf];
-    byteval >>= 4;
-    sbuf[0] = map[byteval & 0xf];
+    sbuf[1] = map[byteval & 0xf];//AND operation
+    byteval >>= 4; //shift 4 bits
+    sbuf[0] = map[byteval & 0xf]; //another AND operation
 
 }
 
 char hex_to_printable(unsigned char byteval) {
     char result;
-    if(byteval > 31 && byteval < 127) {
+    if(byteval > 31 && byteval < 127) { //check range
         result = byteval;
     } else {
         result = 46; //unprintable is .
