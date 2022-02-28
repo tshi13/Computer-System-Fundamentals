@@ -27,22 +27,22 @@ hex_write_string:
 	movq $0, %r11 // %r11 stores the value of i, int i = 0
 	jmp .LcheckLoop //Go to loop
 	
-.LupdateLength
+.LupdateLength:
 	movq %r11, %r10 //put the value of loop index into length
-	jmp.Lwrite //break from loop body
+	jmp .Lwrite //break from loop body
 
 .LfindNull:
-	movq(%rdi, %r11, 1), %rcx //Access char stored in s[i], store it into %rcx
+	movq (%rdi, %r11, 1), %rcx //Access char stored in s[i], store it into %rcx
 	addq $1, %r11 //update the loop index, i++
-	cpmq %rcx, $0 //Compare char with 0
+	cmpq $0, %rcx  //Compare char with 0
 	je .LupdateLength //Jump to update length if char == null terminator
 
-.LcheckLoop
+.LcheckLoop:
 	cmpq $16, %r11 //Compare if i < 16
 	jl .LfindNull //Jump to loop body if it does
 
 //%r10 now stores the value of length
-.Lwrite
+.Lwrite:
 	movq %rdi, %rsi //pass char s[] as the second element into write
 	movq $1, %rdi //pass 1 into as the first element into write
 	movq %r10, %rdx //pass length as the third element of write
