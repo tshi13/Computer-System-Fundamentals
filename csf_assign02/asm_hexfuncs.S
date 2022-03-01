@@ -11,18 +11,18 @@
 	
 	.globl hex_read
 hex_read:
-	addq $8, %rsp //adjust stack pointer
+	subq $8, %rsp //adjust stack pointer
 	movq %rdi, %r10 //move data_buf into resgiter
 	movq $0, %rdi //pass in 0 to read function call
 	movq %r10, %rsi //pass in data_buf to read function call
 	movq $16, %rdx //paass in 16 to read function call
 	call read
-	subq $8, %rsp //restore stack pointer
+	addq $8, %rsp //restore stack pointer
 		ret
 
 	.globl hex_write_string
 hex_write_string:
-	addq $8, %rsp //adjust stack pointer
+	subq $8, %rsp //adjust stack pointer
 	movq $16, %r10 //length = 16
 	movq $0, %r11 // %r11 stores the value of i, int i = 0
 	jmp .LcheckLoop //Go to loop
@@ -47,7 +47,7 @@ hex_write_string:
 	movq $1, %rdi //pass 1 into as the first element into write
 	movq %r10, %rdx //pass length as the third element of write
 	call write
-	subq $8, %rsp //restore stack pointer
+	addq $8, %rsp //restore stack pointer
 
 	.globl hex_format_offset
 hex_format_offset:
