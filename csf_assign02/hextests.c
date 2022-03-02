@@ -55,10 +55,10 @@ int main(int argc, char **argv) {
 void testFormatOffset(TestObjs *objs) {
   (void) objs; // suppress warning about unused parameter
   char buf[16];
+  
   //zero
   hex_format_offset(0L, buf);
   ASSERT(0 == strcmp(buf, "00000000"));
-
   //unsigned small
   hex_format_offset(1L, buf);
   ASSERT(0 == strcmp(buf, "00000001"));
