@@ -19,8 +19,36 @@ hex_write_string:
 
 	.globl hex_format_offset
 hex_format_offset:
-	ret
+  //offset in %rdi, sbuf in %rsi, sMap in %rdx, index in %rcx
+  //copy of offset in %r8, hexchar in %r9
+  subq $8,%rsp //adjust stack pointer
+  movq $sMap,%rdx //move sMap to %rdx
+  movq $0,%rcx //index for initializing sbuf with all zeros
 
+  .Linitialize:
+    movb $48,(%rsi,%rcx,1) //put '0' in position
+    addq $1,%rcx //add 1 to index
+    cmpq $8,%rcx //continue to initialize remaining positions with 0
+    jl .Linitialize
+
+  movb $0,(%rsi,%rcx,1) //put null terminator at index = 8
+  movq $7,%rcx //change index to 7
+
+  // cmpq $0,%rdi //check if offset is already 0
+  // jne .Lextract
+
+  // .Lextract:
+  //   movq %rdi,%r8
+  //   andq $0xf,%r8 //and operation
+  //   movq (%rdx,%r8,1),%r9 //store hexchar in %r9
+  //   movq %r9, (%rsi,%rcx,1) //put hexchar in sbuf
+  //   subq $1,%rcx //decrement index
+  //   shrq $4,%rdi //shift offset 4 places to the right
+  //   cmpq $0,%rdi //check if offset is already 0
+  //   jne .Lextract
+
+  addq $8,%rsp
+    
 
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex: 
@@ -43,9 +71,6 @@ hex_format_byte_as_hex:
 
 	addq $8,%rsp //adjust stack pointer
 
-
-
- 
 
 
 
