@@ -35,6 +35,8 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
     }
 }
 
+
+
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
     char map[] = {"0123456789abcdef"};//mapping to hex characters
     sbuf[2] = '\0';

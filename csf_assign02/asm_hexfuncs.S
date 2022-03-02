@@ -49,6 +49,7 @@ hex_write_string:
 	call write
 	addq $8, %rsp //restore stack pointer
 
+
 	.globl hex_format_offset
 hex_format_offset:
   //offset in %rdi, sbuf in %rsi, sMap in %rdx, index in %rcx
@@ -67,7 +68,7 @@ hex_format_offset:
   movq $7,%rcx //change index to 7
 
   cmpq $0,%rdi //check if offset is already 0
-  jne .Lextract
+  je .Ldone
 
   .Lextract:
     movq %rdi,%r8
@@ -79,7 +80,9 @@ hex_format_offset:
     cmpq $0,%rdi //check if offset is already 0
     jne .Lextract
 
-  addq $8,%rsp
+  .Ldone:
+    addq $8,%rsp
+    ret
     
 
 	.globl hex_format_byte_as_hex
@@ -102,6 +105,7 @@ hex_format_byte_as_hex:
 	movb %cl,(%rsi) //put hex in sbuf[0]
 
 	addq $8,%rsp //adjust stack pointer
+  ret
 
 
 
