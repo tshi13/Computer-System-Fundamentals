@@ -66,18 +66,18 @@ hex_format_offset:
   movb $0,(%rsi,%rcx,1) //put null terminator at index = 8
   movq $7,%rcx //change index to 7
 
-  // cmpq $0,%rdi //check if offset is already 0
-  // jne .Lextract
+  cmpq $0,%rdi //check if offset is already 0
+  jne .Lextract
 
-  // .Lextract:
-  //   movq %rdi,%r8
-  //   andq $0xf,%r8 //and operation
-  //   movq (%rdx,%r8,1),%r9 //store hexchar in %r9
-  //   movq %r9, (%rsi,%rcx,1) //put hexchar in sbuf
-  //   subq $1,%rcx //decrement index
-  //   shrq $4,%rdi //shift offset 4 places to the right
-  //   cmpq $0,%rdi //check if offset is already 0
-  //   jne .Lextract
+  .Lextract:
+    movq %rdi,%r8
+    andq $0xf,%r8 //and operation
+    movb (%rdx,%r8,1),%r9b //store hexchar in %r9
+    movb %r9b, (%rsi,%rcx,1) //put hexchar in sbuf
+    subq $1,%rcx //decrement index
+    shrq $4,%rdi //shift offset 4 places to the right
+    cmpq $0,%rdi //check if offset is already 0
+    jne .Lextract
 
   addq $8,%rsp
     
@@ -102,7 +102,6 @@ hex_format_byte_as_hex:
 	movb %cl,(%rsi) //put hex in sbuf[0]
 
 	addq $8,%rsp //adjust stack pointer
-
 
 
 
