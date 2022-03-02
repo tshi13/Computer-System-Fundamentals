@@ -13,9 +13,9 @@
 hex_read:
 	subq $8, %rsp //adjust stack pointer
 	movq %rdi, %r10 //move data_buf into resgiter
-	movq $0, %rdi //pass in 0 to read function call
+	movl $0, %edi //pass in 0 to read function call
 	movq %r10, %rsi //pass in data_buf to read function call
-	movq $16, %rdx //paass in 16 to read function call
+	movl $16, %edx //paass in 16 to read function call
 	call read
 	addq $8, %rsp //restore stack pointer
 		ret
@@ -23,29 +23,29 @@ hex_read:
 	.globl hex_write_string
 hex_write_string:
 	subq $8, %rsp //adjust stack pointer
-	movq $16, %r10 //length = 16
-	movq $0, %r11 // %r11 stores the value of i, int i = 0
+	movl $16, %r10d //length = 16
+	movl $0, %r11d // %r11 stores the value of i, int i = 0
 	jmp .LcheckLoop //Go to loop
 	
 .LupdateLength:
-	movq %r11, %r10 //put the value of loop index into length
+	movl %r11d, %r10d //put the value of loop index into length
 	jmp .Lwrite //break from loop body
 
 .LfindNull:
-	movq (%rdi, %r11, 1), %rcx //Access char stored in s[i], store it into %rcx
-	addq $1, %r11 //update the loop index, i++
-	cmpq $0, %rcx  //Compare char with 0
+	movb (%rdi, %r11, 1), %cl //Access char stored in s[i], store it into %rcx TODO: NEED TO CHECK!
+	incl %r11d //update the loop index, i++
+	cmpb $0, %cl  //Compare char with 0
 	je .LupdateLength //Jump to update length if char == null terminator
 
 .LcheckLoop:
-	cmpq $16, %r11 //Compare if i < 16
+	cmpl $16, %r11d //Compare if i < 16
 	jl .LfindNull //Jump to loop body if it does
 
 //%r10 now stores the value of length
 .Lwrite:
 	movq %rdi, %rsi //pass char s[] as the second element into write
-	movq $1, %rdi //pass 1 into as the first element into write
-	movq %r10, %rdx //pass length as the third element of write
+	movl $1, %edi //pass 1 into as the first element into write
+	movl %r10d, %edx //pass length as the third element of write
 	call write
 	addq $8, %rsp //restore stack pointer
 
