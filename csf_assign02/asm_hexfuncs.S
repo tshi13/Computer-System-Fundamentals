@@ -80,7 +80,7 @@ hex_format_offset:
     cmpq $0,%rdi //check if offset is already 0
     jne .Lextract
 
-  .Ldone:
+  .Ldone: //adjust stack pointer, return
     addq $8,%rsp
     ret
     
