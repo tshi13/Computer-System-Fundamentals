@@ -82,7 +82,7 @@ main:
 	incl %r15d
 	movb %al, %dil			//move userinput[i] as the first parameter
 	call hex_to_printable	//Call hex_to_printable
-	movb $55, (%r14, %r15, 1)//Move the return result form hex_to_printable to sentence[i]
+	movb %al, (%r14, %r15, 1)//Move the return result form hex_to_printable to sentence[i]
 
 .LcheckWriteSentence:
 	cmpl %r12d, %r15d		//Compare loop control, if i < num_elements, continue loop
