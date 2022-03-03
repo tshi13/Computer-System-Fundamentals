@@ -49,6 +49,8 @@ hex_write_string:
 	call write
 	addq $8, %rsp //restore stack pointer
 
+	ret
+
 
 	.globl hex_format_offset
 hex_format_offset:
