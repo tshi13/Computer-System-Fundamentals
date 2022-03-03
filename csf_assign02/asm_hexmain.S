@@ -20,8 +20,7 @@ main:
 	.LprintLoop:
 	movq %rbp, %rdi 		//move userinput[16] into parameter
 	call hex_read 			//call hex read
-	movq %rbp, %rdi 		//move userinput[16] user just input into parameter
-	call hex_write_string	//Call hex_write_string
+	movl %eax, %r12d		//putting the result return from read to num_elements
 
 	cmpl $0, %eax			//if hex_read returns 0
 	je .LloopDone			//ends loop
@@ -37,7 +36,7 @@ main:
 	movq %r14, %rdi			//move position char array as first parameter
 	call hex_write_string	//Write position
 	movq $sColon, %rdi		//Move ": " as first parameter
-	call hex_write_string 	//Write "": "
+	call hex_write_string 	//Write ": "
 
 	//Write the hex number of each char to output
 	movl $0, %r15d			//%r15d as the index tracker, i = 0
@@ -73,13 +72,28 @@ main:
 	movl %r12d, %eax
 	incl %eax
 	imul $8, %eax
-	subq %eax, %rsp
+	subq %rax, %rsp			//Inspect HERE!!!!d
+	movq %rsp, %r14 		//Use %r14 to store sentence[num_elements + 1]
+	movl $0, %r15d			//Update index i to 0 as loop control
+	jmp .LcheckWriteSentence
+
+.LwriteSentence:
+	movb (%rbp, %r15, 1), %al//Move userinput[i] to %al
+	incl %r15d
+	movb %al, %dil			//move userinput[i] as the first parameter
+	call hex_to_printable	//Call hex_to_printable
+	movb $55, (%r14, %r15, 1)//Move the return result form hex_to_printable to sentence[i]
+
+.LcheckWriteSentence:
+	cmpl %r12d, %r15d		//Compare loop control, if i < num_elements, continue loop
+	jl .LwriteSentence		//Jump to loop body to write the sentence
 	
-
-
-
-
-
+	movb $0, (%r14, %r12, 1)//Move '\0' to sentence[num_elements]
+	movq %r14, %rdi			//Move sentence as the first parameter
+	call hex_write_string	//Call hex_write_string
+	movq $sNewLine, %rdi	//Move "\n" as the first parameter
+	call hex_write_string	//Write "\n" to the output
+	addl $16, %r13d
 	jmp .LprintLoop
 
 	.LloopDone:
