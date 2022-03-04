@@ -3,7 +3,7 @@
 	.section .rodata
 
 	/* TODO: add read-only data such as strings here */
-	sMap: .string "0123456789abcdef"
+sMap: .string "0123456789abcdef"
 
 	.section .text
 
@@ -27,17 +27,17 @@ hex_write_string:
 	movl $0, %r11d 				// %r11 stores the value of i, int i = 0
 	jmp .LcheckLoop 			//Go to loop
 	
-	.LupdateLength:
+.LupdateLength:
 	movl %r11d, %r10d 			//put the value of loop index into length
 	jmp .Lwrite 				//break from loop body
 
-	.LfindNull:
+.LfindNull:
 	movb (%rdi, %r11, 1), %cl 	//Access char stored in s[i], store it into %rcx TODO: NEED TO CHECK!
 	cmpb $0, %cl  				//Compare char with 0
 	je .LupdateLength 			//Jump to update length if char == null terminator
 	incl %r11d 					//update the loop index, i++
 
-	.LcheckLoop:
+.LcheckLoop:
 	cmpl $16, %r11d 			//Compare if i < 16
 	jl .LfindNull 				//Jump to loop body if it does
 
@@ -48,7 +48,6 @@ hex_write_string:
 	movl %r10d, %edx			//pass length as the third element of write
 	call write
 	addq $8, %rsp 				//restore stack pointer
-
 	ret
 
 
@@ -60,32 +59,31 @@ hex_format_offset:
   movq $sMap,%rdx 				//move sMap to %rdx
   movq $0,%rcx 					//index for initializing sbuf with all zeros
 
-	.Linitialize:
+.Linitialize:
 	movb $48,(%rsi,%rcx,1) 		//put '0' in position
-    addq $1,%rcx 				//add 1 to index
-    cmpq $8,%rcx 				//continue to initialize remaining positions with 0
-    jl .Linitialize
+  addq $1,%rcx 				//add 1 to index
+  cmpq $8,%rcx 				//continue to initialize remaining positions with 0
+  jl .Linitialize
 
-  	movb $0,(%rsi,%rcx,1) 		//put null terminator at index = 8
-  	movq $7,%rcx 				//change index to 7
+  movb $0,(%rsi,%rcx,1) 		//put null terminator at index = 8
+  movq $7,%rcx 				//change index to 7
 
-  	cmpq $0,%rdi 				//check if offset is already 0
-  	je .Ldone
+  cmpq $0,%rdi 				//check if offset is already 0
+  je .Ldone
 
-  	.Lextract:
+.Lextract:
 	movq %rdi,%r8
-    andq $0xf,%r8 				//and operation
-    movb (%rdx,%r8,1),%r9b 		//store hexchar in %r9
-    movb %r9b, (%rsi,%rcx,1)	//put hexchar in sbuf
-    subq $1,%rcx 				//decrement index
-    shrq $4,%rdi 				//shift offset 4 places to the right
-    cmpq $0,%rdi 				//check if offset is already 0
-    jne .Lextract
+  andq $0xf,%r8 				//and operation
+  movb (%rdx,%r8,1),%r9b 		//store hexchar in %r9
+  movb %r9b, (%rsi,%rcx,1)	//put hexchar in sbuf
+  subq $1,%rcx 				//decrement index
+  shrq $4,%rdi 				//shift offset 4 places to the right
+  cmpq $0,%rdi 				//check if offset is already 0
+  jne .Lextract
 
-  	.Ldone: //adjust stack pointer, return
-
-    addq $8,%rsp
-    ret
+.Ldone: //adjust stack pointer, return
+  addq $8,%rsp
+  ret
     
 
 	.globl hex_format_byte_as_hex
@@ -108,7 +106,7 @@ hex_format_byte_as_hex:
 	movb %cl,(%rsi) 			//put hex in sbuf[0]
 
 	addq $8,%rsp				//adjust stack pointer
-  	ret
+  ret
 
 
 
@@ -121,15 +119,15 @@ hex_to_printable:
 	addq $8,%rsp 				//adjust stack pointer
 	ret
 
-	.Lvalid1:  					//check if byteval > 31
+.Lvalid1:  					//check if byteval > 31
 	cmpq $127,%rdi 				//check if byteval < 127
-  	jl .Lvalid2 				//jump to check
-  	movq $46,%rax 				//move "." to %rax
+  jl .Lvalid2 				//jump to check
+  movq $46,%rax 				//move "." to %rax
 	addq $8,%rsp 				//adjust stack pointer
 	ret
 
-	.Lvalid2: 					//if 31< byteval < 127 
-  	movq %rdi,%rax 				//move byteval to %rax
+.Lvalid2: 					//if 31< byteval < 127 
+  movq %rdi,%rax 				//move byteval to %rax
 	addq $8,%rsp	 			//adjust stack pointer
 	ret	
 

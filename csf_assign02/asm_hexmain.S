@@ -1,23 +1,23 @@
 /* Hexdump main function, assembly language version */
 	.section .rodata
 
-	sColon: .string ": "
-	sSingleSpace: .string " "
-	sDoubleSpace: .string "   "
-	sNewLine: .string "\n"
+sColon: .string ": "
+sSingleSpace: .string " "
+sDoubleSpace: .string "   "
+sNewLine: .string "\n"
 
 	.section .text
 
 	.globl main
 main:
 	/* TODO: add your code here */
-	subq $8, %rsp			//Adjust the stack pointer
+	subq $8, %rsp			  //Adjust the stack pointer
 	subq $128, %rsp 		//initialize 16 bytes of storage for char array to store user input
 	movq %rsp, %rbp 		//%rbp is the array pointer of the char array
 	movl $16, %r12d 		//initialize num_elements for loop condition
 	movl $0, %r13d 			//initialize count for tracking the position
 
-	.LprintLoop:
+.LprintLoop:
 	movq %rbp, %rdi 		//move userinput[16] into parameter
 	call hex_read 			//call hex read
 	movl %eax, %r12d		//putting the result return from read to num_elements
@@ -42,7 +42,7 @@ main:
 	movl $0, %r15d			//%r15d as the index tracker, i = 0
 	jmp .LcheckWriteStop	//Jump to check condition
 
-	.LwriteHexNum:
+.LwriteHexNum:
 	subq $24, %rsp			//Create a char array of size 3 bytes
 	movq %rsp, %rbx			//use %rbx to store the char array
 	movb (%rbp, %r15, 1), %dil//Move the char into as the fist parameter
@@ -55,19 +55,19 @@ main:
 	addq $24, %rsp 			//realign the stack pointer for the char array
 	incl %r15d
 	
-	.LcheckWriteStop:
+.LcheckWriteStop:
 	cmpl %r12d, %r15d		//If index i < num_elements, continue loop
 	jl	.LwriteHexNum		//Jump to loop body
 
 	movl %r12d, %r15d		//New loop index for writing the double space, i = num_elements
 	jmp .LcheckWriteDoubleSpaceStop//Start a new loop
 
-	.LwriteDoubleSpace:
+.LwriteDoubleSpace:
 	movq $sDoubleSpace, %rdi//Pass double space "   " into argument
 	call hex_write_string	//Write the doble space "  "
 	incl %r15d				//Increase i, the loop index
 
-	.LcheckWriteDoubleSpaceStop:
+.LcheckWriteDoubleSpaceStop:
 	cmpl $16, %r15d			//If index i < 16, continue loop
 	jl	.LwriteDoubleSpace	//Jump to the loop body
 
@@ -83,14 +83,14 @@ main:
 
 	jmp .LcheckWriteSentence//Start a new loop
 
-	.LwriteSentence:
+.LwriteSentence:
 	movb (%rbp, %r15, 1), %al//Move userinput[i] to %al
 	movb %al, %dil			//move userinput[i] as the first parameter
 	call hex_to_printable	//Call hex_to_printable
 	movb %al, (%r14, %r15, 1)//Move the return result form hex_to_printable to sentence[i]
 	incl %r15d
 
-	.LcheckWriteSentence:
+.LcheckWriteSentence:
 	cmpl %r12d, %r15d		//Compare loop control, if i < num_elements, continue loop
 	jl .LwriteSentence		//Jump to loop body to write the sentence
 
@@ -105,7 +105,7 @@ main:
 	cmpl $16, %r12d			//Check while loop condition
 	je .LprintLoop			//Continue while loop if num_elements == 16
 
-	.LloopDone:
+.LloopDone:
 	movq $0, %rax			//Move 0 to rax
 	addq $128, %rsp			//Realign stack pointer for userinput[16]
 	addq $8, %rsp			//Realign Stack pointer for the program
