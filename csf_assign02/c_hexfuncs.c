@@ -1,4 +1,6 @@
 // C implementation of hexdump functions
+//Taiming Shi tshi13
+//Ian Zheng yzheng67
 
 #include <unistd.h>  // this is the only system header file you may include!
 #include "hexfuncs.h"

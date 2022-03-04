@@ -1,4 +1,6 @@
 /* Hexdump main function, assembly language version */
+//Taiming Shi tshi13
+//Ian Zheng yzheng67
 	.section .rodata
 
 sColon: .string ": "
