@@ -122,7 +122,7 @@ hex_to_printable:
 	ret
 
 .Lvalid1:  					//check if byteval > 31
-	cmpq $127,%rdi 				//check if byteval < 127
+  cmpq $127,%rdi 				//check if byteval < 127
   jl .Lvalid2 				//jump to check
   movq $46,%rax 				//move "." to %rax
 	addq $8,%rsp 				//adjust stack pointer
