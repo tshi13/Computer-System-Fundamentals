@@ -33,9 +33,9 @@ hex_write_string:
 
 	.LfindNull:
 	movb (%rdi, %r11, 1), %cl 	//Access char stored in s[i], store it into %rcx TODO: NEED TO CHECK!
-	incl %r11d 					//update the loop index, i++
 	cmpb $0, %cl  				//Compare char with 0
 	je .LupdateLength 			//Jump to update length if char == null terminator
+	incl %r11d 					//update the loop index, i++
 
 	.LcheckLoop:
 	cmpl $16, %r11d 			//Compare if i < 16
@@ -94,7 +94,7 @@ hex_format_byte_as_hex:
 	subq $8,%rsp 				//adjust stack pointer
 
 	movq $sMap,%rdx 			//store string map in %rdx
-	movq $0, 2(%rsi) 			//store null terminator in sbuf[2]
+	movb $0, 2(%rsi) 			//store null terminator in sbuf[2]
 
 	movq %rdi,%r8				//copy byteval into %r8
 	andq $0xf,%r8 				//and operation
