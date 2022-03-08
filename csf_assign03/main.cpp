@@ -5,9 +5,31 @@ using std::string;
 using std::cout;
 using std::cin;
 using std::endl;
+using std::stoi;
+
 
 
 int main(int argc, char *argv[]){
-  string set_count = argv[1];
-  cout << set_count << endl;
+  //read in command line arguments
+  int set_count = stoi(argv[1]);
+  int block_count = stoi(argv[2]);
+  int block_size = stoi(argv[3]);
+  string write_allocate = argv[4];
+  string write_through = argv[5];
+  string eviction = argv[6];
+  bool isLoad;
+
+  string temp;
+  while (cin >> temp){ //reading from input file
+    if (temp == "l"){ //loading
+      isLoad = true;
+      cout << "loading" << endl;
+    } else if (temp == "s") { //saving
+      isLoad = false;
+      cout << "saving" << endl;
+    } else {
+      cout << "read address" << endl;
+    }
+  }
+
 }
