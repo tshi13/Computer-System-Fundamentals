@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
     "makefile.extensionOutputFolder": "./.vscode"
+=======
+    "git.terminalAuthentication": false
+>>>>>>> fe8ec377a8beb96dbacfe96e8d6d027ec9005bde
 }
