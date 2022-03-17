@@ -1,11 +1,20 @@
 #include <string>
 #include <iostream>
+#include <map>
 
 using std::string;
 using std::cout;
 using std::cin;
 using std::endl;
 using std::stoi;
+using std::map;
+
+//map index -> set, set is a vector/array (stores tag)
+
+struct slot {
+  bool valid = false;
+  bool dirty = false;
+};
 
 
 
@@ -19,6 +28,10 @@ int main(int argc, char *argv[]){
   string eviction = argv[6];
   bool isLoad;
 
+  map<unsigned, slot> set; //Representation of a set, mapping index sets
+  map<unsigned, map<unsigned, slot> > cache; //Representation of a cache, mapping tag to sets
+
+
   string temp;
   while (cin >> temp){ //reading from input file
     if (temp == "l"){ //loading
@@ -31,5 +44,4 @@ int main(int argc, char *argv[]){
       cout << "read address" << endl;
     }
   }
-
 }
