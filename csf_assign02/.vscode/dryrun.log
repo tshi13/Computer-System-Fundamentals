@@ -1,0 +1,17 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/ianzheng/Desktop/CSF/csf_assign02'
+touch depend.mak
+ 
+make: Leaving directory `/Users/ianzheng/Desktop/CSF/csf_assign02'
+ 
+make: Entering directory `/Users/ianzheng/Desktop/CSF/csf_assign02'
+gcc -g -Og -no-pie -Wall -std=gnu11 -c c_hexfuncs.c
+gcc -g -Og -no-pie -Wall -std=gnu11 -c hextests.c
+gcc -g -Og -no-pie -Wall -std=gnu11 -c tctest.c
+gcc -o c_hextests -no-pie c_hexfuncs.o hextests.o tctest.o
+gcc -g -Og -no-pie -Wall -std=gnu11 -c c_hexmain.c
+gcc -o c_hexdump -no-pie c_hexfuncs.o c_hexmain.o
+gcc -c -g -no-pie asm_hexfuncs.S -o asm_hexfuncs.o
+gcc -o asm_hextests -no-pie asm_hexfuncs.o hextests.o tctest.o
+make: Leaving directory `/Users/ianzheng/Desktop/CSF/csf_assign02'
+ 

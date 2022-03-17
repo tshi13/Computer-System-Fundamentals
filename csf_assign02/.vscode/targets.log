@@ -1,0 +1,401 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+ 
+
+# Make data base, printed on Fri Feb 25 04:06:54 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+VSCODE_LOG_NATIVE = false
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /Users/ianzheng/Desktop/CSF/csf_assign02
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 8)
+CFLAGS = -g -Og -no-pie -Wall -std=gnu11
+# makefile (from `depend.mak', line 1)
+MAKEFILE_LIST :=  Makefile depend.mak
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+__CFBundleIdentifier = com.microsoft.VSCode
+# environment
+INFOPATH = /opt/homebrew/share/info:
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/qy/b103r2xx3g53ttwv1wpg1k9r0000gn/T/vscode-ipc-acf2c4e4-1a92-4e26-8179-6654f2492348.sock
+# environment
+VSCODE_CWD = /
+# makefile (from `Makefile', line 11)
+ASMFLAGS = -g -no-pie
+# environment
+PATH = /Users/ianzheng/opt/anaconda3/bin:/Users/ianzheng/opt/anaconda3/condabin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+# makefile (from `Makefile', line 7)
+C_SRCS = c_hexfuncs.c c_hexmain.c hextests.c tctest.c
+# environment
+VSCODE_LOG_STACK = false
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# makefile (from `Makefile', line 13)
+LDFLAGS = -no-pie
+# default
+ 
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.lHKplWhkd0/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+CONDA_EXE = /Users/ianzheng/opt/anaconda3/bin/conda
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+PWD = /Users/ianzheng/Desktop/CSF/csf_assign02
+# environment
+HOMEBREW_CELLAR = /opt/homebrew/Cellar
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+MANPATH = /opt/homebrew/share/man::
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
+# environment
+HOME = /Users/ianzheng
+# default
+MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/ianzheng/Library/Application Support/Code/CachedData/899d46d82c4c95423fb7e10e68eba52050e30ba3
+# environment
+LOGNAME = ianzheng
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+CONDA_PROMPT_MODIFIER = (base) 
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+CONDA_DEFAULT_ENV = base
+# environment
+XPC_FLAGS = 0x0
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 1
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = ianzheng
+# makefile
+.DEFAULT_GOAL := all
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+CONDA_SHLVL = 1
+# default
+MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/qy/b103r2xx3g53ttwv1wpg1k9r0000gn/T/
+# automatic
+ 
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/ianzheng/Library/Application Support/Code/1.63.2-main.sock
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.10230469.10230475
+# environment
+HOMEBREW_PREFIX = /opt/homebrew
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# environment
+HOMEBREW_REPOSITORY = /opt/homebrew
+# environment
+__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# makefile (from `Makefile', line 10)
+ASM_SRCS = asm_hexfuncs.S asm_hexmain.S
+# environment
+LC_ALL = C
+# environment
+CONDA_PYTHON_EXE = /Users/ianzheng/opt/anaconda3/bin/python
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# environment
+_CE_M = 
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+MAKELEVEL := 0
+# environment
+CONDA_PREFIX = /Users/ianzheng/opt/anaconda3
+# environment
+VSCODE_PID = 65841
+# environment
+_CE_CONDA = 
+# environment
+LANG = C
+# variable set hash-table stats:
+# Load=80/1024=8%, Rehash=0, Collisions=3/109=3%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777230, inode 12875228): 28 files, no impossibilities.
+
+# 28 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+%.o: %.c
+#  commands to execute (from `Makefile', line 16):
+	gcc $(CFLAGS) -c $<
+	
+
+%.o: %.S
+#  commands to execute (from `Makefile', line 19):
+	gcc -c $(ASMFLAGS) $*.S -o $*.o
+	
+
+# 2 implicit rules, 0 (0.0%) terminal.
+
+# Files
+
+# Not a target:
+c_hexfuncs.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-02-22 18:51:13
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+c_hexmain.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+all: c_hextests c_hexdump asm_hextests
+#  Command-line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/3=0%
+
+asm_hextests: asm_hexfuncs.o hextests.o tctest.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 30):
+	gcc -o $@ $(LDFLAGS) asm_hexfuncs.o hextests.o tctest.o
+	
+
+.PHONY: solution.zip
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+asm_hexdump: asm_hexfuncs.o asm_hexmain.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 33):
+	gcc -o $@ $(LDFLAGS) asm_hexfuncs.o asm_hexmain.o
+	
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-02-16 13:47:30
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+c_hextests: c_hexfuncs.o hextests.o tctest.o
+#  Implicit rule search has not been done.
+#  Last modified 2022-02-19 14:12:05
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/3=0%
+#  commands to execute (from `Makefile', line 24):
+	gcc -o $@ $(LDFLAGS) c_hexfuncs.o hextests.o tctest.o
+	
+
+solution.zip:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 42):
+	rm -f solution.zip
+	zip -9r $@ Makefile README.txt *.h *.c *.S
+	
+
+casm_hexdump: asm_hexfuncs.o c_hexmain.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 37):
+	gcc -o $@ $(LDFLAGS) asm_hexfuncs.o c_hexmain.o
+	
+
+# Not a target:
+asm_hexfuncs.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+c_hexdump: c_hexfuncs.o c_hexmain.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 27):
+	gcc -o $@ $(LDFLAGS) c_hexfuncs.o c_hexmain.o
+	
+
+depend:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 52):
+	gcc -M $(C_SRCS) > depend.mak
+	
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+hextests.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+c_hexfuncs.o: c_hexfuncs.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `c_hexfuncs'
+#  Last modified 2022-02-20 13:19:54
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := c_hexfuncs.o
+# automatic
+# % := 
+# automatic
+# * := c_hexfuncs
+# automatic
+# + := c_hexfuncs.c
+# automatic
+# | := 
+# automatic
+# < := c_hexfuncs.c
+# automatic
+# ^ := c_hexfuncs.c
+# automatic
+# ? := c_hexfuncs.c
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/12=8%
+#  commands to execute (from `Makefile', line 16):
+	gcc $(CFLAGS) -c $<
+	
+
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 46):
+	rm -f *.o c_hexdump asm_hexdump casm_hexdump depend.mak solution.zip
+	
+
+depend.mak:
+#  Implicit rule search has not been done.
+#  Last modified 2022-02-25 04:06:54
+#  File has been updated.
+#  Successfully updated.
+#  commands to execute (from `Makefile', line 49):
+	touch $@
+	
+
+# Not a target:
+tctest.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+asm_hexmain.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# files hash-table stats:
+# Load=21/1024=2%, Rehash=0, Collisions=0/54=0%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 2
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4076 / max = 4076 / min = 4076 / avg = 4076
+
+# Finished Make data base on Fri Feb 25 04:06:54 2022
+
+ 
