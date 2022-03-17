@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <math.h>
 
 using std::string;
 using std::cout;
@@ -24,6 +25,7 @@ int check_power_of_two(int parameter) {
     cerr << "set count or block size is not power of 2" << endl;
     return -1;
   }
+  return parameter;
 }
 
 int check_block_count(int parameter) {
@@ -31,6 +33,7 @@ int check_block_count(int parameter) {
     cerr << "block count is not a positive number" << endl;
     return -1;
   }
+  return parameter;
 }
 /*
 * Params: command stores the command for future opeartion, [0]: 0 is "s", 1 is "l", [1]: tag, [2]: index
@@ -38,8 +41,13 @@ int check_block_count(int parameter) {
 * 
 * Given these param, get the save and load command, breakdown the address into tag and index based on set count and block size
 */
-void parse_line(unsigned* command, string line, int set_count, int block_size) {
+void parse_line(unsigned* command, char* line, int set_count, int block_size) {
   command[0] = line[0];
+  int offset_bits = log2 (block_size);
+  int index_bits = log2 (set_count);
+  int tag_bits = 32 - offset_bits - index_bits;
+
+
 
 }
 
@@ -86,11 +94,16 @@ int main(int argc, char *argv[]){
   unsigned total_cycles = 0;
   bool isLoad;
 
-  vector<slot> set; //Representation of slot, an array of slots
-  map<unsigned, slot*> cache; //Representation of a cache, mapping index to sets
+  vector <map<unsigned, slot> > cache; //Representation of a cache, mapping index to sets
+
+  //initializing the cache
+  for(int i = 0; i < set_count; i++) {
+    map<unsigned, slot> set; //Representation of set, mapping tags to blocks. Push each set to the cache based on set_counts
+    cache.push_back(set);
+  }
 
 
-  string line;
+  char* line = "";
   while (scanf(" %[^\n]", line)== 1){ //reading from input file
     unsigned command[3];
     parse_line(command, line, set_count, block_size);
@@ -98,4 +111,12 @@ int main(int argc, char *argv[]){
     unsigned tag = command[1];
     unsigned index = command[2];
 
+    //If storing
+    if(load_save == 0) {
+      total_cycles++;
+    } else if(load_save == 1) {
+
+    }
+
+  }
 }
