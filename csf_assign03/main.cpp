@@ -11,6 +11,9 @@ using std::stoi;
 
 int main(int argc, char *argv[]){
   //read in command line arguments
+  if (argc != 7) {
+    cout << "invalid number of arguments"<<endl;
+  }
   int set_count = stoi(argv[1]);
   int block_count = stoi(argv[2]);
   int block_size = stoi(argv[3]);
@@ -29,6 +32,7 @@ int main(int argc, char *argv[]){
       cout << "saving" << endl;
     } else {
       cout << "read address" << endl;
+      cin >> temp; //skip last number
     }
   }
 
