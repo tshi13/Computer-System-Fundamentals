@@ -5,7 +5,7 @@
 CPPFLAGS = -g -Wall -Wextra -pedantic
 
 %.o : %.cpp
-	g++ $(CPPFLAGS) $*.cpp -o $*.o
+	g++ $(CPPFLAGS) -c $*.cpp -o $*.o
 
 all : csim
 
