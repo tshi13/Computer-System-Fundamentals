@@ -18,7 +18,9 @@ public:
     }
 
     bool find(unsigned tag) {
-        if (set.find(tag) == set.end()) return false;
+        std::map<unsigned, slot>::iterator it;
+        it = set.find(tag);
+        if (it == set.end()) return false;
         return true;
     }
 
@@ -61,10 +63,10 @@ public:
             it->second.usage_sequence++;
         }
     }
-    void store(unsigned tag) {
+    void store(unsigned tag, bool dirty) {
         add_all_sequence();
         slot new_slot;
-        new_slot.is_dirty();
+        if(dirty) new_slot.is_dirty();
         set.insert({tag, new_slot});
         block_num++;
     }

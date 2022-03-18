@@ -18,7 +18,7 @@ using std::getline;
 
 
 int check_power_of_two(int parameter) {
-  if(parameter % 2 != 0) {
+  if(parameter != 1 && parameter % 2 != 0) {
     cerr << "set count or block size is not power of 2" << endl;
     return -1;
   }
@@ -40,7 +40,7 @@ int check_block_count(int parameter) {
 */
 void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     command[0] = 1;
-    if(line[0] = 's') command[0] = 0;
+    if(line[0] == 's') command[0] = 0;
     int offset_bits = log2(block_size);
     int index_bits = log2(set_count);
     int tag_bits = 32 - offset_bits - index_bits;
@@ -133,33 +133,52 @@ int main(int argc, char *argv[]){
     unsigned index = command[2];
     if(load_save == 0) {
       bool hit = false;
-      Set curr_set = cache[index];
-      if(curr_set.find(tag)) hit = true;
+      stores++;
+      if(cache[index].find(tag)) hit = true;
 
       if(hit) {
           store_hits++;
-          curr_set.mark_slot_as_used(tag);
+          cache[index].mark_slot_as_used(tag);
           if(write_through == "write-through") {
               total_cycles += (block_size / 4) * 100; //write directly to memory
           }
       } else {
           store_misses++;
-          if(curr_set.set_size < curr_set.block_num) {
-              total_cycles += curr_set.lru_evict(block_size);
+          if(cache[index].set_size = cache[index].block_num) {
+              total_cycles += cache[index].lru_evict(block_size);
           }
           if(write_allocate == "no-write-allocate") {
-              total_cycles += (block_size /4) * 100;
+              total_cycles += (block_size / 4) * 100;
           } else {
               total_cycles++;
-              curr_set.store(tag);
+              cache[index].store(tag, true);
           }
       }
     } else if(load_save == 1) {
+        loads++;
+        bool hit = false;
+        if(cache[index].find(tag)) hit = true;
+        if(hit) {
+            load_hits++;
+            total_cycles++;
+            cache[index].mark_slot_as_used(tag);
+        } else {
+            load_misses++;
+            total_cycles += (block_size / 4) * 100;
+            if(cache[index].set_size = cache[index].block_num) {
+                total_cycles += cache[index].lru_evict(block_size);
+            }
+            cache[index].store(tag, false);
+        }
+
 
     }
   }
-
+  cout << "Total loads:" << loads << endl;
+  cout << "Total stores:" << stores << endl;
+  cout << "Load hits:" << load_hits << endl;
+  cout << "Load misses:" << load_misses << endl;
+  cout << "Store hits:" << store_hits << endl;
+  cout << "Store misses:" << store_misses << endl;
   cout << "Total cycles:" << total_cycles << endl;
-  cout << "Total store hits:" << store_hits << endl;
-  cout << "Total store misses:" << store_misses << endl;
 }
