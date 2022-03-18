@@ -132,9 +132,9 @@ int main(int argc, char *argv[]){
     unsigned tag = command[1];
     unsigned index = command[2];
 
-    cout << "load/save: " << load_save << endl;
-    cout << "tag: " << tag << endl;
-    cout << "index: " << index << endl;
+    // cout << "load/save: " << load_save << endl;
+    // cout << "tag: " << tag << endl;
+    // cout << "index: " << index << endl;
 
 
     //If storing
