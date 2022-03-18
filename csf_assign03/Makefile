@@ -2,18 +2,21 @@
 # Makefile for CSF assignment 3
 #
 
-CPPFLAGS = -g -c -Wall -Wextra -pedantic -std=c++11
+CPPFLAGS = -g -Wall -Wextra -pedantic
 
 %.o : %.cpp
 	g++ $(CPPFLAGS) $*.cpp -o $*.o
 
 all : csim
 
-csim : main.o
-	g++ -o $@ main.o
+csim : main.o set.o
+	g++ -o $@ main.o set.o
 
-main.o : main.cpp
-	g++ $(CPPFLAGS) main.cpp
+set.o: set.cpp set.h slot.h
+
+main.o : main.cpp set.h
+
+
 
 .PHONY: solution.zip
 solution.zip :
