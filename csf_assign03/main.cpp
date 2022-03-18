@@ -67,7 +67,11 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
             index[i - tag_bits] = binary_address[i];
         }
     }
-  
+  // cout << "tag bits" << tag_bits << endl;
+  // cout << "index bits" << index_bits << endl;
+  // cout << binary_address << endl;
+  // cout << tag << endl;
+  // cout << index << endl;
         unsigned tag_value = std::bitset<32>(tag).to_ulong();
         unsigned index_value = std::bitset<32>(index).to_ulong();
 
@@ -84,9 +88,9 @@ int main(int argc, char *argv[]){
   }
 
   //read in command line arguments
-  int set_count = check_power_of_two(stoi(argv[1]));
-  int block_count = check_block_count(stoi(argv[2]));
-  int block_size = check_power_of_two(stoi(argv[3]));
+  int set_count = check_power_of_two(stoi(argv[1])); //number of sets in cache
+  int block_count = check_block_count(stoi(argv[2])); // number of blocks in each set
+  int block_size = check_power_of_two(stoi(argv[3])); // size of each block
   if (block_size < 4) block_size = -1;
   string write_allocate = argv[4];
   string write_through = argv[5];
