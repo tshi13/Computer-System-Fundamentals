@@ -43,9 +43,9 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     if(line[0] == 's') command[0] = 0;
     bool is_fully_associative = false;
     int offset_bits = log2(block_size);
-    int index_bits = log2(set_count);
+    const int index_bits = log2(set_count);
     if (index_bits == 0) is_fully_associative = true;
-    int tag_bits = 32 - offset_bits - index_bits;
+    const int tag_bits = 32 - offset_bits - index_bits;
 
     char address[9]; //contains 8 hex characters
     for (int i = 4; i < 12; i++) {
@@ -59,10 +59,10 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     char tag[tag_bits + 1];
     tag[tag_bits] = '\0';
 
-    if (!is_fully_associative){
-      char index[index_bits + 1];
-      index[8] = '\0';
-    }
+
+    char index[index_bits + 1];
+    index[8] = '\0';
+    
    
 
     for (int i = 0; i < tag_bits + index_bits; i++) { //store appropriate portions of binary_address to tag, index, offset strings
@@ -78,10 +78,12 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
   // cout << tag << endl;
   // cout << index << endl;
         unsigned tag_value = std::bitset<32>(tag).to_ulong();
-        if (!is_fully_associative) unsigned index_value = std::bitset<32>(index).to_ulong();
+        unsigned index_value = 0;
+        if (!is_fully_associative) index_value = std::bitset<32>(index).to_ulong();
 
         command[1] = tag_value;
-        command[2] = index_value;
+        command[2] = index_value; 
+        
     
 }
 
