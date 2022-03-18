@@ -123,7 +123,6 @@ int main(int argc, char *argv[]){
   unsigned store_hits = 0;
   unsigned store_misses = 0;
   unsigned total_cycles = 0;
-  bool isLoad;
 
   vector <Set> cache; //Representation of a cache, mapping index to sets
 
@@ -153,7 +152,7 @@ int main(int argc, char *argv[]){
           }
       } else {
           store_misses++;
-          if(cache[index].set_size = cache[index].block_num) {
+          if(cache[index].set_size == cache[index].block_num) {
               total_cycles += cache[index].lru_evict(block_size);
           }
           if(write_allocate == "no-write-allocate") {
@@ -174,7 +173,7 @@ int main(int argc, char *argv[]){
         } else {
             load_misses++;
             total_cycles += (block_size / 4) * 100;
-            if(cache[index].set_size = cache[index].block_num) {
+            if(cache[index].set_size == cache[index].block_num) {
                 total_cycles += cache[index].lru_evict(block_size);
             }
             cache[index].store(tag, false);
