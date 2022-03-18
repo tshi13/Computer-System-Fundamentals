@@ -52,7 +52,7 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     address[8] = '\0';
 
     unsigned decimal = stoul(address, 0, 16); //convert hexstring to decimal
-    string binary_address = std::bitset<8>(decimal).to_string(); //this the binary string format of the address
+    string binary_address = std::bitset<32>(decimal).to_string(); //this the binary string format of the address
 
     char tag[tag_bits + 1];
     tag[tag_bits] = '\0';
@@ -60,20 +60,20 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     char index[index_bits + 1];
     index[8] = '\0';
 
-    for (int i = 0;
-         i < tag_bits + index_bits; i++) { //store appropriate portions of binary_address to tag, index, offset strings
+    for (int i = 0; i < tag_bits + index_bits; i++) { //store appropriate portions of binary_address to tag, index, offset strings
         if (i < tag_bits) {
             tag[i] = binary_address[i];
         } else {
             index[i - tag_bits] = binary_address[i];
         }
-
+    }
+  
         unsigned tag_value = std::bitset<32>(tag).to_ulong();
         unsigned index_value = std::bitset<32>(index).to_ulong();
 
         command[1] = tag_value;
         command[2] = index_value;
-    }
+    
 }
 
 int main(int argc, char *argv[]){
@@ -131,8 +131,6 @@ int main(int argc, char *argv[]){
     unsigned load_save = command[0];
     unsigned tag = command[1];
     unsigned index = command[2];
-
-    //Storing
     if(load_save == 0) {
       bool hit = false;
       Set curr_set = cache[index];
