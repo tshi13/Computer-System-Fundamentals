@@ -47,7 +47,7 @@ public:
         std::map<unsigned, slot>::iterator it;
         unsigned cycle_inc = 0;
         for(it = set.begin(); it != set.end(); it++) {
-            if(it->second.usage_sequence == set_size - 1) {
+            if(it->second.usage_sequence == block_num - 1) {
                 if(it->second.dirty) cycle_inc = (block_size / 4) * 100;
                 set.erase(it);
                 break;
