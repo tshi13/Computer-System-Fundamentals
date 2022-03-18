@@ -64,7 +64,7 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     if(i<tag_bits){
       tag[i] = binary_address[i];
     } else {
-      index[i-tag_bits] = binary_address[i];
+      index[i-tag_bits] = binary_address[i];}
   }
 
   unsigned tag_value = std::bitset<32>(tag).to_ulong();
