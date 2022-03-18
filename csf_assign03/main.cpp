@@ -43,48 +43,41 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     if(line[0] == 's') command[0] = 0;
     bool is_fully_associative = false;
     int offset_bits = log2(block_size);
-    const int index_bits = log2(set_count);
-    if (index_bits == 0) is_fully_associative = true;
-    const int tag_bits = 32 - offset_bits - index_bits;
+    int index_bits = log2(set_count);
+    if (index_bits == 0){
+      is_fully_associative = true;
+    }
+    int tag_bits = 32 - offset_bits - index_bits;
 
     char address[9]; //contains 8 hex characters
-    for (int i = 4; i < 12; i++) {
+    int i = 4;
+    for (; i < 12; i++) {
+        if (line[i] != ' '){
         address[i - 4] = line[i];
-    }
-    address[8] = '\0';
-
-    unsigned decimal = stoul(address, 0, 16); //convert hexstring to decimal
-    string binary_address = std::bitset<32>(decimal).to_string(); //this the binary string format of the address
-
-    char tag[tag_bits + 1];
-    tag[tag_bits] = '\0';
-
-
-    char index[index_bits + 1];
-    index[8] = '\0';
-    
-   
-
-    for (int i = 0; i < tag_bits + index_bits; i++) { //store appropriate portions of binary_address to tag, index, offset strings
-        if (i < tag_bits) {
-            tag[i] = binary_address[i];
         } else {
-            if(!is_fully_associative) index[i - tag_bits] = binary_address[i];
+          break;
         }
     }
-  // cout << "tag bits" << tag_bits << endl;
-  // cout << "index bits" << index_bits << endl;
-  // cout << binary_address << endl;
-  // cout << tag << endl;
-  // cout << index << endl;
-        unsigned tag_value = std::bitset<32>(tag).to_ulong();
-        unsigned index_value = 0;
-        if (!is_fully_associative) index_value = std::bitset<32>(index).to_ulong();
+    address[i-4] = '\0';
 
-        command[1] = tag_value;
-        command[2] = index_value; 
-        
+    unsigned decimal = stoul(address, 0, 16); //convert hexstring to decimal
+    decimal = decimal >> offset_bits; //removes offset bits from address
+
+    int index = 0;
+    if (!is_fully_associative){
+      int helper_number = pow(2,index_bits) - 1;
+      index = decimal & helper_number;
+      decimal = decimal >> index_bits;
+    }
     
+    int tag = decimal;
+    // cout << tag_bits << endl;
+    // cout << index_bits << endl;
+    // cout << tag << endl;
+    // cout << index << endl;
+    command[1] = tag;
+    command[2] = index;
+
 }
 
 int main(int argc, char *argv[]){
