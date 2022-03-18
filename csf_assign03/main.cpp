@@ -3,6 +3,8 @@
 #include <map>
 #include <vector>
 #include <math.h>
+#include "slot.h"
+#include "set.h"
 
 using std::string;
 using std::cout;
@@ -14,11 +16,6 @@ using std::vector;
 using std::cerr;
 using std::getline;
 
-
-struct slot {
-  unsigned sequence; //For LRU
-  bool dirty = false;
-};
 
 int check_power_of_two(int parameter) {
   if(parameter % 2 != 0) {
@@ -80,9 +77,6 @@ int main(int argc, char *argv[]){
     cerr << "wrong evction command" << endl;
     return -1;
   }
-  
-
-  
 
 
   unsigned loads = 0;
@@ -94,17 +88,16 @@ int main(int argc, char *argv[]){
   unsigned total_cycles = 0;
   bool isLoad;
 
-  vector <map<unsigned, slot> > cache; //Representation of a cache, mapping index to sets
+  vector <Set> cache; //Representation of a cache, mapping index to sets
 
   //initializing the cache
   for(int i = 0; i < set_count; i++) {
-    map<unsigned, slot> set; //Representation of set, mapping tags to blocks. Push each set to the cache based on set_counts
-    cache.push_back(set);
+    cache.emplace_back(block_count);
   }
 
 
   char* line = "";
-  while (scanf(" %[^\n]", line)== 1){ //reading from input file
+  while (scanf(" %[^\n]", line) == 1){ //reading from input file
     unsigned command[3];
     parse_line(command, line, set_count, block_size);
     unsigned load_save = command[0];
@@ -114,6 +107,31 @@ int main(int argc, char *argv[]){
     //If storing
     if(load_save == 0) {
       total_cycles++;
+      bool hit = false;
+      Set curr_set = cache[index];
+      if(curr_set.find(tag)) hit = true;
+
+      if(hit) {
+          store_hits++;
+          curr_set.mark_slot_as_used(tag);
+          if(write_through == "write-through") {
+              total_cycles += 101; //1 for cache and 100 for memory
+          } else { //write back
+              total_cycles++;
+              curr_set.mark_as_dirty(tag);
+          }
+      } else {
+          store_misses++;
+          if(write_allocate == "write-allocate") {
+              total_cycles = (block_size / 4) * 100;
+              if(curr_set.set_size < curr_set.block_num) {
+                  //lru eviction rule need
+                 int inc_cycle = curr_set.lru_evict();
+                 total_cycles += inc_cycle;
+              }
+              curr_set.store(tag);
+          }
+      }
     } else if(load_save == 1) {
 
     }
