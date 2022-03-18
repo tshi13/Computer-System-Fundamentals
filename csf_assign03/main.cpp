@@ -158,4 +158,8 @@ int main(int argc, char *argv[]){
 
     }
   }
+
+  cout << "Total cycles:" << total_cycles << endl;
+  cout << "Total store hits:" << store_hits << endl;
+  cout << "Total store misses:" << store_misses << endl;
 }
