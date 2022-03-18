@@ -41,17 +41,18 @@ public:
         curr_slot->second.dirty = true;
     }
 
-    int lru_evict() {
+    unsigned lru_evict(unsigned block_size) {
         std::map<unsigned, slot>::iterator it;
-        int cycle_number = 0;
+        unsigned cycle_inc = 0;
         for(it = set.begin(); it != set.end(); it++) {
             if(it->second.usage_sequence == set_size - 1) {
-                if(it->second.dirty) cycle_number = 100;
+                if(it->second.dirty) cycle_inc = (block_size / 4) * 100;
                 set.erase(it);
                 break;
             }
         }
-        return cycle_number;
+        block_num--;
+        return cycle_inc;
     }
 
     void add_all_sequence() {

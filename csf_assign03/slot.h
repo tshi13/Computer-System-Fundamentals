@@ -1,6 +1,4 @@
 class slot {
-
-
 public:
     unsigned usage_sequence;
     bool dirty;

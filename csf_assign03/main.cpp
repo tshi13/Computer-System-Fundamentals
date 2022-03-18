@@ -132,9 +132,8 @@ int main(int argc, char *argv[]){
     unsigned tag = command[1];
     unsigned index = command[2];
 
-    //If storing
+    //Storing
     if(load_save == 0) {
-      total_cycles++;
       bool hit = false;
       Set curr_set = cache[index];
       if(curr_set.find(tag)) hit = true;
@@ -143,20 +142,17 @@ int main(int argc, char *argv[]){
           store_hits++;
           curr_set.mark_slot_as_used(tag);
           if(write_through == "write-through") {
-              total_cycles += 101; //1 for cache and 100 for memory
-          } else { //write back
-              total_cycles++;
-              curr_set.mark_as_dirty(tag);
+              total_cycles += (block_size / 4) * 100; //write directly to memory
           }
       } else {
           store_misses++;
-          if(write_allocate == "write-allocate") {
-              total_cycles = (block_size / 4) * 100;
-              if(curr_set.set_size < curr_set.block_num) {
-                  //lru eviction rule need
-                 int inc_cycle = curr_set.lru_evict();
-                 total_cycles += inc_cycle;
-              }
+          if(curr_set.set_size < curr_set.block_num) {
+              total_cycles += curr_set.lru_evict(block_size);
+          }
+          if(write_allocate == "no-write-allocate") {
+              total_cycles += (block_size /4) * 100;
+          } else {
+              total_cycles++;
               curr_set.store(tag);
           }
       }
