@@ -32,10 +32,10 @@ unsigned Set::lru_evict(unsigned block_size) {
         if(it->second.usage_sequence == block_num - 1) {
             if(it->second.dirty) cycle_inc = (block_size / 4) * 100;
             set.erase(it);
+            block_num--;
             break;
         }
     }
-    block_num--;
     return cycle_inc;
 }
 
