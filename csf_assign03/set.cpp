@@ -21,17 +21,17 @@ void Set::mark_slot_as_used(unsigned tag) {
     //For younger slots, they increment 1. At the end, we still have from 0 to the oldest sequence
     for(it = set.begin(); it != set.end(); it++) {
         if((it->second).usage_sequence < curr_usage_sequence) (it->second).usage_sequence++;
-        if((it->second).usage_sequence == curr_usage_sequence) (it->second).usage_sequence = 0;
+        else if((it->second).usage_sequence == curr_usage_sequence) (it->second).usage_sequence = 0;
     }
 }
 
-unsigned Set::lru_evict(unsigned block_size) {
+unsigned Set::lru_evict() {
     std::map<unsigned, slot>::iterator it;
     unsigned cycle_inc = 0;
     for(it = set.begin(); it != set.end(); it++) {
         if(it->second.usage_sequence == block_num - 1) {
-            if(it->second.dirty) cycle_inc = (block_size / 4) * 100;
-            set.erase(it);
+            if(it->second.dirty) cycle_inc = 100;
+            set.erase(it->first);
             block_num--;
             break;
         }
@@ -45,4 +45,10 @@ void Set::store(unsigned tag, bool dirty) {
     if(dirty) new_slot.is_dirty();
     set.insert(pair<unsigned, slot>(tag, new_slot));
     block_num++;
+}
+
+void Set::mark_slot_dirty(unsigned int tag) {
+    std::map<unsigned, slot>::iterator it;
+    it = set.find(tag);
+    it->second.dirty = true;
 }

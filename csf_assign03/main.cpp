@@ -134,27 +134,40 @@ int main(int argc, char *argv[]){
     unsigned load_save = command[0];
     unsigned tag = command[1];
     unsigned index = command[2];
+
+    //Store
     if(load_save == 0) {
       bool hit = false;
       stores++;
       if(cache[index].find(tag)) hit = true;
-
+      //Store hit
       if(hit) {
           store_hits++;
           cache[index].mark_slot_as_used(tag);
-          if(write_through == "write-through") {
-              total_cycles += (block_size / 4) * 100; //write directly to memory
-          }
-      } else {
-          store_misses++;
-          if(cache[index].set_size == cache[index].block_num) {
-              total_cycles += cache[index].lru_evict(block_size);
-          }
-          if(write_allocate == "no-write-allocate") {
-              total_cycles += (block_size / 4) * 100;
-          } else {
+          if(write_through == "write-through") { //write directly to memory
+              total_cycles += 101;
+          } else {//write-back
               total_cycles++;
-              cache[index].store(tag, true);
+              cache[index].mark_slot_dirty(tag);
+          }
+      } else { //Store miss
+          store_misses++;
+          //Write allocate
+          if(write_allocate == "write-allocate") {
+              total_cycles += ((block_size / 4) * 100); //Load happens anyway
+              if(cache[index].set_size == cache[index].block_num) { //Additional write happens if slot evicted is dirty
+                  total_cycles += cache[index].lru_evict();
+              }
+              cache[index].store(tag, false);
+          }
+
+          if(write_through == "write-through") {
+              total_cycles += 100;
+              total_cycles++;
+          }
+          else {
+              total_cycles++;
+              cache[index].mark_slot_dirty(tag);
           }
       }
     } else if(load_save == 1) {
@@ -169,7 +182,7 @@ int main(int argc, char *argv[]){
             load_misses++;
             total_cycles += (block_size / 4) * 100;
             if(cache[index].set_size == cache[index].block_num) {
-                total_cycles += cache[index].lru_evict(block_size);
+                total_cycles += cache[index].lru_evict();
             }
             cache[index].store(tag, false);
         }
