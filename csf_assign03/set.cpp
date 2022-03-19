@@ -25,18 +25,18 @@ void Set::mark_slot_as_used(unsigned tag) {
     }
 }
 
-unsigned Set::lru_evict() {
+bool Set::lru_evict() {
     std::map<unsigned, slot>::iterator it;
-    unsigned cycle_inc = 0;
-    for(it = set.begin(); it != set.end(); it++) {
-        if(it->second.usage_sequence == block_num - 1) {
-            if(it->second.dirty) cycle_inc = 100;
-            set.erase(it->first);
-            block_num--;
+    bool evict_hit = false; //whether the slot we removed is dirty
+    for(it = set.begin(); it != set.end(); it++) { //iterate through all the slots of the set
+        if(it->second.usage_sequence == block_num - 1) { // find the slot with highest usage sequence (least used)
+            if(it->second.dirty) evict_hit = true ; // if it's dirty, we want to store that back to main memory
+            set.erase(it->first); //remove slot
+            block_num--; //decrease block number count
             break;
         }
     }
-    return cycle_inc;
+    return evict_hit;
 }
 
 void Set::store(unsigned tag, bool dirty) {

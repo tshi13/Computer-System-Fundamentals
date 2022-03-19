@@ -27,7 +27,7 @@ public:
     unsigned block_num;
     bool find(unsigned tag);
     void mark_slot_as_used(unsigned tag);
-    unsigned lru_evict();
+    bool lru_evict();
     void store(unsigned tag, bool dirty);
     void mark_slot_dirty(unsigned tag);
 

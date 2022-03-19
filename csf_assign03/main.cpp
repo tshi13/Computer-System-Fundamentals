@@ -47,7 +47,6 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     if (index_bits == 0){
       is_fully_associative = true;
     }
-    int tag_bits = 32 - offset_bits - index_bits;
 
     char address[9]; //contains 8 hex characters
     int i = 4;
@@ -71,10 +70,6 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
     }
     
     int tag = decimal;
-    // cout << tag_bits << endl;
-    // cout << index_bits << endl;
-    // cout << tag << endl;
-    // cout << index << endl;
     command[1] = tag;
     command[2] = index;
 
@@ -135,8 +130,8 @@ int main(int argc, char *argv[]){
     unsigned tag = command[1];
     unsigned index = command[2];
 
-    //Store
-    if(load_save == 0) {
+    //STORING
+    if(load_save == 0) { 
       bool hit = false;
       stores++;
       if(cache[index].find(tag)) hit = true;
@@ -156,21 +151,25 @@ int main(int argc, char *argv[]){
           if(write_allocate == "write-allocate") {
               total_cycles += ((block_size / 4) * 100); //Load happens anyway
               if(cache[index].set_size == cache[index].block_num) { //Additional write happens if slot evicted is dirty
-                  total_cycles += cache[index].lru_evict();
+                  if(cache[index].lru_evict()){
+                    total_cycles += (block_size / 4) * 100;
+                  }
               }
               cache[index].store(tag, false);
-          }
-
-          if(write_through == "write-through") {
+              if(write_through == "write-through") {
               total_cycles += 100;
               total_cycles++;
-          }
-          else {
+              } else { // write-back
               total_cycles++;
               cache[index].mark_slot_dirty(tag);
+              }
+          } else { // no write-allocate
+            total_cycles += 100;
           }
+
+          
       }
-    } else if(load_save == 1) {
+    } else if(load_save == 1) { //LOADING
         loads++;
         bool hit = false;
         if(cache[index].find(tag)) hit = true;
@@ -181,13 +180,14 @@ int main(int argc, char *argv[]){
         } else {
             load_misses++;
             total_cycles += (block_size / 4) * 100;
-            if(cache[index].set_size == cache[index].block_num) {
-                total_cycles += cache[index].lru_evict();
+            total_cycles += 1;
+            if(cache[index].set_size == cache[index].block_num) { //when set is full, need to evict
+                if(cache[index].lru_evict()){ // if the block we evicted was dirty, we need to update total_cycle
+                  total_cycles += (block_size / 4) * 100;
+                }
             }
             cache[index].store(tag, false);
         }
-
-
     }
   }
   cout << "Total loads:" << loads << endl;

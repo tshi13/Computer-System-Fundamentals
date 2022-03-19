@@ -2,7 +2,7 @@
 # Makefile for CSF assignment 3
 #
 
-CPPFLAGS = -g -Wall -Wextra -pedantic
+CPPFLAGS = -g -O2 -Wall -Wextra -pedantic
 
 %.o : %.cpp
 	g++ $(CPPFLAGS) -c $*.cpp -o $*.o
