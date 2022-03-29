@@ -155,7 +155,9 @@ int main(int argc, char *argv[]){
       //STORE HIT
       if(hit) {
         store_hits++;
-        cache[index].mark_slot_as_used(tag); //update respective slot in set as used
+        if (eviction == "lru") {
+          cache[index].mark_slot_as_used(tag); //update respective slot in set as used
+        }
         if(write_through == "write-through") { //write directly to memory
           total_cycles += 101;
         } else { //write-back
@@ -172,7 +174,7 @@ int main(int argc, char *argv[]){
               total_cycles += (block_size / 4) * 100;
             }
           }
-          cache[index].store(tag, false); //store information
+          cache[index].store(tag, false, eviction, load_save); //store information
           if(write_through == "write-through") { //write-through, update total cycles
           total_cycles += 100;
           total_cycles++;
@@ -191,7 +193,9 @@ int main(int argc, char *argv[]){
         if(hit) { //LOAD HIT, update total cycles
           load_hits++;
           total_cycles++;
-          cache[index].mark_slot_as_used(tag); //accessed slot, update all usage sequences in set
+          if (eviction == "lru") {
+            cache[index].mark_slot_as_used(tag); //accessed slot, update all usage sequences in set
+          }
         } else {
           load_misses++;
           total_cycles += (block_size / 4) * 100;
@@ -201,7 +205,7 @@ int main(int argc, char *argv[]){
               total_cycles += (block_size / 4) * 100;
             }
           }
-          cache[index].store(tag, false); // store information in slot
+          cache[index].store(tag, false, eviction, load_save); // store information in slot
         }
       }
   }

@@ -9,10 +9,13 @@
 #define SET_H
 
 #include <map>
+#include <string>
 #include "slot.h"
 
 using std::map;
 using namespace std;
+using std::string;
+
 
 class Set {
 
@@ -54,12 +57,16 @@ public:
   */
   bool lru_evict(); 
 
+  bool fifo_evict();
+
+
+
   /*
   * store tag into set
   * params: tag (tag we want to store), dirty (whether the block is dirty or not)
   * returns void
   */
-  void store(unsigned tag, bool dirty); 
+  void store(unsigned tag, bool dirty, string eviction, unsigned load_save); 
 
   /*
   * set the slot containing tag to dirty
