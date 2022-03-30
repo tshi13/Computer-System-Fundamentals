@@ -52,9 +52,10 @@ bool Set::lru_evict() { //evict a block from set when it is full, using LRU
  
 
 void Set::store(unsigned tag, bool dirty, string eviction, unsigned load_save) { //store new slot with tag into set
-  if (load_save == 1 || eviction == "lru"){ //update usage sequence only when loading, or when LRU storing
-    add_all_sequence(); //add one to usage sequences for all the other slots in set
-  }
+  // if (load_save == 1 || eviction == "lru"){ //update usage sequence only when loading, or when LRU storing
+  //   add_all_sequence(); //add one to usage sequences for all the other slots in set
+  // }
+  add_all_sequence();
   slot new_slot;
   if(dirty) new_slot.is_dirty(); //checks if new slot should be set to dirty
   set.insert(pair<unsigned, slot>(tag, new_slot)); //insert new tag-slot pair into set

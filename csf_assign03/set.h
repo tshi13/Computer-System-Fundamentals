@@ -28,6 +28,8 @@ private:
     }
   }
 
+
+
 public:
   Set(unsigned set_size) {
     this->set_size = set_size;
