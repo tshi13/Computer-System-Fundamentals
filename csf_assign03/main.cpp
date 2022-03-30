@@ -29,7 +29,7 @@ using std::getline;
 * returns: -1 if not a power of 2, returns parameter otherwise
 */
 int check_power_of_two(int parameter) {
-  if(parameter != 1 && parameter % 2 != 0) {
+  if(ceil(log2(parameter)) != floor(log2(parameter))) {
     cerr << "set count or block size is not power of 2" << endl;
     return -1;
   }
@@ -102,9 +102,15 @@ int main(int argc, char *argv[]){
 
   //read in command line arguments
   int set_count = check_power_of_two(stoi(argv[1])); //number of sets in cache
-  int block_count = check_block_count(stoi(argv[2])); // number of blocks in each set
+  int block_count = check_power_of_two(stoi(argv[2])); // number of blocks in each set
   int block_size = check_power_of_two(stoi(argv[3])); // size of each block
-  if (block_size < 4) block_size = -1;
+
+
+  if (block_size < 4) {
+    cerr << "block size is less than 4" << endl;
+    return -1;
+  }
+  // block_size = -1;
   string write_allocate = argv[4]; //set remaining command input arguments
   string write_through = argv[5];
   string eviction = argv[6];
@@ -174,7 +180,7 @@ int main(int argc, char *argv[]){
               total_cycles += (block_size / 4) * 100;
             }
           }
-          cache[index].store(tag, false, eviction, load_save); //store information
+          cache[index].store(tag, false); //store information
           if(write_through == "write-through") { //write-through, update total cycles
           total_cycles += 100;
           total_cycles++;
@@ -205,7 +211,7 @@ int main(int argc, char *argv[]){
               total_cycles += (block_size / 4) * 100;
             }
           }
-          cache[index].store(tag, false, eviction, load_save); // store information in slot
+          cache[index].store(tag, false); // store information in slot
         }
       }
   }

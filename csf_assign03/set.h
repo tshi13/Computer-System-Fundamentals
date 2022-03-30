@@ -59,7 +59,6 @@ public:
   */
   bool lru_evict(); 
 
-  bool fifo_evict();
 
 
 
@@ -68,7 +67,7 @@ public:
   * params: tag (tag we want to store), dirty (whether the block is dirty or not)
   * returns void
   */
-  void store(unsigned tag, bool dirty, string eviction, unsigned load_save); 
+  void store(unsigned tag, bool dirty); 
 
   /*
   * set the slot containing tag to dirty
