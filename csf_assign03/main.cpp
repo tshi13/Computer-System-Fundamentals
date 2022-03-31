@@ -123,6 +123,7 @@ int check_input_correctness(int set_count, int block_count, int block_size, stri
 /*
 * Params: eviction - lru or not, current - current set, write_through, tag
 * return: total cycles to add to current cycles
+* Triggered when there is store hits, calculate the cycles and add to the total cycles
 */
 unsigned add_store_hits(string eviction, Set &current, string write_through, unsigned tag) {
   unsigned total_cycles = 0;
@@ -141,6 +142,7 @@ unsigned add_store_hits(string eviction, Set &current, string write_through, uns
 /*
 * Params: eviction - write allocate, block size, write_through, tag, write through
 * return: total cycles to add to current cycles
+* Triggered when there is store misses, calculate the cycles and add to the total cycles
 */
 unsigned add_store_misses(string write_allocate, int block_size, Set &current, unsigned tag, string write_through) {
   //Write allocate
@@ -169,6 +171,7 @@ unsigned add_store_misses(string write_allocate, int block_size, Set &current, u
 /*
 * Params: eviction - eviction, current, tag
 * return: total cycles to add to current cycles
+* Triggered when there is load hits, calculate the cycles and add to the total cycles
 */
 unsigned add_load_hit(string eviction, Set &current, unsigned tag) {
   unsigned total_cycles = 1;
@@ -181,6 +184,7 @@ unsigned add_load_hit(string eviction, Set &current, unsigned tag) {
 /*
 * Params: block size, current, tag
 * return: total cycles to add to current cycles
+* Triggered when there is store hits, calculate the cycles and add to the total cycles
 */
 unsigned add_load_misses(int block_size, Set &current, unsigned tag) {
   unsigned total_cycles = (block_size / 4) * 100;
@@ -194,6 +198,10 @@ unsigned add_load_misses(int block_size, Set &current, unsigned tag) {
   return total_cycles;
 }
 
+/* 
+* Params: the results of simulations, loads/stores/load hits/load misses/store hits/store misses/total cycles
+* Print out the results of the simulation
+*/
 void print_output(unsigned loads, unsigned stores, unsigned load_hits, unsigned load_misses, unsigned store_hits, unsigned store_misses, unsigned total_cycles) {
   //output cache simulation results
   cout << "Total loads:" << loads << endl;
@@ -204,7 +212,6 @@ void print_output(unsigned loads, unsigned stores, unsigned load_hits, unsigned 
   cout << "Store misses:" << store_misses << endl;
   cout << "Total cycles:" << total_cycles << endl;
 }
-
 
 
 int main(int argc, char *argv[]){
