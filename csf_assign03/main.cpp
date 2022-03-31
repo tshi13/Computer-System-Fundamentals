@@ -93,27 +93,15 @@ void parse_line(unsigned* command, char* line, int set_count, int block_size) {
   command[2] = index;
 }
 
-int main(int argc, char *argv[]){
-  //Check command line arguments
-  if(argc != 7) {
-    cerr << "wrong command line input" << endl;
-    return -1;
-  }
-
-  //read in command line arguments
-  int set_count = check_power_of_two(stoi(argv[1])); //number of sets in cache
-  int block_count = check_power_of_two(stoi(argv[2])); // number of blocks in each set
-  int block_size = check_power_of_two(stoi(argv[3])); // size of each block
-
-
+/*
+* Params: the user-inputs, set_count/block_count/block_size/write_allocate/write_through/eviction
+* returns: 0 if all input are correct, -1 if one of them is incorrect
+*/
+int check_input_correctness(int set_count, int block_count, int block_size, string write_allocate, string write_through, string eviction) {
   if (block_size < 4) {
     cerr << "block size is less than 4" << endl;
     return -1;
   }
-  // block_size = -1;
-  string write_allocate = argv[4]; //set remaining command input arguments
-  string write_through = argv[5];
-  string eviction = argv[6];
 
   //check input correctness
   if(set_count == -1 || block_count == -1 || block_size == -1) {
@@ -128,6 +116,98 @@ int main(int argc, char *argv[]){
     cerr << "wrong evction command" << endl;
     return -1;
   }
+
+  return 0;
+}
+
+unsigned add_store_hits(string eviction, Set current, string write_through, unsigned tag) {
+  unsigned total_cycles = 0;
+  if (eviction == "lru") {
+    current.mark_slot_as_used(tag); //update respective slot in set as used
+  }
+  if(write_through == "write-through") { //write directly to memory
+    total_cycles += 101;
+  } else { //write-back
+    total_cycles++;
+    current.mark_slot_dirty(tag); //if it's write-back we need to set dirty
+  }
+  return total_cycles;
+}
+
+unsigned add_store_misses(string write_allocate, int block_size, Set current, unsigned tag, string write_through) {
+  //Write allocate
+  unsigned total_cycles = 0;
+  if(write_allocate == "write-allocate") { //when we are using write-allocate
+    total_cycles += ((block_size / 4) * 100); //Load happens anyway
+    if(current.set_size == current.block_num) { //set is full, start eviction
+      if(current.lru_evict()){ //evict slot, if slot is dirty, will need extra total cycles
+        total_cycles += (block_size / 4) * 100;
+      }
+    }
+    current.store(tag, false); //store information
+    if(write_through == "write-through") { //write-through, update total cycles
+      total_cycles += 100;
+      total_cycles++;
+    } else { // write-back, update total cycles
+      total_cycles++;
+      current.mark_slot_dirty(tag);
+    }
+  } else { // no write-allocate, update total cycles
+    total_cycles += 100;
+  }
+  return total_cycles;
+}
+
+unsigned add_load_hit(string eviction, Set current, unsigned tag) {
+  unsigned total_cycles = 1;
+  if (eviction == "lru") {
+    current.mark_slot_as_used(tag); //accessed slot, update all usage sequences in set
+  }
+  return total_cycles;
+}
+
+unsigned add_load_misses(int block_size, Set current, unsigned tag) {
+
+  unsigned total_cycles = (block_size / 4) * 100;
+  total_cycles += 1;
+  if(current.set_size == current.block_num) { //when set is full, need to evict
+    if(current.lru_evict()){ // if the block we evicted was dirty, we need to update total_cycle
+      total_cycles += (block_size / 4) * 100;
+    }
+  }
+  current.store(tag, false); // store information in slot
+  return total_cycles;
+}
+
+void print_output(unsigned loads, unsigned stores, unsigned load_hits, unsigned load_misses, unsigned store_hits, unsigned store_misses, unsigned total_cycles) {
+  //output cache simulation results
+  cout << "Total loads:" << loads << endl;
+  cout << "Total stores:" << stores << endl;
+  cout << "Load hits:" << load_hits << endl;
+  cout << "Load misses:" << load_misses << endl;
+  cout << "Store hits:" << store_hits << endl;
+  cout << "Store misses:" << store_misses << endl;
+  cout << "Total cycles:" << total_cycles << endl;
+}
+
+
+
+int main(int argc, char *argv[]){
+  //Check command line arguments
+  if(argc != 7) {
+    cerr << "wrong command line input" << endl;
+    return -1;
+  }
+
+  //read in command line arguments
+  int set_count = check_power_of_two(stoi(argv[1])); //number of sets in cache
+  int block_count = check_power_of_two(stoi(argv[2])); // number of blocks in each set
+  int block_size = check_power_of_two(stoi(argv[3])); // size of each block
+  string write_allocate = argv[4]; //set remaining command input arguments
+  string write_through = argv[5];
+  string eviction = argv[6];
+
+  if(check_input_correctness(set_count, block_count, block_size, write_allocate, write_through, eviction) == -1) return -1;
 
   // initialize all profiling data
   unsigned loads = 0;
@@ -161,66 +241,25 @@ int main(int argc, char *argv[]){
       //STORE HIT
       if(hit) {
         store_hits++;
-        if (eviction == "lru") {
-          cache[index].mark_slot_as_used(tag); //update respective slot in set as used
-        }
-        if(write_through == "write-through") { //write directly to memory
-          total_cycles += 101;
-        } else { //write-back
-          total_cycles++;
-          cache[index].mark_slot_dirty(tag); //if it's write-back we need to set dirty
-        }
+        total_cycles += add_store_hits(eviction, cache[index], write_through, tag);
       } else { //STORE MISS
         store_misses++;
-        //Write allocate
-        if(write_allocate == "write-allocate") { //when we are using write-allocate
-          total_cycles += ((block_size / 4) * 100); //Load happens anyway
-          if(cache[index].set_size == cache[index].block_num) { //set is full, start eviction
-            if(cache[index].lru_evict()){ //evict slot, if slot is dirty, will need extra total cycles
-              total_cycles += (block_size / 4) * 100;
-            }
-          }
-          cache[index].store(tag, false); //store information
-          if(write_through == "write-through") { //write-through, update total cycles
-          total_cycles += 100;
-          total_cycles++;
-          } else { // write-back, update total cycles
-            total_cycles++;
-            cache[index].mark_slot_dirty(tag);
-          }
-        } else { // no write-allocate, update total cycles
-          total_cycles += 100;
-          }
-        }
-    } else if(load_save == 1) { //LOADING
+        total_cycles += add_store_misses(write_allocate, block_size, cache[index], tag, write_through);
+      }
+    } 
+    //LOADING
+    else if(load_save == 1) { 
         loads++;
         bool hit = false;
         if(cache[index].find(tag)) hit = true;
-        if(hit) { //LOAD HIT, update total cycles
+        if(hit) { //LOAD HIT
           load_hits++;
-          total_cycles++;
-          if (eviction == "lru") {
-            cache[index].mark_slot_as_used(tag); //accessed slot, update all usage sequences in set
-          }
-        } else {
+          total_cycles += add_load_hit(eviction, cache[index], tag);
+        } else { //LOAD MISS
           load_misses++;
-          total_cycles += (block_size / 4) * 100;
-          total_cycles += 1;
-          if(cache[index].set_size == cache[index].block_num) { //when set is full, need to evict
-            if(cache[index].lru_evict()){ // if the block we evicted was dirty, we need to update total_cycle
-              total_cycles += (block_size / 4) * 100;
-            }
-          }
-          cache[index].store(tag, false); // store information in slot
+          total_cycles += add_load_misses(block_size, cache[index], tag);
         }
       }
   }
-  //output cache simulation results
-  cout << "Total loads:" << loads << endl;
-  cout << "Total stores:" << stores << endl;
-  cout << "Load hits:" << load_hits << endl;
-  cout << "Load misses:" << load_misses << endl;
-  cout << "Store hits:" << store_hits << endl;
-  cout << "Store misses:" << store_misses << endl;
-  cout << "Total cycles:" << total_cycles << endl;
+  print_output(loads, stores, load_hits, load_misses, store_hits, store_misses, total_cycles);
 }

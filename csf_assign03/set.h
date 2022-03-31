@@ -29,7 +29,6 @@ private:
   }
 
 
-
 public:
   Set(unsigned set_size) {
     this->set_size = set_size;
@@ -58,9 +57,6 @@ public:
   * returns true if the block we evicted was dirty, false otherwise
   */
   bool lru_evict(); 
-
-
-
 
   /*
   * store tag into set
