@@ -120,7 +120,11 @@ int check_input_correctness(int set_count, int block_count, int block_size, stri
   return 0;
 }
 
-unsigned add_store_hits(string eviction, Set current, string write_through, unsigned tag) {
+/*
+* Params: eviction - lru or not, current - current set, write_through, tag
+* return: total cycles to add to current cycles
+*/
+unsigned add_store_hits(string eviction, Set &current, string write_through, unsigned tag) {
   unsigned total_cycles = 0;
   if (eviction == "lru") {
     current.mark_slot_as_used(tag); //update respective slot in set as used
@@ -134,7 +138,11 @@ unsigned add_store_hits(string eviction, Set current, string write_through, unsi
   return total_cycles;
 }
 
-unsigned add_store_misses(string write_allocate, int block_size, Set current, unsigned tag, string write_through) {
+/*
+* Params: eviction - write allocate, block size, write_through, tag, write through
+* return: total cycles to add to current cycles
+*/
+unsigned add_store_misses(string write_allocate, int block_size, Set &current, unsigned tag, string write_through) {
   //Write allocate
   unsigned total_cycles = 0;
   if(write_allocate == "write-allocate") { //when we are using write-allocate
@@ -158,7 +166,11 @@ unsigned add_store_misses(string write_allocate, int block_size, Set current, un
   return total_cycles;
 }
 
-unsigned add_load_hit(string eviction, Set current, unsigned tag) {
+/*
+* Params: eviction - eviction, current, tag
+* return: total cycles to add to current cycles
+*/
+unsigned add_load_hit(string eviction, Set &current, unsigned tag) {
   unsigned total_cycles = 1;
   if (eviction == "lru") {
     current.mark_slot_as_used(tag); //accessed slot, update all usage sequences in set
@@ -166,8 +178,11 @@ unsigned add_load_hit(string eviction, Set current, unsigned tag) {
   return total_cycles;
 }
 
-unsigned add_load_misses(int block_size, Set current, unsigned tag) {
-
+/*
+* Params: block size, current, tag
+* return: total cycles to add to current cycles
+*/
+unsigned add_load_misses(int block_size, Set &current, unsigned tag) {
   unsigned total_cycles = (block_size / 4) * 100;
   total_cycles += 1;
   if(current.set_size == current.block_num) { //when set is full, need to evict
