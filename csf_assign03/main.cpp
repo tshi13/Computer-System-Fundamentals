@@ -215,35 +215,22 @@ void print_output(unsigned loads, unsigned stores, unsigned load_hits, unsigned 
 
 
 int main(int argc, char *argv[]){
-  //Check command line arguments
-  if(argc != 7) {
+  if(argc != 7) { //Check command line arguments
     cerr << "wrong command line input" << endl;
     return -1;
   }
-
-  //read in command line arguments
+  //reading command line arguments
   int set_count = check_power_of_two(stoi(argv[1])); //number of sets in cache
   int block_count = check_power_of_two(stoi(argv[2])); // number of blocks in each set
   int block_size = check_power_of_two(stoi(argv[3])); // size of each block
-  string write_allocate = argv[4]; //set remaining command input arguments
-  string write_through = argv[5];
-  string eviction = argv[6];
+  string write_allocate = argv[4], write_through = argv[5], eviction = argv[6];//set remaining command input arguments
 
   if(check_input_correctness(set_count, block_count, block_size, write_allocate, write_through, eviction) == -1) return -1;
 
-  // initialize all profiling data
-  unsigned loads = 0;
-  unsigned stores = 0;
-  unsigned load_hits = 0;
-  unsigned load_misses = 0;
-  unsigned store_hits = 0;
-  unsigned store_misses = 0;
-  unsigned total_cycles = 0;
-
+  unsigned loads = 0, stores = 0,load_hits = 0, load_misses = 0, store_hits = 0, store_misses = 0, total_cycles = 0; // initialize all profiling data
   vector <Set> cache; //Representation of a cache, mapping index to sets
 
-  //initializing the cache
-  for(int i = 0; i < set_count; i++) {
+  for(int i = 0; i < set_count; i++) { //initializing the cache
     cache.push_back(Set(block_count));
   }
 
@@ -251,26 +238,20 @@ int main(int argc, char *argv[]){
   while (scanf(" %[^\n]", line) == 1){ //reading from input file
     unsigned command[3];
     parse_line(command, line, set_count, block_size); // send information from each line in file to command 
-    unsigned load_save = command[0];
-    unsigned tag = command[1];
-    unsigned index = command[2];
+    unsigned load_save = command[0], tag = command[1], index = command[2];
 
-    //STORING
-    if(load_save == 0) { 
+    if(load_save == 0) { //STORING
       bool hit = false;
       stores++;
       if(cache[index].find(tag)) hit = true; // see if we can find a slot in set with same tag
-      //STORE HIT
-      if(hit) {
+      if(hit) { //STORE HIT
         store_hits++;
         total_cycles += add_store_hits(eviction, cache[index], write_through, tag);
       } else { //STORE MISS
         store_misses++;
         total_cycles += add_store_misses(write_allocate, block_size, cache[index], tag, write_through);
       }
-    } 
-    //LOADING
-    else if(load_save == 1) { 
+    } else if(load_save == 1) { //LOADING
         loads++;
         bool hit = false;
         if(cache[index].find(tag)) hit = true;
