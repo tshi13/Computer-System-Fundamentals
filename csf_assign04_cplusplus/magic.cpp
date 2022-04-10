@@ -25,7 +25,10 @@ int main(int argc, char **argv) {
   char* elf_filename = argv[1];
   size_t file_size;
   int fd = open(elf_filename, O_RDONLY);
-  if(fd == -1) cerr << "File cannot be opened" << endl; return -1;
+  if(fd == -1) {
+    cerr << "File cannot be opened" << endl; 
+    return -1;
+  }
 
   //Reading bytes from the file
   struct stat statbuf;
