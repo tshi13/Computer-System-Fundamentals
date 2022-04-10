@@ -18,12 +18,14 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+
 #include "elf_names.h"
 
 int main(int argc, char **argv) {
-  string elf_filename = argv[1];
+  char* elf_filename = argv[1];
+  size_t file_size;
   int fd = open(elf_filename, O_RDONLY);
-  if(fd = -1) cerr << "File cannot be opened" << endl;
+  if(fd == -1) cerr << "File cannot be opened" << endl;
 
   //Reading bytes from the file
   struct stat statbuf;
@@ -31,7 +33,7 @@ int main(int argc, char **argv) {
   if (rc != 0) {
     cerr << "Error while reading bytes" << endl;
   } else {
-    size_t file_size = statbuf.st_size;
+    file_size = statbuf.st_size;
   }
   void *data = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
 
