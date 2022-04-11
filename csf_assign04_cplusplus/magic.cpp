@@ -48,8 +48,8 @@ int main(int argc, char **argv) {
   unsigned idx_sec_w_stringTable = elf_header->e_shstrndx;
   printf("section location is %u\nsection number is %u\n", sh_location, sh_number);
   printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
-  printf("Object file type: " );
-  printf(get_type_name(elf_header->e_type));
+  printf("Object file type: ",  get_type_name(elf_header->e_type), "\n");
+  printf("e_type is: %u\n", elf_header->e_type);
 
   cout << "done" << endl;
 
