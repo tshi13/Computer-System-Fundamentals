@@ -46,7 +46,8 @@ int main(int argc, char **argv) {
   Elf64_Off sh_location = elf_header->e_shoff;
   uint16_t sh_number = elf_header->e_shnum;
   uint16_t idx_sec_w_stringTable = elf_header->e_shstrndx;
-  printf("section location is %u\nsection number is %u\n", sh_location, sh_number);
+  unsigned char endian = elf_header->e_ident[EI_DATA];
+  printf("section location is %lu\nsection number is %u\n", sh_location, sh_number);
   printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
 
   printf("Object file type: ");
@@ -57,8 +58,9 @@ int main(int argc, char **argv) {
   printf(get_type_name(elf_header->e_machine));
   printf("\n");
 
+  printf("Endianness: %c\n", endian);
 
-  printf("e_type is: %u\n", elf_header->e_type);
+
 
 
   cout << "done" << endl;
