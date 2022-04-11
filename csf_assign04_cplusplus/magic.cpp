@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
   void *data = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
 
   Elf64_Ehdr *elf_header = (Elf64_Ehdr *) data;
-  printf("section index is %u\nsection number is %u\n", elf_header->e_shoff, elf_header->e_shnum);
+  printf("section index is %u\nsection number is %lu\n", elf_header->e_shoff, elf_header->e_shnum);
 
   cout << "done" << endl;
 
