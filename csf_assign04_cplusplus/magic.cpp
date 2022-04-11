@@ -4,7 +4,7 @@
 #include <cstdarg>
 #include <cerrno>
 #include <cstdint>
-//#include <elf.h>
+#include <elf.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -41,6 +41,8 @@ int main(int argc, char **argv) {
     file_size = statbuf.st_size;
   }
   void *data = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
+  Elf64_Ehdr *elf_header = (Elf64_Ehdr *) data;
+  printf(".shstrtab section index is %u\n", elf_header->e_shstrndx);
   cout << "done" << endl;
 
 
