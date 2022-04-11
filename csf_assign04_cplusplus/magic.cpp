@@ -46,8 +46,9 @@ int main(int argc, char **argv) {
   unsigned sh_location = elf_header->e_shoff;
   unsigned sh_number = elf_header->e_shnum;
   unsigned idx_sec_w_stringTable = elf_header->e_shstrndx;
-  printf("section location is %u\nsection number is %lu\n", sh_location, sh_number);
+  printf("section location is %u\nsection number is %u\n", sh_location, sh_number);
   printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
+  printf("Object file type: " + get_type_name(elf_header->e_type));
 
   cout << "done" << endl;
 
