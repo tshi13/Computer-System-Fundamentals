@@ -43,9 +43,9 @@ int main(int argc, char **argv) {
   void *data = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
 
   Elf64_Ehdr *elf_header = (Elf64_Ehdr *) data;
-  unsigned sh_location = elf_header->e_shoff;
-  unsigned sh_number = elf_header->e_shnum;
-  unsigned idx_sec_w_stringTable = elf_header->e_shstrndx;
+  Elf64_Off sh_location = elf_header->e_shoff;
+  uint16_t sh_number = elf_header->e_shnum;
+  uint16_t idx_sec_w_stringTable = elf_header->e_shstrndx;
   printf("section location is %u\nsection number is %u\n", sh_location, sh_number);
   printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
 
