@@ -50,10 +50,13 @@ int main(int argc, char **argv) {
   printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
 
   printf("Object file type: ");
-  printf(get_type_name(elf_header->e_type), "\n");
+  printf(get_type_name(elf_header->e_type));
+  printf("\n");
   
   printf("Instruction set: ");
-  printf(get_type_name(elf_header->e_machine), "\n");
+  printf(get_type_name(elf_header->e_machine));
+  printf("\n");
+
 
   printf("e_type is: %u\n", elf_header->e_type);
 
