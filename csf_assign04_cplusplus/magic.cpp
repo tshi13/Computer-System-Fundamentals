@@ -23,6 +23,7 @@ using std::endl;
 
 int main(int argc, char **argv) {
   char* elf_filename = argv[1];
+  cout << "start" << endl;
   size_t file_size;
   int fd = open(elf_filename, O_RDONLY);
   if(fd == -1) {
