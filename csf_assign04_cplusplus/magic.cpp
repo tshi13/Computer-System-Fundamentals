@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
     }
 
   //Print out the ELF header info
-  cout << "Object file type: " << get_type_name(elf_header->e_type) << "\n" << endl;
-  cout << "Instruction set: " << get_machine_name(elf_header->e_machine) << "\n" << endl;
+  cout << "Object file type: " << get_type_name(elf_header->e_type) << endl;
+  cout << "Instruction set: " << get_machine_name(elf_header->e_machine) << endl;
   if(endian == 1) printf("Endianness: Little endian\n");
   else printf("Endianness: Big endian\n"); 
 
