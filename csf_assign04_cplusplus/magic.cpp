@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
   Elf64_Shdr *section_header = ((Elf64_Shdr *) elf_header) + sh_location;
   for(uint16_t index = 0; index < sh_number; index++) {
     section_header += entry_size;
+    printf("Location now : %u", (uint32_t) section_header);
   }
   
 
