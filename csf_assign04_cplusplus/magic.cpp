@@ -59,6 +59,7 @@ int main(int argc, char **argv) {
   printf("\n");
 
   printf("Endianness: %c\n", endian);
+  printf("Endianness: %c\n", elf_header->e_ident[EI_DATA]);
 
 
 
