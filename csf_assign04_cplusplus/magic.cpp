@@ -45,6 +45,7 @@ int main(int argc, char **argv) {
   Elf64_Off sh_location = elf_header->e_shoff;
   uint16_t sh_number = elf_header->e_shnum;
   uint16_t idx_sec_w_stringTable = elf_header->e_shstrndx;
+  uint16_t entry_size = elf_header->e_shentsize;
   unsigned char endian = elf_header->e_ident[EI_DATA];// 1 is little, 2 is big
   printf("section location is %lu\nsection number is %u\n", sh_location, sh_number);
   printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
@@ -59,6 +60,14 @@ int main(int argc, char **argv) {
 
   if(endian == 1) printf("Endianness: Little endian\n");
   else printf("Endianness: Big endian\n"); 
+
+  printf("section entry size: %u\n", entry_size);
+
+  Elf64_Shdr *section_header = ((Elf64_Shdr *) elf_header) + sh_location;
+  for(uint16_t index = 0; index < sh_number; i++) {
+    section_header += entry_size;
+  }
+  
 
 
 }
