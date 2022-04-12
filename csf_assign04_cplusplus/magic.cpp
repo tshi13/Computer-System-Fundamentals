@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
   printf("\n");
   
   printf("Instruction set: ");
-  printf(get_type_name(elf_header->e_machine));
+  printf(get_machine_name(elf_header->e_machine));
   printf("\n");
 
   printf("Endianness: %c\n", endian);
