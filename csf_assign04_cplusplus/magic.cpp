@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
   printf(get_machine_name(elf_header->e_machine));
   printf("\n");
 
-  printf("Endianness: %c\n", endian);
-  printf("Endianness: %c\n", elf_header->e_ident[EI_DATA]);
+  printf("Endianness: %d\n", endian);
+  printf("Endianness: %d\n", elf_header->e_ident[EI_DATA]);
 
 
 
