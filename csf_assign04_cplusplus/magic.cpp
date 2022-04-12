@@ -23,7 +23,6 @@ using std::endl;
 
 int main(int argc, char **argv) {
   char* elf_filename = argv[1];
-  cout << "start" << endl;
   size_t file_size;
   int fd = open(elf_filename, O_RDONLY);
   if(fd == -1) {
@@ -46,7 +45,7 @@ int main(int argc, char **argv) {
   Elf64_Off sh_location = elf_header->e_shoff;
   uint16_t sh_number = elf_header->e_shnum;
   uint16_t idx_sec_w_stringTable = elf_header->e_shstrndx;
-  unsigned char endian = elf_header->e_ident[EI_DATA];
+  unsigned char endian = elf_header->e_ident[EI_DATA];// 1 is little, 2 is big
   printf("section location is %lu\nsection number is %u\n", sh_location, sh_number);
   printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
 
@@ -58,13 +57,8 @@ int main(int argc, char **argv) {
   printf(get_machine_name(elf_header->e_machine));
   printf("\n");
 
-  printf("Endianness: %d\n", endian);
-  printf("Endianness: %d\n", elf_header->e_ident[EI_DATA]);
-
-
-
-
-  cout << "done" << endl;
+  if(endian == 1) printf("Endianness: Little endian");
+  else printf("Endianness: Big endian"); 
 
 
 }
