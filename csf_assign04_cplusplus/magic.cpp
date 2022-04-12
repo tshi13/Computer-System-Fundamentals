@@ -45,14 +45,16 @@ int main(int argc, char **argv) {
   Elf64_Ehdr *elf_header = (Elf64_Ehdr *) data;
   unsigned char endian = elf_header->e_ident[EI_DATA];// 1 is little, 2 is big
 
-  printf("Object file type: ");
-  printf(get_type_name(elf_header->e_type));
-  printf("\n");
-  
-  printf("Instruction set: ");
-  printf(get_machine_name(elf_header->e_machine));
-  printf("\n");
+  //Check if the file is ELF file
+  if(elf_header->e_ident[EI_MAG0] != 0x7f || elf_header->e_ident[EI_MAG1] != 'E'
+    || elf_header->e_ident[EI_MAG2] != 'L' || elf_header->e_ident[EI_MAG3] !='F') {
+      cerr << "Not an ELF file" << endl;
+      return -1;
+    }
 
+  //Print out the ELF header info
+  cout << "Object file type: " << get_type_name(elf_header->e_type) << "\n" << endl;
+  cout << "Instruction set: " << get_machine_name(elf_header->e_machine) << "\n" << endl;
   if(endian == 1) printf("Endianness: Little endian\n");
   else printf("Endianness: Big endian\n"); 
 
