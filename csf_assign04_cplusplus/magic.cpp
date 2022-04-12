@@ -57,8 +57,8 @@ int main(int argc, char **argv) {
   printf(get_machine_name(elf_header->e_machine));
   printf("\n");
 
-  if(endian == 1) printf("Endianness: Little endian");
-  else printf("Endianness: Big endian"); 
+  if(endian == 1) printf("Endianness: Little endian\n");
+  else printf("Endianness: Big endian\n"); 
 
 
 }
