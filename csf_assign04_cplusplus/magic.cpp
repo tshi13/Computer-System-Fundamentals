@@ -1,3 +1,9 @@
+/*
+ * main file for reading ELF hw
+ * CSF Assignment 4
+ * Taiming Shi, Ian Zheng
+ * tshi13@jh.edu yzheng67@jh.edu
+ */
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
