@@ -42,13 +42,9 @@ int main(int argc, char **argv) {
   void *data = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
 
   Elf64_Ehdr *elf_header = (Elf64_Ehdr *) data;
-  Elf64_Off sh_location = elf_header->e_shoff;
   uint16_t sh_number = elf_header->e_shnum;
   uint16_t idx_sec_w_stringTable = elf_header->e_shstrndx;
-  uint16_t entry_size = elf_header->e_shentsize;
   unsigned char endian = elf_header->e_ident[EI_DATA];// 1 is little, 2 is big
-  printf("section location is %lu\nsection number is %u\n", sh_location, sh_number);
-  printf(".shstrtab section index is %u\n", idx_sec_w_stringTable);
 
   printf("Object file type: ");
   printf(get_type_name(elf_header->e_type));
@@ -61,14 +57,32 @@ int main(int argc, char **argv) {
   if(endian == 1) printf("Endianness: Little endian\n");
   else printf("Endianness: Big endian\n"); 
 
-  printf("section entry size: %u\n", entry_size);
+  unsigned char* initial_location = (unsigned char*) elf_header;
+  unsigned char* section_location = initial_location + (elf_header->e_shoff);
+  Elf64_Shdr *section_header = (Elf64_Shdr *) section_location;
 
-  Elf64_Shdr *section_header = ((Elf64_Shdr *) elf_header) + sh_location;
-  for(uint16_t index = 0; index < sh_number; index++) {
-    section_header += entry_size;
-    printf("Sh_offset # %d \n", section_header->sh_offset);
+  Elf64_Shdr *cur_header = section_header;
+  unsigned char* current_loc = (unsigned char*) cur_header;
+  unsigned char* name_table = section_header[elf_header->e_shstrndx].sh_offset + initial_location;
+  uint16_t symbol_index = 0;
+  uint16_t symbol_name_index = 0;
+
+  for(uint16_t i; i < sh_number;i++) {
+    cur_header = (Elf64_Shdr *) current_loc;
+    char* name = (char*) (cur_header->sh_name + name_table);
+    printf("Section header %d: name=%s, type=%lx, offset=%lx, size=%lx\n", i, cur_header->sh_name + name_table, cur_header->sh_type, cur_header->sh_offset, cur_header->sh_size);
+    current_loc = current_loc + (elf_header->e_shentsize);
+    if(string(name) == ".symtab") symbol_index = i;
+    if(string(name) == ".strtab") symbol_name_index = i;
   }
-  
+
+  Elf64_Sym* sym_table = (Elf64_Sym*) (section_header[symbol_index].sh_offset + initial_location);
+  uint64_t number_of_symbols = section_header[symbol_index].sh_size / section_header[symbol_index].sh_entsize;
+
+  unsigned char* symbol_name_table = section_header[symbol_name_index].sh_offset + initial_location;
+  for(uint64_t i = 0; i < number_of_symbols; i++) {
+    printf("Symbol %d: name=%s, size=%lx, info=%lx, other=%lx\n", i, symbol_name_table + sym_table[i].st_name, sym_table[i].st_size, sym_table[i].st_info, sym_table[i].st_other);
+  }
 
 
 }
