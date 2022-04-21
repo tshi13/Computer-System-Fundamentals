@@ -4,6 +4,7 @@
 #include "csapp.h"
 #include "message.h"
 #include "connection.h"
+#include "client_util.h"
 
 Connection::Connection()
   : m_fd(-1)
@@ -83,7 +84,50 @@ bool Connection::send(const Message &msg) {
 }
 
 bool Connection::receive(Message &msg) {
-  // TODO: send a message, storing its tag and data in msg
+  // TODO: receive a message, storing its tag and data in msg
   // return true if successful, false if not
   // make sure that m_last_result is set appropriately
+  rio_t rio;
+  rio_readinitb(&rio, m_fd);
+  char buf[1000];
+  ssize_t read = rio_readlineb(&rio, buf, sizeof(buf));
+  if(read <= 0) {
+    m_last_result = EOF_OR_ERROR;
+    return false;
+  }
+
+  //Get the length of the received message
+  int length = 0;
+  int index = 0;
+  while(buf[index] != 0 || index < 1000) {
+    length++;
+  }
+
+  //Convert buffer to string
+  std::string received = "";
+  for (int i = 0; i < length; i++) {
+      received = received + buf[i];
+  }
+
+  //split the received message to tag and paylod, and put them into msg
+  int left_index = 0; 
+  int right_index = -1;
+  for (int i = 0; i < length; i++) {
+    if (buf[i] == ':') {
+      right_index = i;
+      left_index = right_index + 1;
+      msg.tag = received.substr(0, right_index);
+      msg.data = received.substr(left_index , length - i - 1);
+    }
+    //Can't split the message into tag and data
+    if(i = length - 1) {
+      m_last_result = INVALID_MSG;
+      return false;
+    }
+  }
+
+  m_last_result = SUCCESS;
+  return true;
+
+
 }
