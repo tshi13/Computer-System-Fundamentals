@@ -34,6 +34,8 @@ public:
 
   void close();
 
+  bool valid_send_msg(const Message &msg);
+
   // send and receive should set m_last_result to indicate
   // whether the most recent send or receive was successful,
   // and if not, whether the reason was an I/O error or reaching EOF,

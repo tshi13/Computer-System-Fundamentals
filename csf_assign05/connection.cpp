@@ -48,10 +48,46 @@ void Connection::close() {
  
 }
 
+//checks if msg is in correct format for send
+bool Connection::valid_send_msg(const Message &msg) {
+  std::string tag = msg.tag;
+  if (tag != TAG_SLOGIN && tag != TAG_JOIN && tag != TAG_LEAVE && tag != TAG_SENDALL && tag != TAG_QUIT ) {
+    return false;
+  }
+  int colon_index = msg.data.find(":");
+  if (colon_index != -1) {
+    return false;
+  }
+  return true;
+}
+
 bool Connection::send(const Message &msg) {
   // TODO: send a message
   // return true if successful, false if not
   // make sure that m_last_result is set appropriately
+  if (!valid_send_msg(msg)) {
+    m_last_result = INVALID_MSG;
+    return false;
+  }
+
+  char buf [Message::MAX_LEN];
+  int buf_index = 0;
+  std::string data = msg.data;
+  for (buf_index; buf_index< data.length(); buf_index++) {
+    buf[buf_index] = data[buf_index];
+  }
+  buf[buf_index] = '\n';
+  buf_index++;
+  buf[buf_index] = '\0';
+
+  int written_bytes = rio_writen(m_fd, buf, sizeof(buf));
+  if (written_bytes != sizeof(buf)) {
+    m_last_result = EOF_OR_ERROR;
+    return false;
+  }
+
+  m_last_result = SUCCESS;
+  return true;
 }
 
 bool Connection::receive(Message &msg) {
