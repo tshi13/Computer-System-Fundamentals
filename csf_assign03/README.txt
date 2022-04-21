@@ -384,7 +384,10 @@ CONCLUSION:
 
 By experimenting with all 32 combinations for both swim.trace and gcc.trace, we found the best configuration, 
 which was a fully-associative cache. To promote efficiency, we were able to modify the associativity factor to
-strike a balance between performance and efficiency.
+strike a balance between performance and efficiency. Just to be sure, we tested this configuration on gcc.trace as well,
+which also led to results that agreed with our conclusion.
 
-Our final configuration is 
-512-way, write-allocate + write-back, LRU, block size = 16bytes
+Our final configuration is:
+512-way, write-allocate + write-back, LRU, block size = 16 bytes
+
+Thank you for reading this very long report :)

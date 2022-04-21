@@ -25,6 +25,16 @@ struct Message {
     std::vector<std::string> result;
     // TODO: split the message data into fields separated by ':', add them
     //       to result vector
+    int left_index = 0; 
+    int right_index = -1;
+    for (int i = 0; i<data.length(); i++) {
+      if (data[i] == ':') {
+        right_index = i;
+        left_index = right_index + 1;
+        std::string temp = data.substr(left_index,right_index);
+        result.push_back(temp);
+      }
+    }
     return result;
   }
 };
