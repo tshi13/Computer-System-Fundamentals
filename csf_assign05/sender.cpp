@@ -22,11 +22,32 @@ int main(int argc, char **argv) {
   username = argv[3];
 
   // TODO: connect to server
+  Connection connection = Connection(); //
+  connection.connect(server_hostname, server_port);
+  connection.is_open(); //check print error message and exit
 
   // TODO: send slogin message
+  connection.send(Message(TAG_SLOGIN,username));
+  
 
   // TODO: loop reading commands from user, sending messages to
   //       server as appropriate
+  std::string line;
+  while(std::getline(std::cin,line)) {
+    std::stringstream ss(line);
+    std::string command;
+    if (command[0] != '/') {
+      //send message using sendall
+    } else if (command == "/quit") {
+      //quit
+    } else if (command == "/join") {
+      std::string room_name;
+      ss >> room_name;
+      //send join message
+      connection.send(Message(TAG_JOIN,room_name));
+    }
+  }
+
 
   return 0;
 }

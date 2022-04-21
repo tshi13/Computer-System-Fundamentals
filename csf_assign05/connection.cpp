@@ -25,7 +25,7 @@ void Connection::connect(const std::string &hostname, int port) {
   std::string port_string = std::to_string(port);
   char* port_pointer = (char*) port_string.c_str();
   int client_fd = open_clientfd(host,port_pointer);
-
+  m_fd = client_fd;
   rio_readinitb(&m_fdbuf, client_fd);
 }
 
@@ -70,18 +70,10 @@ bool Connection::send(const Message &msg) {
     return false;
   }
 
-  char buf [Message::MAX_LEN];
-  int buf_index = 0;
-  std::string data = msg.data;
-  for (buf_index; buf_index< data.length(); buf_index++) {
-    buf[buf_index] = data[buf_index];
-  }
-  buf[buf_index] = '\n';
-  buf_index++;
-  buf[buf_index] = '\0';
+  std::string encoded_msg = msg.tag + ":" + msg.data + "\n"; //encode msg object into proper string
 
-  int written_bytes = rio_writen(m_fd, buf, sizeof(buf));
-  if (written_bytes != sizeof(buf)) {
+  int written_bytes = rio_writen(m_fd,encoded_msg.c_str(),encoded_msg.size());
+  if (written_bytes != encoded_msg.size()) {
     m_last_result = EOF_OR_ERROR;
     return false;
   }
