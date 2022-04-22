@@ -6,6 +6,7 @@
 #include "message.h"
 #include "connection.h"
 #include "client_util.h"
+using std::cerr;
 
 int main(int argc, char **argv) {
   if (argc != 4) {
@@ -24,10 +25,16 @@ int main(int argc, char **argv) {
   // TODO: connect to server
   Connection connection = Connection(); //
   connection.connect(server_hostname, server_port);
-  connection.is_open(); //check print error message and exit
+  connection.is_open(); //check print error message and exit ???????
 
   // TODO: send slogin message
   connection.send(Message(TAG_SLOGIN,username));
+  Message temp = Message(TAG_EMPTY, "");
+  connection.receive(temp);
+  if (temp.tag != TAG_OK) {
+  //we have an issue
+  cerr << temp.data << "\n";
+  }
   
 
   // TODO: loop reading commands from user, sending messages to
@@ -36,18 +43,39 @@ int main(int argc, char **argv) {
   while(std::getline(std::cin,line)) {
     std::stringstream ss(line);
     std::string command;
+    ss >> command;
     if (command[0] != '/') {
       //send message using sendall
+      connection.send(Message(TAG_SENDALL,command));
+      //take feedback from server, check if it's OK
+      Message temp1 = Message(TAG_EMPTY, "");
+      connection.receive(temp1);
+      if (temp1.tag != TAG_OK) {
+        //we have an issue
+        cerr << temp1.data << "\n";
+      }
     } else if (command == "/quit") {
       //quit
+      connection.send(Message(TAG_QUIT,"quit"));
+      Message temp2 = Message(TAG_EMPTY, "");
+      connection.receive(temp2);
+      if (temp2.tag != TAG_OK) {
+        //we have an issue
+        cerr << temp2.data << "\n";
+      }
+
     } else if (command == "/join") {
       std::string room_name;
       ss >> room_name;
       //send join message
       connection.send(Message(TAG_JOIN,room_name));
+      Message temp3 = Message(TAG_EMPTY, "");
+      connection.receive(temp3);
+      if (temp3.tag != TAG_OK) {
+        //we have an issue
+        cerr << temp3.data << "\n";
+      }
     }
   }
-
-
   return 0;
 }

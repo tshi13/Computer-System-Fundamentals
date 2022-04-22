@@ -87,10 +87,11 @@ bool Connection::receive(Message &msg) {
   // TODO: receive a message, storing its tag and data in msg
   // return true if successful, false if not
   // make sure that m_last_result is set appropriately
-  rio_t rio;
-  rio_readinitb(&rio, m_fd);
-  char buf[1000];
-  ssize_t read = rio_readlineb(&rio, buf, sizeof(buf));
+
+  // rio_t rio;
+  // rio_readinitb(&rio, m_fd);
+  char buf[Message::MAX_LEN];
+  ssize_t read = rio_readlineb(&m_fdbuf, buf, sizeof(buf));
   if(read <= 0) {
     m_last_result = EOF_OR_ERROR;
     return false;
@@ -100,6 +101,7 @@ bool Connection::receive(Message &msg) {
   int length = 0;
   int index = 0;
   while(buf[index] != 0 || index < 1000) {
+    index ++;
     length++;
   }
 

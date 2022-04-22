@@ -40,23 +40,23 @@ int main(int argc, char **argv) {
   connection.send(Message(TAG_RLOGIN, username));
   connection.receive(response_login);
   if(is_err(response_login)) {
-    cerr << response_login.data << "/n";
+    cerr << response_login.data << "\n";
     return -1;
   } 
 
   //TEST: DELETE LATER!
-  if(response_login.tag == TAG_OK) cerr << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "/n";
+  if(response_login.tag == TAG_OK) cerr << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
 
 
   connection.send(Message(TAG_JOIN, room_name));
   connection.receive(response_join_room);
   if(is_err(response_join_room)) {
-    cerr << response_join_room.data << "/n";
+    cerr << response_join_room.data << "\n";
     return -1;
   }
 
   //TEST: DELETE LATER!
-  if(response_join_room.tag == TAG_OK) cerr << "join room successful! THIS IS FOR DEBUG. DELETE LATER!" << "/n";
+  if(response_join_room.tag == TAG_OK) cerr << "join room successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
 
   // TODO: loop waiting for messages from server
   //       (which should be tagged with TAG_DELIVERY)
@@ -66,8 +66,8 @@ int main(int argc, char **argv) {
     connection.receive(response);
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
-      cout << message[1] << ": " << message[2] << "/n";
-    } else if (is_err(response)) cerr << response.data << "/n"; //Print out err if server sends back err
+      cout << message[1] << ": " << message[2] << "\n";
+    } else if (is_err(response)) cerr << response.data << "\n"; //Print out err if server sends back err
   }
   return 0;
 }
