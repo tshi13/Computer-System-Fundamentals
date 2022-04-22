@@ -1,5 +1,5 @@
 /*
-* Representing client of a connection
+* Representing receiver of a connection
 * CSF assignment 5
 * Yixin Zheng yzheng67
 * Taiming Shi tshi13
