@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <string>
+#include<iostream>
+#include <sstream>
+using namespace std;
 
 struct Message {
   // An encoded message may have at most this many characters,
@@ -35,6 +38,30 @@ struct Message {
         result.push_back(temp);
       }
     }
+
+    // int left_index = 0; 
+    // int right_index = -1;
+    // for (int i = 0; i<data.length(); i++) {
+    //   if (data[i] == ':') {
+    //     right_index = i;
+    //     left_index = right_index + 1;
+    //     std::string temp = data.substr(left_index,right_index);
+    //     result.push_back(temp);
+    //   }
+    // }
+    // std::string temp = data.substr(right_index + 1,data.length());
+
+    std::stringstream ss(data);
+    string item;
+
+    while (getline (ss, item, ':')) {
+        result.push_back(item);
+    }
+    // cout << "data length: " << data.length() <<"\n";
+    // cout << result[0] << "\n";
+    // cout << result[1] << "\n";
+    // cout << result[2] << "\n";
+
     return result;
   }
 };
