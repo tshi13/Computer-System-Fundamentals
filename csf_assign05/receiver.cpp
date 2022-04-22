@@ -68,6 +68,9 @@ int main(int argc, char **argv) {
   Message response  = Message(TAG_EMPTY, "");
   while(receiving) {
     receiving = connection.receive(response);
+    if (receiving == false) {
+      break;
+    }
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
       // cout << "results for message" << "\n";
