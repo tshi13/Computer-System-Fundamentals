@@ -27,7 +27,7 @@ struct Message {
     //       to result vector
     int left_index = 0; 
     int right_index = -1;
-    for (int i = 0; i<data.length(); i++) {
+    for (size_t i = 0; i < data.length(); i++) {
       if (data[i] == ':') {
         right_index = i;
         left_index = right_index + 1;

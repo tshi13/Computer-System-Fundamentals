@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
   Connection conn;
 
   // TODO: connect to server
-  Connection connection = Connection();
+  Connection connection;
   connection.connect(server_hostname, server_port);
   connection.is_open();
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
   } 
 
   //TEST: DELETE LATER!
-  if(response_login.tag == TAG_OK) cerr << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "/n";
+  if(response_login.tag == TAG_OK) cout << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "/n";
 
 
   connection.send(Message(TAG_JOIN, room_name));
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
   }
 
   //TEST: DELETE LATER!
-  if(response_join_room.tag == TAG_OK) cerr << "join room successful! THIS IS FOR DEBUG. DELETE LATER!" << "/n";
+  if(response_join_room.tag == TAG_OK) cout << "join room successful! THIS IS FOR DEBUG. DELETE LATER!" << "/n";
 
   // TODO: loop waiting for messages from server
   //       (which should be tagged with TAG_DELIVERY)
@@ -67,7 +67,10 @@ int main(int argc, char **argv) {
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
       cout << message[1] << ": " << message[2] << "/n";
-    } else if (is_err(response)) cerr << response.data << "/n"; //Print out err if server sends back err
+    } else if (is_err(response)){ //Print out err if server sends back err
+        cerr << response.data << "/n";
+        break;
+      } 
   }
   return 0;
 }

@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
   username = argv[3];
 
   // TODO: connect to server
-  Connection connection = Connection(); //
+  Connection connection; //
   connection.connect(server_hostname, server_port);
   connection.is_open(); //check print error message and exit
 
