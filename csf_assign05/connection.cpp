@@ -5,7 +5,6 @@
 * Taiming Shi tshi13
 */
 
-
 #include <sstream>
 #include <cctype>
 #include <cassert>
@@ -14,7 +13,6 @@
 #include "connection.h"
 #include "client_util.h"
 #include<iostream>
-using namespace std;
 
 Connection::Connection()
   : m_fd(-1)
@@ -83,7 +81,7 @@ bool Connection::send(const Message &msg) {
 
   std::string encoded_msg = msg.tag + ":" + trim(msg.data) + "\n"; //encode msg object into proper string
 
-  int written_bytes = rio_writen(m_fd,encoded_msg.c_str(),encoded_msg.size()); //write to server
+  size_t written_bytes = rio_writen(m_fd,encoded_msg.c_str(),encoded_msg.size()); //write to server
   if (written_bytes != encoded_msg.size()) { //
     m_last_result = EOF_OR_ERROR;
     return false;

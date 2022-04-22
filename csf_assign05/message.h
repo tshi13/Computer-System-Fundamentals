@@ -12,7 +12,6 @@
 #include <string>
 #include<iostream>
 #include <sstream>
-using namespace std;
 
 struct Message {
   // An encoded message may have at most this many characters,
@@ -34,7 +33,7 @@ struct Message {
   std::vector<std::string> split_payload() const {
     std::vector<std::string> result;
     std::stringstream ss(data);
-    string item;
+    std::string item;
 
     while (getline (ss, item, ':')) { //splits stringstream based on colon
         result.push_back(item);
