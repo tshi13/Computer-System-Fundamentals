@@ -1,3 +1,11 @@
+/*
+* Class implementation representing connection
+* CSF assignment 5
+* Yixin Zheng yzheng67
+* Taiming Shi tshi13
+*/
+
+
 #include <sstream>
 #include <cctype>
 #include <cassert>
@@ -53,6 +61,10 @@ void Connection::close() {
 
 //checks if msg is in correct format for send
 bool Connection::valid_send_msg(const Message &msg) {
+  std::string tag = msg.tag;
+  if (tag != TAG_SLOGIN && tag != TAG_RLOGIN && tag != TAG_JOIN && tag != TAG_LEAVE && tag != TAG_SENDALL && tag != TAG_QUIT ) {
+    return false;
+  }
   int colon_index = msg.data.find(":");
   if (colon_index != -1) {
     return false;
@@ -80,13 +92,11 @@ bool Connection::send(const Message &msg) {
   m_last_result = SUCCESS;
   return true;
 }
-
+// Receive a message, storing its tag and data in msg
+// return true if successful, false if not
+// make sure that m_last_result is set appropriately
 bool Connection::receive(Message &msg) {
-  // TODO: receive a message, storing its tag and data in msg
-  // return true if successful, false if not
-  // make sure that m_last_result is set appropriately
-
-  
+  //Read the message to a buffer
   char buf[Message::MAX_LEN];
   ssize_t read = rio_readlineb(&m_fdbuf, buf, sizeof(buf));
   if(read <= 0) {
@@ -98,10 +108,9 @@ bool Connection::receive(Message &msg) {
   int length = 0;
   int index = 0;
   while(buf[index] != '\n') {
-    index ++;
+    index++;
     length++;
   }
-
 
   //Convert buffer to string
   std::string received = "";
@@ -117,10 +126,7 @@ bool Connection::receive(Message &msg) {
       right_index = i;
       left_index = right_index + 1;
       msg.tag = received.substr(0, right_index);
-      // cout << "received tag:" << msg.tag << "\n";
-      msg.data = received.substr(left_index , length);
-      // cout << "received data:" << msg.data << "\n";
-
+      msg.data = received.substr(left_index, length);
       break;
     }
     //Can't split the message into tag and data

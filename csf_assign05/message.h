@@ -1,3 +1,10 @@
+/*
+* Header file for messages
+* CSF assignment 5
+* Yixin Zheng yzheng67
+* Taiming Shi tshi13
+*/
+
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
