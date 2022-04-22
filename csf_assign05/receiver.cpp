@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   } 
 
   // //TEST: DELETE LATER!
-  if(response_login.tag == TAG_OK) cout<< "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
+  if(response_login.tag == TAG_OK) cout << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
 
 
   connection.send(Message(TAG_JOIN, room_name));
@@ -71,8 +71,8 @@ int main(int argc, char **argv) {
     }
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
-      // cout << "results for message" << "\n";
-      cout << message[1] << ": " << message[2] << "\n";
+      cout << "results for messageis: " << "\n";
+      cout << message[1] << ": " << message[2] << "test" "\n";
       
     } else if (is_err(response)){
         cerr << response.data << "\n";
