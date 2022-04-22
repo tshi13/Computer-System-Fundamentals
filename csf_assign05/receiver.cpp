@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     cerr << "connection failed" << "\n";
     return 1;
   } 
-  // connection.is_open();
+
 
   // TODO: send rlogin and join messages (expect a response from
   //       the server for each one)
@@ -67,10 +67,12 @@ int main(int argc, char **argv) {
   bool receiving = true;
   Message response  = Message(TAG_EMPTY, "");
   while(receiving) {
-    connection.receive(response);
+    receiving = connection.receive(response);
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
+      // cout << "results for message" << "\n";
       cout << message[1] << ": " << message[2] << "\n";
+      
     } else if (is_err(response)) cerr << response.data << "\n"; //Print out err if server sends back err
   }
   return 0;

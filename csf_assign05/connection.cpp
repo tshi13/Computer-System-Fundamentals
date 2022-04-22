@@ -5,6 +5,8 @@
 #include "message.h"
 #include "connection.h"
 #include "client_util.h"
+#include<iostream>
+using namespace std;
 
 Connection::Connection()
   : m_fd(-1)
@@ -99,10 +101,11 @@ bool Connection::receive(Message &msg) {
   //Get the length of the received message
   int length = 0;
   int index = 0;
-  while(buf[index] != 0 || index < 1000) {
+  while(buf[index] != '\n') {
     index ++;
     length++;
   }
+
 
   //Convert buffer to string
   std::string received = "";
@@ -118,7 +121,10 @@ bool Connection::receive(Message &msg) {
       right_index = i;
       left_index = right_index + 1;
       msg.tag = received.substr(0, right_index);
-      msg.data = received.substr(left_index , length - i - 1);
+      // cout << "received tag:" << msg.tag << "\n";
+      msg.data = received.substr(left_index , length);
+      // cout << "received data:" << msg.data << "\n";
+
       break;
     }
     //Can't split the message into tag and data
