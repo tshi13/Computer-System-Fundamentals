@@ -12,7 +12,7 @@ using std::cerr;
 using std::cout;
 
 bool is_err(Message response) {
-  if(response.tag != TAG_OK || response.tag != TAG_DELIVERY) return true;
+  if(response.tag != TAG_OK) return true;
   return false;
 }
 int main(int argc, char **argv) {
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   } 
 
   // //TEST: DELETE LATER!
-  if(response_login.tag == TAG_OK) cout << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
+  // if(response_login.tag == TAG_OK) cout << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
 
 
   connection.send(Message(TAG_JOIN, room_name));
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
   }
 
   // //TEST: DELETE LATER!
-  if(response_join_room.tag == TAG_OK) cout << "join room successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
+  // if(response_join_room.tag == TAG_OK) cout << "join room successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
 
   // TODO: loop waiting for messages from server
   //       (which should be tagged with TAG_DELIVERY)
@@ -71,8 +71,7 @@ int main(int argc, char **argv) {
     }
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
-      cout << "results for messageis: " << "\n";
-      cout << message[1] << ": " << message[2] << "test" "\n";
+      cout << message[1] << ": " << message[2] << "\n";
       
     } else if (is_err(response)){
         cerr << response.data << "\n";

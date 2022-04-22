@@ -37,6 +37,7 @@ int main(int argc, char **argv) {
   if (temp.tag != TAG_OK) {
   //we have an issue
   cerr << temp.data << "\n";
+  return -1;
   }
   
 
@@ -66,6 +67,8 @@ int main(int argc, char **argv) {
       if (temp2.tag != TAG_OK) {
         //we have an issue
         cerr << temp2.data << "\n";
+      } else {
+        return 0;
       }
 
     } else if (command == "/join") {
