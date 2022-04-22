@@ -11,10 +11,13 @@
 using std::cerr;
 using std::cout;
 
+//Checking if a reponse has error or not
+//Return true if there is an error, false otherwise
 bool is_err(Message response) {
-  if(response.tag != TAG_OK || response.tag != TAG_DELIVERY) return true;
+  if(response.tag != TAG_OK && response.tag != TAG_DELIVERY) return true;
   return false;
 }
+
 int main(int argc, char **argv) {
   if (argc != 5) {
     std::cerr << "Usage: ./receiver [server_address] [port] [username] [room]\n";
@@ -26,7 +29,7 @@ int main(int argc, char **argv) {
   std::string username = argv[3];
   std::string room_name = argv[4];
 
-  // TODO: connect to server
+  //Connecting to the server
   Connection connection;
   connection.connect(server_hostname, server_port);
    if (!connection.is_open()) {
@@ -34,11 +37,8 @@ int main(int argc, char **argv) {
     return 1;
   } 
 
-
-  // TODO: send rlogin and join messages (expect a response from
-  //       the server for each one)
+  //Send login message and check if login is successful
   Message response_login  = Message(TAG_EMPTY, "");
-  Message response_join_room  = Message(TAG_EMPTY, "");
   connection.send(Message(TAG_RLOGIN, username));
   connection.receive(response_login);
   if(is_err(response_login)) {
@@ -46,10 +46,8 @@ int main(int argc, char **argv) {
     return -1;
   } 
 
-  // //TEST: DELETE LATER!
-  if(response_login.tag == TAG_OK) cout << "login successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
-
-
+  //Send join room message and check if join room is successful
+  Message response_join_room  = Message(TAG_EMPTY, "");
   connection.send(Message(TAG_JOIN, room_name));
   connection.receive(response_join_room);
   if(is_err(response_join_room)) {
@@ -57,11 +55,7 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  // //TEST: DELETE LATER!
-  if(response_join_room.tag == TAG_OK) cout << "join room successful! THIS IS FOR DEBUG. DELETE LATER!" << "\n";
-
-  // TODO: loop waiting for messages from server
-  //       (which should be tagged with TAG_DELIVERY)
+  //Loop getting message, check erros, and printto output
   bool receiving = true;
   Message response  = Message(TAG_EMPTY, "");
   while(receiving) {
@@ -71,13 +65,12 @@ int main(int argc, char **argv) {
     }
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
-      cout << "results for messageis: " << "\n";
-      cout << message[1] << ": " << message[2] << "test" "\n";
-      
-    } else if (is_err(response)){
-        cerr << response.data << "\n";
+      cout << message[1] << ": " << message[2] << "\n";
+    } 
+    //Break from the loop if there is an error
+    else if (is_err(response)){
         break;
-      } //Print out err if server sends back err
+      } 
   }
   return 0;
 }
