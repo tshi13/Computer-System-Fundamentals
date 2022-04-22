@@ -26,31 +26,12 @@ struct Message {
   // split using ':' as the separator
   std::vector<std::string> split_payload() const {
     std::vector<std::string> result;
-    // TODO: split the message data into fields separated by ':', add them
-    //       to result vector
-
-    // int left_index = 0; 
-    // int right_index = -1;
-    // for (int i = 0; i<data.length(); i++) {
-    //   if (data[i] == ':') {
-    //     right_index = i;
-    //     left_index = right_index + 1;
-    //     std::string temp = data.substr(left_index,right_index);
-    //     result.push_back(temp);
-    //   }
-    // }
-    // std::string temp = data.substr(right_index + 1,data.length());
-
     std::stringstream ss(data);
     string item;
 
-    while (getline (ss, item, ':')) {
+    while (getline (ss, item, ':')) { //splits stringstream based on colon
         result.push_back(item);
     }
-    // cout << "data length: " << data.length() <<"\n";
-    // cout << result[0] << "\n";
-    // cout << result[1] << "\n";
-    // cout << result[2] << "\n";
 
     return result;
   }

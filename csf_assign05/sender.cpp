@@ -22,27 +22,26 @@ int main(int argc, char **argv) {
   server_port = std::stoi(argv[2]);
   username = argv[3];
 
-  // TODO: connect to server
-  Connection connection; //
+  //connect to server
+  Connection connection; 
   connection.connect(server_hostname, server_port);
   if (!connection.is_open()) {
     cerr << "connection failed" << "\n";
     return 1;
   } 
 
-  // TODO: send slogin message
-  connection.send(Message(TAG_SLOGIN,username)); //deal with usneranem 
-  Message temp = Message(TAG_EMPTY, "");
-  connection.receive(temp);
-  if (temp.tag != TAG_OK) {
-  //we have an issue
-  cerr << temp.data << "\n";
+  // send slogin message
+  connection.send(Message(TAG_SLOGIN,username)); 
+  Message send_successful = Message(TAG_EMPTY, "");
+  connection.receive(send_successful);
+  if (send_successful.tag != TAG_OK) {
+  cerr << send_successful.data << "\n";
   return -1;
   }
   
 
-  // TODO: loop reading commands from user, sending messages to
-  //       server as appropriate
+  // loop reading commands from user, sending messages to
+  // server as appropriate
   std::string line;
   while(std::getline(std::cin,line)) {
     std::stringstream ss(line);
@@ -53,42 +52,35 @@ int main(int argc, char **argv) {
       connection.send(Message(TAG_SENDALL,line));
       
       //take feedback from server, check if it's OK
-      Message temp1 = Message(TAG_EMPTY, "");
-      connection.receive(temp1);
-      if (temp1.tag != TAG_OK) {
-        //we have an issue
-        cerr << temp1.data << "\n";
+      Message send_successful = Message(TAG_EMPTY, "");
+      connection.receive(send_successful);
+      if (send_successful.tag != TAG_OK) {
+        cerr << send_successful.data << "\n";
       }
-    } else if (command == "/quit") {
-      //quit
+    } else if (command == "/quit") { //QUIT PROGRAM
       connection.send(Message(TAG_QUIT,"bye"));
-      Message temp2 = Message(TAG_EMPTY, "");
-      connection.receive(temp2);
-      if (temp2.tag != TAG_OK) {
-        //we have an issue
-        cerr << temp2.data << "\n";
+      Message send_successful = Message(TAG_EMPTY, "");
+      connection.receive(send_successful);
+      if (send_successful.tag != TAG_OK) {
+        cerr << send_successful.data << "\n";
       } else {
-        return 0;
+        return 0; //quit program
       }
-
-    } else if (command == "/join") {
+    } else if (command == "/join") { //JOIN ROOM
       std::string room_name;
       ss >> room_name;
-      //send join message
       connection.send(Message(TAG_JOIN,room_name));
-      Message temp3 = Message(TAG_EMPTY, "");
-      connection.receive(temp3);
-      if (temp3.tag != TAG_OK) {
-        //we have an issue
-        cerr << temp3.data << "\n";
+      Message send_successful = Message(TAG_EMPTY, "");
+      connection.receive(send_successful);
+      if (send_successful.tag != TAG_OK) {
+        cerr << send_successful.data << "\n";
       }
-    } else if (command == "/leave") {
+    } else if (command == "/leave") { //LEAVE ROOM
       connection.send(Message(TAG_LEAVE, "leave"));
-      Message temp2 = Message(TAG_EMPTY, "");
-      connection.receive(temp2);
-      if (temp2.tag != TAG_OK) {
-        //we have an issue
-        cerr << temp2.data << "\n";
+      Message send_successful = Message(TAG_EMPTY, "");
+      connection.receive(send_successful);
+      if (send_successful.tag != TAG_OK) {
+        cerr << send_successful.data << "\n";
       }
     }
   }
