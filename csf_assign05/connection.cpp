@@ -54,7 +54,7 @@ void Connection::close() {
 //checks if msg is in correct format for send
 bool Connection::valid_send_msg(const Message &msg) {
   std::string tag = msg.tag;
-  if (tag != TAG_SLOGIN && tag != TAG_JOIN && tag != TAG_LEAVE && tag != TAG_SENDALL && tag != TAG_QUIT ) {
+  if (tag != TAG_SLOGIN && tag != TAG_RLOGIN && tag != TAG_JOIN && tag != TAG_LEAVE && tag != TAG_SENDALL && tag != TAG_QUIT ) {
     return false;
   }
   int colon_index = msg.data.find(":");
