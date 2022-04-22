@@ -5,6 +5,8 @@
 #include "message.h"
 #include "connection.h"
 #include "client_util.h"
+#include<iostream>
+using namespace std;
 
 Connection::Connection()
   : m_fd(-1)
@@ -71,7 +73,7 @@ bool Connection::send(const Message &msg) {
     return false;
   }
 
-  std::string encoded_msg = msg.tag + ":" + msg.data + "\n"; //encode msg object into proper string
+  std::string encoded_msg = msg.tag + ":" + trim(msg.data) + "\n"; //encode msg object into proper string
 
   int written_bytes = rio_writen(m_fd,encoded_msg.c_str(),encoded_msg.size());
   if (written_bytes != encoded_msg.size()) {
@@ -87,10 +89,10 @@ bool Connection::receive(Message &msg) {
   // TODO: receive a message, storing its tag and data in msg
   // return true if successful, false if not
   // make sure that m_last_result is set appropriately
-  rio_t rio;
-  rio_readinitb(&rio, m_fd);
-  char buf[1000];
-  ssize_t read = rio_readlineb(&rio, buf, sizeof(buf));
+
+  
+  char buf[Message::MAX_LEN];
+  ssize_t read = rio_readlineb(&m_fdbuf, buf, sizeof(buf));
   if(read <= 0) {
     m_last_result = EOF_OR_ERROR;
     return false;
@@ -99,9 +101,11 @@ bool Connection::receive(Message &msg) {
   //Get the length of the received message
   int length = 0;
   int index = 0;
-  while(buf[index] != 0 || index < 1000) {
+  while(buf[index] != '\n') {
+    index ++;
     length++;
   }
+
 
   //Convert buffer to string
   std::string received = "";
@@ -117,10 +121,14 @@ bool Connection::receive(Message &msg) {
       right_index = i;
       left_index = right_index + 1;
       msg.tag = received.substr(0, right_index);
-      msg.data = received.substr(left_index , length - i - 1);
+      // cout << "received tag:" << msg.tag << "\n";
+      msg.data = received.substr(left_index , length);
+      // cout << "received data:" << msg.data << "\n";
+
+      break;
     }
     //Can't split the message into tag and data
-    if(i = length - 1) {
+    if(i == length - 1) {
       m_last_result = INVALID_MSG;
       return false;
     }
