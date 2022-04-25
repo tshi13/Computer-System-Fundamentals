@@ -70,7 +70,7 @@ void chat_with_sender() {
 void chat_with_receiver() {
   bool receiving = true;
   while(receiving) {
-    
+
   }
 }
 
@@ -84,10 +84,13 @@ Server::Server(int port)
   : m_port(port)
   , m_ssock(-1) {
   // TODO: initialize mutex
+  pthread_mutex_init(&m_lock, NULL);
+
 }
 
 Server::~Server() {
   // TODO: destroy mutex
+  pthread_mutex_destroy(&m_lock);
 }
 
 bool Server::listen() {
@@ -101,6 +104,7 @@ bool Server::listen() {
 void Server::handle_client_requests() {
   // TODO: infinite loop calling accept or Accept, starting a new
   //       pthread for each connected client
+  //Question: Lock here???? I don't think so
   while(1) {
     int clientfd = Accept(m_ssock, NULL, NULL);
     if (clientfd < 0) {
@@ -121,4 +125,5 @@ void Server::handle_client_requests() {
 Room *Server::find_or_create_room(const std::string &room_name) {
   // TODO: return a pointer to the unique Room object representing
   //       the named chat room, creating a new one if necessary
+  //Question: Probably lock here
 }
