@@ -36,8 +36,8 @@ void *worker(void *arg) {
   // TODO: use a static cast to convert arg from a void* to
   //       whatever pointer type describes the object(s) needed
   //       to communicate with a client (sender or receiver)
-  ConnInfo *info = (ConnInfo*) arg;
-  Connection client_conn = info->conn;
+  ConnInfo *info = static_cast<ConnInfo*>(arg);
+  Connection *client_conn = info->conn;
   
   // TODO: read login message (should be tagged either with
   //       TAG_SLOGIN or TAG_RLOGIN), send response
@@ -48,29 +48,39 @@ void *worker(void *arg) {
   } else {
     client_conn.send(Message(TAG_OK, "Log in successful"));
   }
-
+  //Instantiate a user
+  User *cur_user = new User(response_login.data);
   // TODO: depending on whether the client logged in as a sender or
   //       receiver, communicate with the client (implementing
   //       separate helper functions for each of these possibilities
   //       is a good idea)
-  if(response_login.tag == TAG_SLOGIN) chat_with_sender();
-  else chat_with_receiver();
+  if(response_login.tag == TAG_SLOGIN) chat_with_sender(cur_user, info);
   
-  //Create user object in client thread to track pending messages and resgiter it to a Room when the client sends a join request
+  else chat_with_receiver(cur_user, info);
+  
   return nullptr;
 }
 
-void chat_with_sender() {
+void chat_with_sender(User *cur_user, ConnInfo* info) {
   bool receiving = true;
   while(receiving) {
 
   }
 }
 
-void chat_with_receiver() {
-  bool receiving = true;
-  while(receiving) {
+void chat_with_receiver(User* cur_user, ConnInfo* info) {
+  Connection *conn = info->conn;
+  Server *server = info->server;
 
+  Message response_join_room  = Message(TAG_EMPTY, "");
+  conn.receiver(response_join_room);
+  if(response_join_room = TAG_JOIN) Romm cur_room = server->find_or_create_room(response_join_room.data);
+  bool receiving = true;
+
+  while(receiving) {
+    Message msg = cur_user->mqueue.dequeue();
+    conn.send(msg);
+    delete msg;
   }
 }
 
@@ -112,7 +122,7 @@ void Server::handle_client_requests() {
 		}
 
     ConnInfo *info = new ConnInfo;
-    info->conn = new Connection(clientfd);
+    info->conn = Connection(clientfd); //On the heap
     info->server = this;
     pthread_t thr;
     if (pthread_create(&thr, NULL, worker, static_cast<void*>(info)) != 0) {
@@ -126,4 +136,11 @@ Room *Server::find_or_create_room(const std::string &room_name) {
   // TODO: return a pointer to the unique Room object representing
   //       the named chat room, creating a new one if necessary
   //Question: Probably lock here
+  auto room_iterator = m_rooms.find(room_name);
+  if(room_iterator = m_rooms.end()) {
+    Room *new_room = new Room(room_name);
+    m_rooms[room_name] = new_room;
+    return new_room;
+  }
+  return room_iterator->second;
 }
