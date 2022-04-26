@@ -51,7 +51,9 @@ int main(int argc, char **argv) {
   if(is_err(response_login)) {
     cerr << response_login.data << "\n";
     return -1;
-  } 
+  } else {
+    cout << "ok" << ": logged in as" << username << "\n";
+  }
 
   //Send join room message and check if join room is successful
   Message response_join_room  = Message(TAG_EMPTY, "");
@@ -60,6 +62,8 @@ int main(int argc, char **argv) {
   if(is_err(response_join_room)) {
     cerr << response_join_room.data << "\n";
     return -1;
+  } else {
+    cout << "ok: welcome to" << room_name << "\n";
   }
 
   //Loop getting message, check erros, and printto output
@@ -72,8 +76,8 @@ int main(int argc, char **argv) {
     }
     if(response.tag == TAG_DELIVERY) {
       std::vector<std::string> message = response.split_payload();
-      cout << message[1] << ": " << message[2] << "\n";
-    } 
+      cout << message[0] << message[1] << ": " << message[2] << "\n";
+    }
     //Break from the loop if there is an error
     else if (is_err(response)){
         break;

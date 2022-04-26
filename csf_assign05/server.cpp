@@ -13,6 +13,7 @@
 #include "guard.h"
 #include "server.h"
 
+using std::cout;
 ////////////////////////////////////////////////////////////////////////
 // Server implementation data types
 ////////////////////////////////////////////////////////////////////////
@@ -53,28 +54,36 @@ void chat_with_sender(User *cur_user, ConnInfo* info) {
     else if(response.tag == TAG_JOIN) {
       cur_room = server->find_or_create_room(response.data);
       cur_room->add_member(cur_user);
+      conn->send(Message(TAG_OK, "Join room successful"));
+      cout << cur_user->username << " joined " << cur_room->get_room_name() << "\n";
     }
   }
 }
 
 void chat_with_receiver(User* cur_user, ConnInfo* info) {
-  Connection *conn = info->conn;
+  Connection *receiver_conn = info->conn;
   Server *server = info->server;
 
-  Message response_join_room = Message(TAG_EMPTY, "");
-  conn->receive(response_join_room);
+  Message response_join_room;
+  receiver_conn->receive(response_join_room);
   if(response_join_room.tag == TAG_JOIN) {
     Room *cur_room = server->find_or_create_room(response_join_room.data);
     cur_room->add_member(cur_user);
+    receiver_conn->send(Message(TAG_OK, "Join room successful"));
+    cout << cur_user->username << " joined " << cur_room->get_room_name() << "\n";
   }
-  else conn->send(Message(TAG_ERR, "Receiver should join a server after log in"));
+  else receiver_conn->send(Message(TAG_ERR, "Receiver should join a server after log in"));
   
 
   bool receiving = true;
   while(receiving) {
     Message *msg = cur_user->mqueue.dequeue();
-    conn->send(*msg);
-    delete msg;
+    if(msg != nullptr){
+      cout << "sending message to receiver" << "\n";
+      //delivery:party:alice:payload
+      receiver_conn->send(*msg);
+      delete msg;
+    }
   }
 }
 
@@ -94,6 +103,7 @@ void *worker(void *arg) {
   if(response_login.tag != TAG_SLOGIN && response_login.tag != TAG_RLOGIN) {
     client_conn->send(Message(TAG_ERR, "Log in as sender or receiver! Incorrect tag"));
   } else {
+    cout << "login successful. Username: " << response_login.data << "\n"; //DELETE
     client_conn->send(Message(TAG_OK, "Log in successful"));
   }
   //Instantiate a user
@@ -134,7 +144,7 @@ bool Server::listen() {
   // TODO: use open_listenfd to create the server socket, return true
   //       if successful, false if not
   std::string port_string = std::to_string(m_port);
-  m_ssock = open_listenfd(port_string);
+  m_ssock = open_listenfd(port_string.c_str());
   if (m_ssock < 0) return false;
   return true;
 }
@@ -156,7 +166,7 @@ void Server::handle_client_requests() {
     if (pthread_create(&thr, NULL, worker, static_cast<void*>(info)) != 0) {
       /* error creating thread */
     }
-    close(clientfd);
+    //close(clientfd);
   }
 }
 
@@ -164,11 +174,14 @@ Room *Server::find_or_create_room(const std::string &room_name) {
   // TODO: return a pointer to the unique Room object representing
   //       the named chat room, creating a new one if necessary
   //Question: Probably lock here
-  auto room_iterator = m_rooms.find(room_name);
-  if(room_iterator == m_rooms.end()) {
-    Room *new_room = new Room(room_name);
-    m_rooms[room_name] = new_room;
-    return new_room;
+  {
+    Guard g(m_lock);
+    auto room_iterator = m_rooms.find(room_name);
+    if(room_iterator == m_rooms.end()) {
+      Room *new_room = new Room(room_name);
+      m_rooms[room_name] = new_room;
+      return new_room;
+    }
+    return room_iterator->second;
   }
-  return room_iterator->second;
 }
