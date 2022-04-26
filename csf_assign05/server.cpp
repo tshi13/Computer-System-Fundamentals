@@ -42,11 +42,11 @@ void *worker(void *arg) {
   // TODO: read login message (should be tagged either with
   //       TAG_SLOGIN or TAG_RLOGIN), send response
   Message response_login  = Message(TAG_EMPTY, "");
-  client_conn.receive(response_login);
+  client_conn->receive(response_login);
   if(response_login.tag != TAG_SLOGIN && response_login.tag != TAG_RLOGIN) {
-    client_conn.send(Message(TAG_ERR, "Log in as sender or receiver! Incorrect tag"));
+    client_conn->send(Message(TAG_ERR, "Log in as sender or receiver! Incorrect tag"));
   } else {
-    client_conn.send(Message(TAG_OK, "Log in successful"));
+    client_conn->send(Message(TAG_OK, "Log in successful"));
   }
   //Instantiate a user
   User *cur_user = new User(response_login.data);
@@ -63,8 +63,28 @@ void *worker(void *arg) {
 
 void chat_with_sender(User *cur_user, ConnInfo* info) {
   bool receiving = true;
-  while(receiving) {
+  Connection *conn = info->conn;
+  Server *server = info->server;
+  Room *cur_room = nullptr;
 
+  while(receiving) {
+    Message response = Message(TAG_EMPTY, "");
+    conn->receive(response);
+    if(response.tag == TAG_SENDALL) {
+      if(cur_room == nullptr) conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
+      cur_room->broadcast_message(cur_user->username, response.data);
+    } 
+    else if(response.tag == TAG_LEAVE) {
+      if(cur_room == nullptr) conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
+      cur_room->remove_member(cur_user);
+    } 
+    else if(response.tag == TAG_QUIT) {
+      if(cur_room != nullptr) cur_room->remove_member(cur_user);
+      break;
+    } 
+    else if(response.tag == TAG_JOIN) {
+      cur_room = server->find_or_create_room(response.data);
+    }
   }
 }
 
@@ -72,14 +92,15 @@ void chat_with_receiver(User* cur_user, ConnInfo* info) {
   Connection *conn = info->conn;
   Server *server = info->server;
 
-  Message response_join_room  = Message(TAG_EMPTY, "");
-  conn.receiver(response_join_room);
-  if(response_join_room = TAG_JOIN) Romm cur_room = server->find_or_create_room(response_join_room.data);
+  Message response_join_room = Message(TAG_EMPTY, "");
+  conn->receive(response_join_room);
+  if(response_join_room.tag == TAG_JOIN) Room *cur_room = server->find_or_create_room(response_join_room.data);
+  else conn->send(Message(TAG_ERR, "Receiver should join a server after log in"));
   bool receiving = true;
 
   while(receiving) {
-    Message msg = cur_user->mqueue.dequeue();
-    conn.send(msg);
+    Message *msg = cur_user->mqueue.dequeue();
+    conn->send(*msg);
     delete msg;
   }
 }
@@ -122,7 +143,7 @@ void Server::handle_client_requests() {
 		}
 
     ConnInfo *info = new ConnInfo;
-    info->conn = Connection(clientfd); //On the heap
+    info->conn = new Connection(clientfd); //On the heap
     info->server = this;
     pthread_t thr;
     if (pthread_create(&thr, NULL, worker, static_cast<void*>(info)) != 0) {
