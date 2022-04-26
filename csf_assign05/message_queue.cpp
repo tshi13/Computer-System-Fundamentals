@@ -25,8 +25,6 @@ void MessageQueue::enqueue(Message *msg) {
 }
 
 Message *MessageQueue::dequeue() {
-  struct timespec ts;
-
   sem_wait(&m_avail);
   Message *to_return = m_messages.front();
   m_messages.pop_front();

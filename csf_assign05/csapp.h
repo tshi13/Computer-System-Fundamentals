@@ -5,6 +5,10 @@
 #ifndef __CSAPP_H__
 #define __CSAPP_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -39,9 +43,6 @@
 //
 // - use const void * rather than void * in rio_writen
 
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
 
 /* Default file permissions are DEF_MODE & ~DEF_UMASK */
 /* $begin createmasks */

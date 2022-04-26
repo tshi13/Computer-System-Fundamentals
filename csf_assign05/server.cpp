@@ -29,6 +29,54 @@ struct ConnInfo {
 ////////////////////////////////////////////////////////////////////////
 
 namespace {
+void chat_with_sender(User *cur_user, ConnInfo* info) {
+  bool receiving = true;
+  Connection *conn = info->conn;
+  Server *server = info->server;
+  Room *cur_room = nullptr;
+
+  while(receiving) {
+    Message response = Message(TAG_EMPTY, "");
+    conn->receive(response);
+    if(response.tag == TAG_SENDALL) {
+      if(cur_room == nullptr) conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
+      cur_room->broadcast_message(cur_user->username, response.data);
+    } 
+    else if(response.tag == TAG_LEAVE) {
+      if(cur_room == nullptr) conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
+      cur_room->remove_member(cur_user);
+    } 
+    else if(response.tag == TAG_QUIT) {
+      if(cur_room != nullptr) cur_room->remove_member(cur_user);
+      break;
+    } 
+    else if(response.tag == TAG_JOIN) {
+      cur_room = server->find_or_create_room(response.data);
+      cur_room->add_member(cur_user);
+    }
+  }
+}
+
+void chat_with_receiver(User* cur_user, ConnInfo* info) {
+  Connection *conn = info->conn;
+  Server *server = info->server;
+
+  Message response_join_room = Message(TAG_EMPTY, "");
+  conn->receive(response_join_room);
+  if(response_join_room.tag == TAG_JOIN) {
+    Room *cur_room = server->find_or_create_room(response_join_room.data);
+    cur_room->add_member(cur_user);
+  }
+  else conn->send(Message(TAG_ERR, "Receiver should join a server after log in"));
+  
+
+  bool receiving = true;
+  while(receiving) {
+    Message *msg = cur_user->mqueue.dequeue();
+    conn->send(*msg);
+    delete msg;
+  }
+}
 
 void *worker(void *arg) {
   pthread_detach(pthread_self());
@@ -54,55 +102,13 @@ void *worker(void *arg) {
   //       receiver, communicate with the client (implementing
   //       separate helper functions for each of these possibilities
   //       is a good idea)
-  if(response_login.tag == TAG_SLOGIN) chat_with_sender(cur_user, info);
-  
-  else chat_with_receiver(cur_user, info);
+  if(response_login.tag == TAG_SLOGIN) {
+    chat_with_sender(cur_user, info);
+  } else {
+    chat_with_receiver(cur_user, info);
+  }
   
   return nullptr;
-}
-
-void chat_with_sender(User *cur_user, ConnInfo* info) {
-  bool receiving = true;
-  Connection *conn = info->conn;
-  Server *server = info->server;
-  Room *cur_room = nullptr;
-
-  while(receiving) {
-    Message response = Message(TAG_EMPTY, "");
-    conn->receive(response);
-    if(response.tag == TAG_SENDALL) {
-      if(cur_room == nullptr) conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
-      cur_room->broadcast_message(cur_user->username, response.data);
-    } 
-    else if(response.tag == TAG_LEAVE) {
-      if(cur_room == nullptr) conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
-      cur_room->remove_member(cur_user);
-    } 
-    else if(response.tag == TAG_QUIT) {
-      if(cur_room != nullptr) cur_room->remove_member(cur_user);
-      break;
-    } 
-    else if(response.tag == TAG_JOIN) {
-      cur_room = server->find_or_create_room(response.data);
-    }
-  }
-}
-
-void chat_with_receiver(User* cur_user, ConnInfo* info) {
-  Connection *conn = info->conn;
-  Server *server = info->server;
-
-  Message response_join_room = Message(TAG_EMPTY, "");
-  conn->receive(response_join_room);
-  if(response_join_room.tag == TAG_JOIN) Room *cur_room = server->find_or_create_room(response_join_room.data);
-  else conn->send(Message(TAG_ERR, "Receiver should join a server after log in"));
-  bool receiving = true;
-
-  while(receiving) {
-    Message *msg = cur_user->mqueue.dequeue();
-    conn->send(*msg);
-    delete msg;
-  }
 }
 
 }
@@ -127,7 +133,8 @@ Server::~Server() {
 bool Server::listen() {
   // TODO: use open_listenfd to create the server socket, return true
   //       if successful, false if not
-  m_ssock = open_listenfd((char*) m_port);
+  std::string port_string = std::to_string(m_port);
+  m_ssock = open_listenfd(port_string);
   if (m_ssock < 0) return false;
   return true;
 }
@@ -158,7 +165,7 @@ Room *Server::find_or_create_room(const std::string &room_name) {
   //       the named chat room, creating a new one if necessary
   //Question: Probably lock here
   auto room_iterator = m_rooms.find(room_name);
-  if(room_iterator = m_rooms.end()) {
+  if(room_iterator == m_rooms.end()) {
     Room *new_room = new Room(room_name);
     m_rooms[room_name] = new_room;
     return new_room;
