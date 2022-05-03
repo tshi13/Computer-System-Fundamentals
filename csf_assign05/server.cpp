@@ -47,7 +47,7 @@ void chat_with_sender(User *cur_user, ConnInfo* info) {
     conn->receive(response);
     if(response.tag == TAG_SENDALL) {
       if(cur_room == nullptr) {
-        conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
+        conn->send(Message(TAG_ERR, "You should join room before sending message"));
       } else {
       cur_room->broadcast_message(cur_user->username, response.data);
       conn->send(Message(TAG_OK, "ok"));
@@ -55,9 +55,10 @@ void chat_with_sender(User *cur_user, ConnInfo* info) {
     } 
     else if(response.tag == TAG_LEAVE) {
       if(cur_room == nullptr) {
-        conn->send(Message(TAG_EMPTY, "You should join room before sending message"));
+        conn->send(Message(TAG_ERR, "You should join room before sending message"));
       } else {
       cur_room->remove_member(cur_user);
+      cur_room = nullptr;
       conn->send(Message(TAG_OK, "ok"));
       }
     } 
@@ -69,6 +70,9 @@ void chat_with_sender(User *cur_user, ConnInfo* info) {
       break;
     } 
     else if(response.tag == TAG_JOIN) {
+      if(cur_room != nullptr) {
+        cur_room->remove_member(cur_user);
+      }
       cur_room = server->find_or_create_room(response.data);
       cur_room->add_member(cur_user);
       conn->send(Message(TAG_OK, "ok"));
@@ -83,8 +87,9 @@ void chat_with_receiver(User* cur_user, ConnInfo* info) {
 
   Message response_join_room = Message(TAG_EMPTY, "");
   conn->receive(response_join_room);
+  Room *cur_room;
   if(response_join_room.tag == TAG_JOIN) {
-    Room *cur_room = server->find_or_create_room(response_join_room.data);
+    cur_room = server->find_or_create_room(response_join_room.data);
     cur_room->add_member(cur_user);
     conn->send(Message(TAG_OK, "ok")); //should i have this?
   }
@@ -94,7 +99,10 @@ void chat_with_receiver(User* cur_user, ConnInfo* info) {
   bool receiving = true;
   while(receiving) {
     Message *msg = cur_user->mqueue.dequeue();
-    conn->send(*msg);
+    if(!conn->send(*msg)){ //fails break loop, remove user from room
+      cur_room->remove_member(cur_user);
+      break;
+    }
     delete msg;
   }
 }
@@ -129,6 +137,7 @@ void *worker(void *arg) {
     chat_with_receiver(cur_user, info);
   }
   
+  delete cur_user;
   delete info;
   return nullptr;
 }
@@ -190,6 +199,7 @@ Room *Server::find_or_create_room(const std::string &room_name) {
   // TODO: return a pointer to the unique Room object representing
   //       the named chat room, creating a new one if necessary
   //Question: Probably lock here
+  Guard guard(m_lock); 
   auto room_iterator = m_rooms.find(room_name);
   if(room_iterator == m_rooms.end()) {
     Room *new_room = new Room(room_name);
