@@ -74,10 +74,10 @@ bool Connection::send(const Message &msg) {
   // send a message
   // return true if successful, false if not
   // make sure that m_last_result is set appropriately
-  if (!valid_send_msg(msg)) {
-    m_last_result = INVALID_MSG;
-    return false;
-  }
+  // if (!valid_send_msg(msg)) {
+  //   m_last_result = INVALID_MSG;
+  //   return false;
+  // }
 
   std::string encoded_msg = msg.tag + ":" + trim(msg.data) + "\n"; //encode msg object into proper string
 

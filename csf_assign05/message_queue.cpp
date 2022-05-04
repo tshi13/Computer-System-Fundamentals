@@ -1,13 +1,17 @@
+/*
+* Class implementation representing message queue
+* CSF assignment 5
+* Yixin Zheng yzheng67
+* Taiming Shi tshi13
+*/
+
 #include <cassert>
 #include <ctime>
 #include "message_queue.h"
 #include "guard.h"
-#include <iostream> //FOR DEBUG DELETE LATER
-using std::cout; //FOR DEBUG DELETE LATER
 
 MessageQueue::MessageQueue() {
   // TODO: initialize the mutex and the semaphore
-  int max_messages = 100;
   pthread_mutex_init(&m_lock, NULL);
   sem_init(&m_avail, 0, 0);
 }
@@ -19,6 +23,8 @@ MessageQueue::~MessageQueue() {
 }
 
 void MessageQueue::enqueue(Message *msg) {
+  Guard guard(m_lock); //locking mutex
+
   // TODO: put the specified message on the queue
   {
     Guard g(m_lock);
@@ -32,14 +38,10 @@ void MessageQueue::enqueue(Message *msg) {
 }
 
 Message *MessageQueue::dequeue() {
-  sem_wait(&m_avail);
-  {
-    Guard g(m_lock);
-    Message *to_return = m_messages.front();
-    if(m_messages.empty()) return nullptr;
-    m_messages.pop_front();
-    cout << "dequeuing" << "\n";
-    return to_return;
-  }
-  
+
+  sem_wait(&m_avail); //receiver pauses when there are no more
+  {Guard guard(m_lock); //locking mutex//prevent enqueing multiple times or doing enque and deque at the same time
+  Message *to_return = m_messages.front();
+  m_messages.pop_front();
+  return to_return;}
 }
