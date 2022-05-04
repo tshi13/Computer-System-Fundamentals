@@ -30,7 +30,6 @@ Message *MessageQueue::dequeue() {
 
   sem_wait(&m_avail); //receiver pauses when there are no more
   {Guard guard(m_lock); //locking mutex//prevent enqueing multiple times or doing enque and deque at the same time
-  //makes sure messagequeue remains atomic
   Message *to_return = m_messages.front();
   m_messages.pop_front();
   return to_return;}

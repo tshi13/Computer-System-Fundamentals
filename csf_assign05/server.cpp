@@ -198,7 +198,7 @@ void Server::handle_client_requests() {
 Room *Server::find_or_create_room(const std::string &room_name) {
   // TODO: return a pointer to the unique Room object representing
   //       the named chat room, creating a new one if necessary
-  //Question: Probably lock here
+
   Guard guard(m_lock); 
   auto room_iterator = m_rooms.find(room_name);
   if(room_iterator == m_rooms.end()) {
